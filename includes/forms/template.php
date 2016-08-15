@@ -159,7 +159,6 @@ function give_get_donation_form( $args = array() ) {
 	echo apply_filters( 'give_donate_form', $final_output, $args );
 }
 
-
 /**
  *
  * Give Show Purchase Form
@@ -320,7 +319,6 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 }
 
 add_action( 'give_checkout_form_top', 'give_output_donation_amount_top', 10, 2 );
-
 
 /**
  * Outputs the Donation Levels in various formats such as dropdown, radios, and buttons
@@ -616,6 +614,22 @@ function give_get_cc_form( $form_id ) {
 add_action( 'give_cc_form', 'give_get_cc_form' );
 
 /**
+ * Outputs the donor address fields
+ *
+ * @since  1.7
+ *
+ * @param  int $form_id
+ *
+ * @return void
+ */
+function give_donor_address_fields( $form_id ) {
+
+
+}
+
+add_action('give_purchase_form_user_info', 'give_donor_address_fields');
+
+/**
  * Outputs the default credit card address fields
  *
  * @since  1.0
@@ -774,7 +788,6 @@ function give_default_cc_address_fields( $form_id ) {
 
 add_action( 'give_after_cc_fields', 'give_default_cc_address_fields' );
 
-
 /**
  * Renders the user registration fields. If the user is logged in, a login form is displayed other a registration form is provided for the user to create an account.
  *
@@ -859,11 +872,9 @@ function give_get_register_fields( $form_id ) {
 			<?php do_action( 'give_register_account_fields_after', $form_id ); ?>
 		</fieldset>
 
-		<?php do_action( 'give_register_fields_after', $form_id ); ?>
-
 		<input type="hidden" name="give-purchase-var" value="needs-to-register"/>
 
-		<?php do_action( 'give_purchase_form_user_info', $form_id ); ?>
+		<?php do_action( 'give_register_fields_after', $form_id ); ?>
 
 	</fieldset>
 	<?php
@@ -1015,7 +1026,6 @@ function give_payment_mode_select( $form_id ) {
 
 add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
 
-
 /**
  * Renders the Checkout Agree to Terms, this displays a checkbox for users to
  * agree the T&Cs set in the Give Settings. This is only displayed if T&Cs are
@@ -1091,7 +1101,6 @@ function give_checkout_final_total( $form_id ) {
 
 add_action( 'give_purchase_form_before_submit', 'give_checkout_final_total', 999 );
 
-
 /**
  * Renders the Checkout Submit section
  *
@@ -1117,7 +1126,6 @@ function give_checkout_submit( $form_id ) {
 }
 
 add_action( 'give_purchase_form_after_cc_form', 'give_checkout_submit', 9999 );
-
 
 /**
  * Give Checkout Button Purchase
@@ -1253,7 +1261,6 @@ function give_form_display_content( $form_id, $args ) {
 	remove_action( $show_content, 'give_form_display_content' );
 }
 
-
 /**
  * Renders the hidden Checkout fields
  *
@@ -1302,7 +1309,6 @@ function give_filter_success_page_content( $content ) {
 
 add_filter( 'the_content', 'give_filter_success_page_content' );
 
-
 /**
  * Test Mode Frontend Warning
  *
@@ -1320,7 +1326,6 @@ function give_test_mode_frontend_warning() {
 }
 
 add_action( 'give_pre_form', 'give_test_mode_frontend_warning', 10 );
-
 
 /**
  * Members-only Form
