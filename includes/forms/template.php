@@ -60,10 +60,10 @@ function give_get_donation_form( $args = array() ) {
 	}
 
 	//Get the form wrap CSS classes.
-	$form_wrap_classes       = $form->get_form_wrap_classes($args);
+	$form_wrap_classes = $form->get_form_wrap_classes( $args );
 
 	//Get the <form> tag wrap CSS classes.
-	$form_classes       = $form->get_form_classes($args);
+	$form_classes = $form->get_form_classes( $args );
 
 	ob_start();
 
@@ -72,7 +72,7 @@ function give_get_donation_form( $args = array() ) {
 	 *
 	 * @since 1.0
 	 *
-	 * @param int $form ->ID The current form ID
+	 * @param int   $form ->ID The current form ID
 	 * @param array $args An array of form args
 	 */
 	do_action( 'give_pre_form_output', $form->ID, $args ); ?>
@@ -149,7 +149,7 @@ function give_get_donation_form( $args = array() ) {
 	 *
 	 * @since 1.0
 	 *
-	 * @param int $form ->ID The current form ID
+	 * @param int   $form ->ID The current form ID
 	 * @param array $args An array of form args
 	 */
 	do_action( 'give_post_form_output', $form->ID, $args );
@@ -218,7 +218,7 @@ add_action( 'give_purchase_form', 'give_show_purchase_form' );
  *
  * @since  1.4.1
  *
- * @param  int   $form_id ID of the Give Form
+ * @param  int $form_id ID of the Give Form
  *
  * @return void
  */
@@ -625,14 +625,35 @@ add_action( 'give_cc_form', 'give_get_cc_form' );
 function give_donor_address_fields( $form_id ) {
 
 	$logged_in = is_user_logged_in();
+	$donor     = Give()->session->get( 'customer' );
+	$donor     = wp_parse_args( $donor, array(
+		'address' => array(
+			'line1'   => '',
+			'line2'   => '',
+			'city'    => '',
+			'zip'     => '',
+			'state'   => '',
+			'country' => ''
+		)
+	) );
+
+	$donor['address'] = array_map( 'sanitize_text_field', $donor['address'] );
 
 	if ( $logged_in ) {
+
 		$user_address = get_user_meta( get_current_user_id(), '_give_user_address', true );
+
+		foreach ( $donor['address'] as $key => $field ) {
+
+			if ( empty( $field ) && ! empty( $user_address[ $key ] ) ) {
+				$donor['address'][ $key ] = $user_address[ $key ];
+			} else {
+				$donor['address'][ $key ] = '';
+			}
+
+		}
+
 	}
-	$line1 = $logged_in && ! empty( $user_address['line1'] ) ? $user_address['line1'] : '';
-	$line2 = $logged_in && ! empty( $user_address['line2'] ) ? $user_address['line2'] : '';
-	$city  = $logged_in && ! empty( $user_address['city'] ) ? $user_address['city'] : '';
-	$zip   = $logged_in && ! empty( $user_address['zip'] ) ? $user_address['zip'] : '';
 
 	do_action( 'give_address_fields_top' ); ?>
 
@@ -648,7 +669,7 @@ function give_donor_address_fields( $form_id ) {
 
 		<input type="text" id="donor_address" name="donor_address" class="card-address give-input<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
 			echo ' required';
-		} ?>" placeholder="<?php esc_attr_e( 'Address line 1', 'give' ); ?>" value="<?php echo $line1; ?>"<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
+		} ?>" placeholder="<?php esc_attr_e( 'Address line 1', 'give' ); ?>" value="<?php echo $donor['address']['line1']; ?>"<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
 			echo '  required ';
 		} ?>/>
 	</p>
@@ -664,7 +685,7 @@ function give_donor_address_fields( $form_id ) {
 
 		<input type="text" id="donor_address_2" name="donor_address_2" class="donor-address-2 give-input<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) {
 			echo ' required';
-		} ?>" placeholder="<?php esc_attr_e( 'Address line 2', 'give' ); ?>" value="<?php echo $line2; ?>"<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) {
+		} ?>" placeholder="<?php esc_attr_e( 'Address line 2', 'give' ); ?>" value="<?php echo $donor['address']['line2']; ?>"<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) {
 			echo ' required ';
 		} ?>/>
 	</p>
@@ -679,7 +700,7 @@ function give_donor_address_fields( $form_id ) {
 		</label>
 		<input type="text" id="donor_city" name="donor_city" class="donor-city give-input<?php if ( give_field_is_required( 'donor_city', $form_id ) ) {
 			echo ' required';
-		} ?>" placeholder="<?php esc_attr_e( 'City', 'give' ); ?>" value="<?php echo $city; ?>"<?php if ( give_field_is_required( 'donor_city', $form_id ) ) {
+		} ?>" placeholder="<?php esc_attr_e( 'City', 'give' ); ?>" value="<?php echo $donor['address']['city']; ?>"<?php if ( give_field_is_required( 'donor_city', $form_id ) ) {
 			echo ' required ';
 		} ?>/>
 	</p>
@@ -695,7 +716,7 @@ function give_donor_address_fields( $form_id ) {
 
 		<input type="text" size="4" id="donor_zip" name="donor_zip" class="donor-zip give-input<?php if ( give_field_is_required( 'donor_zip', $form_id ) ) {
 			echo ' required';
-		} ?>" placeholder="<?php esc_attr_e( 'Zip / Postal Code', 'give' ); ?>" value="<?php echo $zip; ?>" <?php if ( give_field_is_required( 'donor_zip', $form_id ) ) {
+		} ?>" placeholder="<?php esc_attr_e( 'Zip / Postal Code', 'give' ); ?>" value="<?php echo $donor['address']['zip']; ?>" <?php if ( give_field_is_required( 'donor_zip', $form_id ) ) {
 			echo ' required ';
 		} ?>/>
 	</p>
@@ -718,8 +739,8 @@ function give_donor_address_fields( $form_id ) {
 
 			$selected_country = give_get_country();
 
-			if ( $logged_in && ! empty( $user_address['country'] ) && '*' !== $user_address['country'] ) {
-				$selected_country = $user_address['country'];
+			if ( ! empty( $donor['address']['country'] ) && '*' !== $donor['address']['country'] ) {
+				$selected_country = $donor['address']['country'];
 			}
 
 			$countries = give_get_country_list();
@@ -744,7 +765,7 @@ function give_donor_address_fields( $form_id ) {
 		$states         = give_get_states( $selected_country );
 
 		if ( $logged_in && ! empty( $user_address['state'] ) ) {
-			$selected_state = $user_address['state'];
+			$selected_state = $donor['address']['state'];
 		}
 
 		if ( ! empty( $states ) ) : ?>
@@ -770,7 +791,7 @@ function give_donor_address_fields( $form_id ) {
 
 }
 
-add_action('give_purchase_form_user_info', 'give_donor_address_fields');
+add_action( 'give_purchase_form_user_info', 'give_donor_address_fields' );
 
 /**
  * Outputs the default credit card address fields
@@ -784,14 +805,36 @@ add_action('give_purchase_form_user_info', 'give_donor_address_fields');
 function give_default_cc_address_fields( $form_id ) {
 
 	$logged_in = is_user_logged_in();
+	$donor     = Give()->session->get( 'customer' );
+	$donor     = wp_parse_args( $donor, array(
+		'address' => array(
+			'line1'   => '',
+			'line2'   => '',
+			'city'    => '',
+			'zip'     => '',
+			'state'   => '',
+			'country' => ''
+		)
+	) );
+
+	$donor['address'] = array_map( 'sanitize_text_field', $donor['address'] );
 
 	if ( $logged_in ) {
+
 		$user_address = get_user_meta( get_current_user_id(), '_give_user_address', true );
+
+		foreach ( $donor['address'] as $key => $field ) {
+
+			if ( empty( $field ) && ! empty( $user_address[ $key ] ) ) {
+				$donor['address'][ $key ] = $user_address[ $key ];
+			} else {
+				$donor['address'][ $key ] = '';
+			}
+
+		}
+
 	}
-	$line1 = $logged_in && ! empty( $user_address['line1'] ) ? $user_address['line1'] : '';
-	$line2 = $logged_in && ! empty( $user_address['line2'] ) ? $user_address['line2'] : '';
-	$city  = $logged_in && ! empty( $user_address['city'] ) ? $user_address['city'] : '';
-	$zip   = $logged_in && ! empty( $user_address['zip'] ) ? $user_address['zip'] : '';
+
 	ob_start(); ?>
 	<fieldset id="give_cc_address" class="cc-address">
 		<legend><?php echo apply_filters( 'give_billing_details_fieldset_heading', esc_html__( 'Billing Details', 'give' ) ); ?></legend>
@@ -808,7 +851,7 @@ function give_default_cc_address_fields( $form_id ) {
 
 			<input type="text" id="card_address" name="card_address" class="card-address give-input<?php if ( give_field_is_required( 'card_address', $form_id ) ) {
 				echo ' required';
-			} ?>" placeholder="<?php esc_attr_e( 'Address line 1', 'give' ); ?>" value="<?php echo $line1; ?>"<?php if ( give_field_is_required( 'card_address', $form_id ) ) {
+			} ?>" placeholder="<?php esc_attr_e( 'Address line 1', 'give' ); ?>" value="<?php echo $donor['address']['line1']; ?>"<?php if ( give_field_is_required( 'card_address', $form_id ) ) {
 				echo '  required ';
 			} ?>/>
 		</p>
@@ -824,7 +867,7 @@ function give_default_cc_address_fields( $form_id ) {
 
 			<input type="text" id="card_address_2" name="card_address_2" class="card-address-2 give-input<?php if ( give_field_is_required( 'card_address_2', $form_id ) ) {
 				echo ' required';
-			} ?>" placeholder="<?php esc_attr_e( 'Address line 2', 'give' ); ?>" value="<?php echo $line2; ?>"<?php if ( give_field_is_required( 'card_address_2', $form_id ) ) {
+			} ?>" placeholder="<?php esc_attr_e( 'Address line 2', 'give' ); ?>" value="<?php echo $donor['address']['line2']; ?>"<?php if ( give_field_is_required( 'card_address_2', $form_id ) ) {
 				echo ' required ';
 			} ?>/>
 		</p>
@@ -839,7 +882,7 @@ function give_default_cc_address_fields( $form_id ) {
 			</label>
 			<input type="text" id="card_city" name="card_city" class="card-city give-input<?php if ( give_field_is_required( 'card_city', $form_id ) ) {
 				echo ' required';
-			} ?>" placeholder="<?php esc_attr_e( 'City', 'give' ); ?>" value="<?php echo $city; ?>"<?php if ( give_field_is_required( 'card_city', $form_id ) ) {
+			} ?>" placeholder="<?php esc_attr_e( 'City', 'give' ); ?>" value="<?php echo $donor['address']['city']; ?>"<?php if ( give_field_is_required( 'card_city', $form_id ) ) {
 				echo ' required ';
 			} ?>/>
 		</p>
@@ -855,7 +898,7 @@ function give_default_cc_address_fields( $form_id ) {
 
 			<input type="text" size="4" id="card_zip" name="card_zip" class="card-zip give-input<?php if ( give_field_is_required( 'card_zip', $form_id ) ) {
 				echo ' required';
-			} ?>" placeholder="<?php esc_attr_e( 'Zip / Postal Code', 'give' ); ?>" value="<?php echo $zip; ?>" <?php if ( give_field_is_required( 'card_zip', $form_id ) ) {
+			} ?>" placeholder="<?php esc_attr_e( 'Zip / Postal Code', 'give' ); ?>" value="<?php echo $donor['address']['zip']; ?>" <?php if ( give_field_is_required( 'card_zip', $form_id ) ) {
 				echo ' required ';
 			} ?>/>
 		</p>
@@ -878,8 +921,8 @@ function give_default_cc_address_fields( $form_id ) {
 
 				$selected_country = give_get_country();
 
-				if ( $logged_in && ! empty( $user_address['country'] ) && '*' !== $user_address['country'] ) {
-					$selected_country = $user_address['country'];
+				if ( ! empty( $donor['address']['country'] ) && '*' !== $donor['address']['country'] ) {
+					$selected_country = $donor['address']['country'];
 				}
 
 				$countries = give_get_country_list();
@@ -904,7 +947,7 @@ function give_default_cc_address_fields( $form_id ) {
 			$states         = give_get_states( $selected_country );
 
 			if ( $logged_in && ! empty( $user_address['state'] ) ) {
-				$selected_state = $user_address['state'];
+				$selected_state = $donor['address']['state'];
 			}
 
 			if ( ! empty( $states ) ) : ?>
@@ -1176,7 +1219,7 @@ add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
  *
  * @since  1.0
  *
- * @param  int   $form_id
+ * @param  int $form_id
  *
  * @return void
  */
@@ -1188,7 +1231,7 @@ function give_terms_agreement( $form_id ) {
 
 	if ( $form_option === 'yes' && ! empty( $terms ) ) { ?>
 		<fieldset id="give_terms_agreement">
-			<div id="give_terms" class= "give_terms-<?php echo $form_id;?>" style="display:none;">
+			<div id="give_terms" class="give_terms-<?php echo $form_id; ?>" style="display:none;">
 				<?php
 				do_action( 'give_before_terms' );
 				echo wpautop( stripslashes( $terms ) );
@@ -1196,8 +1239,8 @@ function give_terms_agreement( $form_id ) {
 				?>
 			</div>
 			<div id="give_show_terms">
-				<a href="#" class="give_terms_links give_terms_links-<?php echo $form_id;?>"><?php esc_html_e( 'Show Terms', 'give' ); ?></a>
-				<a href="#" class="give_terms_links give_terms_links-<?php echo $form_id;?>" style="display:none;"><?php esc_html_e( 'Hide Terms', 'give' ); ?></a>
+				<a href="#" class="give_terms_links give_terms_links-<?php echo $form_id; ?>"><?php esc_html_e( 'Show Terms', 'give' ); ?></a>
+				<a href="#" class="give_terms_links give_terms_links-<?php echo $form_id; ?>" style="display:none;"><?php esc_html_e( 'Hide Terms', 'give' ); ?></a>
 			</div>
 
 			<input name="give_agree_to_terms" class="required" type="checkbox" id="give_agree_to_terms" value="1"/>
@@ -1218,7 +1261,7 @@ add_action( 'give_purchase_form_before_submit', 'give_terms_agreement', 10, 1 );
  *
  * @since  1.0
  *
- * @param int   $form_id
+ * @param int $form_id
  *
  * @return void
  */
@@ -1340,10 +1383,10 @@ add_action( 'give_checkout_form_top', 'give_agree_to_terms_js', 10, 2 );
 
 function give_show_goal_progress( $form_id, $args ) {
 
-    ob_start();
-    give_get_template( 'shortcode-goal' , array( 'form_id' => $form_id, 'args' => $args ) );
+	ob_start();
+	give_get_template( 'shortcode-goal', array( 'form_id' => $form_id, 'args' => $args ) );
 
-    echo apply_filters( 'give_goal_output', ob_get_clean() );
+	echo apply_filters( 'give_goal_output', ob_get_clean() );
 
 	return true;
 }
