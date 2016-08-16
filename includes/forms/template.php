@@ -614,7 +614,7 @@ function give_get_cc_form( $form_id ) {
 add_action( 'give_cc_form', 'give_get_cc_form' );
 
 /**
- * Outputs the donor address fields
+ * Outputs the donor address fields.
  *
  * @since  1.7
  *
@@ -624,6 +624,149 @@ add_action( 'give_cc_form', 'give_get_cc_form' );
  */
 function give_donor_address_fields( $form_id ) {
 
+	$logged_in = is_user_logged_in();
+
+	if ( $logged_in ) {
+		$user_address = get_user_meta( get_current_user_id(), '_give_user_address', true );
+	}
+	$line1 = $logged_in && ! empty( $user_address['line1'] ) ? $user_address['line1'] : '';
+	$line2 = $logged_in && ! empty( $user_address['line2'] ) ? $user_address['line2'] : '';
+	$city  = $logged_in && ! empty( $user_address['city'] ) ? $user_address['city'] : '';
+	$zip   = $logged_in && ! empty( $user_address['zip'] ) ? $user_address['zip'] : '';
+
+	do_action( 'give_address_fields_top' ); ?>
+
+	<p id="give-address-wrap" class="form-row form-row-two-thirds">
+		<label for="donor_address" class="give-label">
+			<?php esc_html_e( 'Address 1', 'give' ); ?>
+			<?php
+			if ( give_field_is_required( 'donor_address', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The .', 'give' ); ?>"></span>
+		</label>
+
+		<input type="text" id="donor_address" name="donor_address" class="card-address give-input<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
+			echo ' required';
+		} ?>" placeholder="<?php esc_attr_e( 'Address line 1', 'give' ); ?>" value="<?php echo $line1; ?>"<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
+			echo '  required ';
+		} ?>/>
+	</p>
+
+	<p id="give-card-address-2-wrap" class="form-row form-row-one-third">
+		<label for="donor_address_2" class="give-label">
+			<?php esc_html_e( 'Address 2', 'give' ); ?>
+			<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( '(optional) The suite, apt no, PO box, etc, associated with your address.', 'give' ); ?>"></span>
+		</label>
+
+		<input type="text" id="donor_address_2" name="donor_address_2" class="donor-address-2 give-input<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) {
+			echo ' required';
+		} ?>" placeholder="<?php esc_attr_e( 'Address line 2', 'give' ); ?>" value="<?php echo $line2; ?>"<?php if ( give_field_is_required( 'donor_address_2', $form_id ) ) {
+			echo ' required ';
+		} ?>/>
+	</p>
+
+	<p id="give-donor-city-wrap" class="form-row form-row-two-thirds">
+		<label for="donor_city" class="give-label">
+			<?php esc_html_e( 'City', 'give' ); ?>
+			<?php if ( give_field_is_required( 'donor_city', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The name of the city you live.', 'give' ); ?>"></span>
+		</label>
+		<input type="text" id="donor_city" name="donor_city" class="donor-city give-input<?php if ( give_field_is_required( 'donor_city', $form_id ) ) {
+			echo ' required';
+		} ?>" placeholder="<?php esc_attr_e( 'City', 'give' ); ?>" value="<?php echo $city; ?>"<?php if ( give_field_is_required( 'donor_city', $form_id ) ) {
+			echo ' required ';
+		} ?>/>
+	</p>
+
+	<p id="give-donor-zip-wrap" class="form-row form-row-one-third">
+		<label for="donor_zip" class="give-label">
+			<?php esc_html_e( 'Zip / Postal Code', 'give' ); ?>
+			<?php if ( give_field_is_required( 'donor_zip', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'Your zip or postal code.', 'give' ); ?>"></span>
+		</label>
+
+		<input type="text" size="4" id="donor_zip" name="donor_zip" class="donor-zip give-input<?php if ( give_field_is_required( 'donor_zip', $form_id ) ) {
+			echo ' required';
+		} ?>" placeholder="<?php esc_attr_e( 'Zip / Postal Code', 'give' ); ?>" value="<?php echo $zip; ?>" <?php if ( give_field_is_required( 'donor_zip', $form_id ) ) {
+			echo ' required ';
+		} ?>/>
+	</p>
+
+	<p id="give-donor-country-wrap" class="form-row form-row-first">
+		<label for="donor_country" class="give-label">
+			<?php esc_html_e( 'Country', 'give' ); ?>
+			<?php if ( give_field_is_required( 'donor_country', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The country where you live.', 'give' ); ?>"></span>
+		</label>
+
+		<select name="donor_country" id="donor_country" class="donor-country donor_country give-select<?php if ( give_field_is_required( 'donor_country', $form_id ) ) {
+			echo ' required';
+		} ?>"<?php if ( give_field_is_required( 'donor_country', $form_id ) ) {
+			echo ' required ';
+		} ?>>
+			<?php
+
+			$selected_country = give_get_country();
+
+			if ( $logged_in && ! empty( $user_address['country'] ) && '*' !== $user_address['country'] ) {
+				$selected_country = $user_address['country'];
+			}
+
+			$countries = give_get_country_list();
+			foreach ( $countries as $country_code => $country ) {
+				echo '<option value="' . esc_attr( $country_code ) . '"' . selected( $country_code, $selected_country, false ) . '>' . $country . '</option>';
+			}
+			?>
+		</select>
+	</p>
+
+	<p id="give-donor-state-wrap" class="form-row form-row-last">
+		<label for="donor_state" class="give-label">
+			<?php esc_html_e( 'State / Province', 'give' ); ?>
+			<?php if ( give_field_is_required( 'donor_state', $form_id ) ) { ?>
+				<span class="give-required-indicator">*</span>
+			<?php } ?>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The state or province where you live.', 'give' ); ?>"></span>
+		</label>
+
+		<?php
+		$selected_state = give_get_state();
+		$states         = give_get_states( $selected_country );
+
+		if ( $logged_in && ! empty( $user_address['state'] ) ) {
+			$selected_state = $user_address['state'];
+		}
+
+		if ( ! empty( $states ) ) : ?>
+			<select name="donor_state" id="donor_state" class="donor_state give-select<?php if ( give_field_is_required( 'donor_state', $form_id ) ) {
+				echo ' required';
+			} ?>"<?php if ( give_field_is_required( 'donor_state', $form_id ) ) {
+				echo ' required ';
+			} ?>>
+				<?php
+				foreach ( $states as $state_code => $state ) {
+					echo '<option value="' . $state_code . '"' . selected( $state_code, $selected_state, false ) . '>' . $state . '</option>';
+				}
+				?>
+			</select>
+		<?php else : ?>
+			<input type="text" size="6" name="donor_state" id="donor_state" class="donor_state give-input" placeholder="<?php esc_attr_e( 'State / Province', 'give' ); ?>"/>
+		<?php endif; ?>
+	</p>
+
+	<?php do_action( 'give_donor_address_bottom' ); ?>
+	<?php
+	echo ob_get_clean();
 
 }
 
