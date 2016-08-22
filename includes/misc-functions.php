@@ -314,9 +314,9 @@ function give_get_ip() {
 
 
 /**
- * Store Purchase Data in Sessions
+ * Store Donation Data in Sessions
  *
- * Used for storing info about purchase
+ * Used for storing info about donation
  *
  * @since 1.0
  *
@@ -330,10 +330,10 @@ function give_set_purchase_session( $purchase_data = array() ) {
 }
 
 /**
- * Retrieve Purchase Data from Session
+ * Retrieve Donation Data from Session
  *
- * Used for retrieving info about purchase
- * after completing a purchase
+ * Used for retrieving info about donation
+ * after completing a donation
  *
  * @since 1.0
  * @uses  Give()->session->get()
@@ -344,9 +344,9 @@ function give_get_purchase_session() {
 }
 
 /**
- * Get Purchase Summary
+ * Get Donation Summary
  *
- * Retrieves the purchase summary.
+ * Retrieves the donation summary.
  *
  * @since       1.0
  *
@@ -623,14 +623,13 @@ function give_get_newsletter() { ?>
 					<td>
 						<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="<?php esc_attr_e( 'Email Address (required)', 'give' ); ?>">
 					</td>
-
-					<td scope="row">
-						<input type="text" value="" placeholder="<?php esc_attr_e( 'First Name', 'give' ); ?>" name="FNAME" class="" id="mce-FNAME"></td>
-
-					<td scope="row">
-						<input type="text" value="" placeholder="<?php esc_attr_e( 'Last Name', 'give' ); ?>" name="LNAME" class="" id="mce-LNAME"></td>
-
-					<td scope="row">
+					<td>
+						<input type="text" value="" placeholder="<?php esc_attr_e( 'First Name', 'give' ); ?>" name="FNAME" class="" id="mce-FNAME">
+					</td>
+					<td>
+						<input type="text" value="" placeholder="<?php esc_attr_e( 'Last Name', 'give' ); ?>" name="LNAME" class="" id="mce-LNAME">
+					</td>
+					<td>
 						<input type="submit" value="<?php esc_attr_e( 'Subscribe', 'give' ); ?>" name="subscribe" id="mc-embedded-subscribe" class="button">
 					</td>
 				</tr>
@@ -638,7 +637,8 @@ function give_get_newsletter() { ?>
 		</form>
 
 		<div style="position: absolute; left: -5000px;">
-			<input type="text" name="b_3ccb75d68bda4381e2f45794c_12a081aa13" tabindex="-1" value=""></div>
+			<input type="text" name="b_3ccb75d68bda4381e2f45794c_12a081aa13" tabindex="-1" value="">
+		</div>
 
 	</div>
 

@@ -270,8 +270,8 @@ class Give_Plugin_Settings {
 							) ),
 						),
 						array(
-							'name'    => esc_html__( 'Failed Transaction Page', 'give' ),
-							'desc'    => esc_html__( 'This is the page donors are sent to if their transaction is cancelled or fails.', 'give' ),
+							'name'    => esc_html__( 'Failed Donation Page', 'give' ),
+							'desc'    => esc_html__( 'This is the page donors are sent to if their donation is cancelled or fails.', 'give' ),
 							'id'      => 'failure_page',
 							'type'    => 'select',
 							'options' => give_cmb2_get_post_options( array(
@@ -366,7 +366,7 @@ class Give_Plugin_Settings {
 						),
 						array(
 							'name' => esc_html__( 'Test Mode', 'give' ),
-							'desc' => esc_html__( 'While in test mode no live transactions are processed. To fully use test mode, you must have a sandbox (test) account for the payment gateway you are testing.', 'give' ),
+							'desc' => esc_html__( 'While in test mode no live donations are processed. To fully use test mode, you must have a sandbox (test) account for the payment gateway you are testing.', 'give' ),
 							'id'   => 'test_mode',
 							'type' => 'checkbox'
 						),
@@ -781,7 +781,7 @@ class Give_Plugin_Settings {
 				'show_on'    => array( 'key' => 'options-page', 'value' => array( $this->key, ), ),
 				'fields'     => apply_filters( 'give_settings_system', array(
 						array(
-							'id'   => 'system_info',
+							'id'   => 'system-info-textarea',
 							'name' => esc_html__( 'System Info', 'give' ),
 							'desc' => esc_html__( 'Please copy and paste this information in your ticket when contacting support.', 'give' ),
 							'type' => 'system_info'
@@ -860,7 +860,7 @@ function give_get_option( $key = '', $default = false ) {
 	$value = ! empty( $give_options[ $key ] ) ? $give_options[ $key ] : $default;
 	$value = apply_filters( 'give_get_option', $value, $key, $default );
 
-	return apply_filters( 'give_get_option_' . $key, $value, $key, $default );
+	return apply_filters( "give_get_option_{$key}", $value, $key, $default );
 }
 
 
@@ -1294,7 +1294,16 @@ add_action( 'give_settings_tab_api_keys', 'give_api_callback' );
  * @return void
  */
 function give_hook_callback( $args ) {
-	do_action( 'give_' . $args['id'] );
+
+	$id = $args['id'];
+
+	/**
+	 * Fires in give field.
+	 *
+	 * @since 1.0
+	 */
+	do_action( "give_{$id}" );
+
 }
 
 /**

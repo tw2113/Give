@@ -164,6 +164,18 @@ We also really like WooCommerce. It's hands-down the most robust eCommerce platf
 
 == Changelog ==
 
+= 1.7 =
+* New: Custom HTML5 alert messages provide better context for donors - https://github.com/WordImpress/Give/issues/351
+* New: Give CLI now included in Core for developers - https://github.com/WordImpress/Give/issues/841
+* New: Donation details screen now displays more information and is mobile responsive - https://github.com/WordImpress/Give/issues/887
+* Tweak: Organize data with a logical relationship in grids for table accessibility - https://github.com/WordImpress/Give/issues/922
+* Tweak: Terminology changes - "Transactions" now called "Donations" and "Payments" now termed "Donation" in WP-admin - https://github.com/WordImpress/Give/issues/896
+* Fix: User able to donate minimum amount then custom minimum amount with multi level donation form - https://github.com/WordImpress/Give/issues/712
+
+= 1.6.1 =
+* Fix: Donation date discrepancy in transaction details view - https://github.com/WordImpress/Give/issues/898
+* Fix: Switching donation form in transaction view "-2" appears when no form set - https://github.com/WordImpress/Give/issues/877
+
 = 1.6: August 11, 2016 =
 * New: Added email tag support to Offline Donation Admin Notification - https://github.com/WordImpress/Give/issues/846
 * New: Added a "Reset Password" option to the donation form if the user is prompted to login - https://github.com/WordImpress/Give/issues/723
