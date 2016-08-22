@@ -183,8 +183,6 @@ gulp.task('default', function () {
                             path.extname = '.scss';
                             if (path.basename === 'main') {
                                 path.basename = 'magnific-popup';
-                            } else if (path.basename === 'jquery.qtip') {
-                                path.basename = 'qtip';
                             }
                         }))
                         .pipe(gulp.dest('assets/scss/plugins/'))
