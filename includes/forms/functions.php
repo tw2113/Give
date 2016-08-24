@@ -82,7 +82,7 @@ function give_is_float_labels_enabled( $args ) {
  * Determines if a user can checkout or not
  *
  * Allows themes and plugins to set donation checkout conditions
- * 
+ *
  * @since 1.0
  * @global array $give_options Array of all the Give Options
  * @return bool Can user checkout?
@@ -266,7 +266,7 @@ add_action( 'template_redirect', 'give_listen_for_failed_payments' );
 
 
 /**
- * Check if a field is required
+ * Check if a field is required.
  *
  * @param string $field
  * @param int    $form_id
@@ -283,17 +283,17 @@ function give_field_is_required( $field = '', $form_id ) {
 }
 
 /**
- * Record Sale In Log
+ * Record Donation In Log.
  *
- * Stores log information for a form sale.
+ * Stores log information for a donation.
  *
  * @since 1.0
  * @global            $give_logs
  *
- * @param int         $give_form_id Give Form ID
- * @param int         $payment_id   Payment ID
- * @param bool|int    $price_id     Price ID, if any
- * @param string|null $sale_date    The date of the sale
+ * @param int         $give_form_id Give Form ID.
+ * @param int         $payment_id Payment ID.
+ * @param bool|int    $price_id Price ID, if any.
+ * @param string|null $sale_date The date of the sale.
  *
  * @return void
  */
@@ -338,7 +338,7 @@ function give_increase_purchase_count( $form_id = 0, $quantity = 1 ) {
  *
  * @since 1.0
  *
- * @param int $form_id  Give Form ID
+ * @param int $form_id Give Form ID
  * @param int $quantity Quantity to increase donation count by
  *
  * @return bool|int
@@ -356,7 +356,7 @@ function give_decrease_purchase_count( $form_id = 0, $quantity = 1 ) {
  * @since 1.0
  *
  * @param int $give_form_id Give Form ID
- * @param int $amount 		Earnings
+ * @param int $amount Earnings
  *
  * @return bool|int
  */
@@ -371,8 +371,8 @@ function give_increase_earnings( $give_form_id = 0, $amount ) {
  *
  * @since 1.0
  *
- * @param int $form_id 	Give Form ID
- * @param int $amount 	Earnings
+ * @param int $form_id Give Form ID
+ * @param int $amount Earnings
  *
  * @return bool|int
  */
@@ -472,9 +472,9 @@ function give_get_average_monthly_form_earnings( $form_id = 0 ) {
  *
  * @since       1.0
  *
- * @param int $form_id 		ID of the download
- * @param int $price_id 	ID of the price option
- * @param int $payment_id 	payment ID for use in filters ( optional )
+ * @param int $form_id ID of the download
+ * @param int $price_id ID of the price option
+ * @param int $payment_id payment ID for use in filters ( optional )
  *
  * @return string $price_name Name of the price option
  */
@@ -709,9 +709,9 @@ function give_get_form_minimum_price( $form_id = 0 ) {
  *
  * @since 1.0
  *
- * @param int 		$form_id 	ID of the form price to show
- * @param bool 		$echo 		Whether to echo or return the results
- * @param bool|int 	$price_id 	Optional price id for variable pricing
+ * @param int      $form_id ID of the form price to show
+ * @param bool     $echo Whether to echo or return the results
+ * @param bool|int $price_id Optional price id for variable pricing
  *
  * @return int $formatted_price
  */
@@ -768,8 +768,8 @@ add_filter( 'give_form_price', 'give_currency_filter', 20 );
  *
  * @since 1.0
  *
- * @param int $form_id 	 ID of the form
- * @param int $price_id  ID of the price option
+ * @param int $form_id ID of the form
+ * @param int $price_id ID of the price option
  *
  * @return float $amount Amount of the price option
  */
@@ -781,7 +781,7 @@ function give_get_price_option_amount( $form_id = 0, $price_id = 0 ) {
 	foreach ( $prices as $price ) {
 		if ( isset( $price['_give_id']['level_id'] ) && $price['_give_id']['level_id'] == $price_id ) {
 			$amount = isset( $price['_give_amount'] ) ? $price['_give_amount'] : 0.00;
-            break;
+			break;
 		};
 	}
 
@@ -815,7 +815,7 @@ function give_get_form_goal( $form_id = 0 ) {
  * @since 1.0
  *
  * @param int  $form_id ID of the form price to show
- * @param bool $echo    Whether to echo or return the results
+ * @param bool $echo Whether to echo or return the results
  *
  * @return string $formatted_goal
  */

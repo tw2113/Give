@@ -43,7 +43,7 @@ function give_process_purchase_form() {
 	 * @since 1.0
 	 *
 	 * @param bool|array $valid_data Validate fields.
-	 * @param array      $_POST      Array of variables passed via the HTTP POST.
+	 * @param array      $_POST Array of variables passed via the HTTP POST.
 	 */
 	do_action( 'give_checkout_error_checks', $valid_data, $_POST );
 
@@ -124,8 +124,8 @@ function give_process_purchase_form() {
 	 *
 	 * @since 1.0
 	 *
-	 * @param array      $_POST      Array of variables passed via the HTTP POST.
-	 * @param array      $user_info  Array containing basic user information.
+	 * @param array      $_POST Array of variables passed via the HTTP POST.
+	 * @param array      $user_info Array containing basic user information.
 	 * @param bool|array $valid_data Validate fields.
 	 */
 	do_action( 'give_checkout_before_gateway', $_POST, $user_info, $valid_data );
@@ -294,7 +294,7 @@ function give_purchase_form_validate_gateway() {
 			give_set_error(
 				'invalid_donation_minimum',
 				sprintf(
-					/* translators: %s: minimum donation amount */
+				/* translators: %s: minimum donation amount */
 					esc_html__( 'This form has a minimum donation amount of %s.', 'give' ),
 					give_currency_filter( give_format_amount( give_get_form_minimum_price( $form_id ) ) )
 				)
@@ -390,16 +390,41 @@ function give_purchase_form_required_fields( $form_id ) {
 		)
 	);
 
-	$require_address = give_require_billing_address( $payment_mode );
+	$require_donor_address = give_require_donor_address( $form_id );
 
-	if ( $require_address ) {
+	if ( $require_donor_address ) {
+		$required_fields['donor_address'] = array(
+			'error_id'      => 'invalid_card_address',
+			'error_message' => esc_html__( 'Please enter your primary address.', 'give' )
+		);
+		$required_fields['donor_zip']     = array(
+			'error_id'      => 'invalid_zip_code',
+			'error_message' => esc_html__( 'Please enter your zip / postal code.', 'give' )
+		);
+		$required_fields['donor_city']    = array(
+			'error_id'      => 'invalid_city',
+			'error_message' => esc_html__( 'Please enter your city.', 'give' )
+		);
+		$required_fields['donor_country'] = array(
+			'error_id'      => 'invalid_country',
+			'error_message' => esc_html__( 'Please select your country.', 'give' )
+		);
+		$required_fields['donor_state']   = array(
+			'error_id'      => 'invalid_state',
+			'error_message' => esc_html__( 'Please enter state / province.', 'give' )
+		);
+	}
+
+	$require_billing_address = give_require_billing_address( $payment_mode );
+
+	if ( $require_billing_address ) {
 		$required_fields['card_address']    = array(
 			'error_id'      => 'invalid_card_address',
 			'error_message' => esc_html__( 'Please enter your primary billing address.', 'give' )
 		);
 		$required_fields['card_zip']        = array(
 			'error_id'      => 'invalid_zip_code',
-			'error_message' => esc_html__( 'Please enter your zip / postal code.', 'give' )
+			'error_message' => esc_html__( 'Please enter your billing zip / postal code.', 'give' )
 		);
 		$required_fields['card_city']       = array(
 			'error_id'      => 'invalid_city',
@@ -420,9 +445,31 @@ function give_purchase_form_required_fields( $form_id ) {
 }
 
 /**
- * Check if the Billing Address is required
+ * Check if the Donor's Address is required.
  *
- * @since  1.0.1
+ * @since  1.7
+ *
+ * @return mixed|void
+ */
+function give_require_donor_address( $form_id ) {
+
+	$return = false;
+
+	$global_option = give_get_option( 'donor_address_required' );
+
+	if ( ! empty( $global_option ) ) {
+		$return = true;
+	}
+
+	return apply_filters( 'give_require_donor_address', $return );
+
+}
+
+
+/**
+ * Check if the Billing Address is required.
+ *
+ * @since  1.0
  *
  * @param $payment_mode
  *
@@ -436,13 +483,13 @@ function give_require_billing_address( $payment_mode ) {
 		$return = true;
 	}
 
-	// Let payment gateways and other extensions determine if address fields should be required
+	// Let payment gateways and other extensions determine if address fields should be required.
 	return apply_filters( 'give_require_billing_address', $return );
 
 }
 
 /**
- * Donation Form Validate Logged In User
+ * Donation Form Validate Logged In User.
  *
  * @access      private
  * @since       1.0
@@ -453,18 +500,18 @@ function give_purchase_form_validate_logged_in_user() {
 
 	$form_id = isset( $_POST['give-form-id'] ) ? $_POST['give-form-id'] : '';
 
-	// Start empty array to collect valid user data
+	// Start empty array to collect valid user data.
 	$valid_user_data = array(
-		// Assume there will be errors
+		// Assume there will be errors.
 		'user_id' => - 1
 	);
 
-	// Verify there is a user_ID
+	// Verify there is a user_ID.
 	if ( $user_ID > 0 ) {
-		// Get the logged in user data
+		// Get the logged in user data.
 		$user_data = get_userdata( $user_ID );
 
-		// Loop through required fields and show error messages
+		// Loop through required fields and show error messages.
 		foreach ( give_purchase_form_required_fields( $form_id ) as $field_name => $value ) {
 			if ( in_array( $value, give_purchase_form_required_fields( $form_id ) ) && empty( $_POST[ $field_name ] ) ) {
 				give_set_error( $value['error_id'], $value['error_message'] );
@@ -473,7 +520,7 @@ function give_purchase_form_validate_logged_in_user() {
 
 		// Verify data
 		if ( $user_data ) {
-			// Collected logged in user data
+			// Collected logged in user data.
 			$valid_user_data = array(
 				'user_id'    => $user_ID,
 				'user_email' => isset( $_POST['give_email'] ) ? sanitize_email( $_POST['give_email'] ) : $user_data->user_email,
@@ -486,17 +533,17 @@ function give_purchase_form_validate_logged_in_user() {
 			}
 
 		} else {
-			// Set invalid user error
+			// Set invalid user error.
 			give_set_error( 'invalid_user', esc_html__( 'The user information is invalid.', 'give' ) );
 		}
 	}
 
-	// Return user data
+	// Return user data.
 	return $valid_user_data;
 }
 
 /**
- * Donate Form Validate New User
+ * Donate Form Validate New User.
  *
  * @access      private
  * @since       1.0
@@ -758,7 +805,7 @@ function give_register_and_login_new_user( $user_data = array() ) {
 	 *
 	 * @since 1.0
 	 *
-	 * @param int   $user_id   User id.
+	 * @param int   $user_id User id.
 	 * @param array $user_data Array containing user data.
 	 */
 	do_action( 'give_insert_user', $user_id, $user_data );
@@ -920,7 +967,7 @@ function give_get_purchase_cc_info() {
  *
  * @since  1.0
  *
- * @param int $zip
+ * @param int    $zip
  * @param string $country_code
  *
  * @return bool|mixed|void
@@ -1110,59 +1157,60 @@ function give_purchase_form_validate_cc_zip( $zip = 0, $country_code = '' ) {
  *
  * @return bool
  */
-function give_validate_multi_donation_form_level(  $valid_data, $data ) {
-    /* @var Give_Donate_Form $form*/
-    $form = new Give_Donate_Form( $data['give-form-id'] );
+function give_validate_multi_donation_form_level( $valid_data, $data ) {
+	/* @var Give_Donate_Form $form */
+	$form = new Give_Donate_Form( $data['give-form-id'] );
 
-    $donation_level_matched = false;
+	$donation_level_matched = false;
 
-    if( $form->is_multi_type_donation_form() ) {
+	if ( $form->is_multi_type_donation_form() ) {
 
-        // Bailout.
-        if( ! ( $variable_prices = $form->get_prices() ) ) {
-            return false;
-        }
+		// Bailout.
+		if ( ! ( $variable_prices = $form->get_prices() ) ) {
+			return false;
+		}
 
-        // Sanitize donation amount.
-        $data['give-amount'] = give_sanitize_amount( $data['give-amount'] );
+		// Sanitize donation amount.
+		$data['give-amount'] = give_sanitize_amount( $data['give-amount'] );
 
-        // Get number of decimals.
-        $default_decimals = give_get_price_decimals();
+		// Get number of decimals.
+		$default_decimals = give_get_price_decimals();
 
-        if( $data['give-amount'] === give_sanitize_amount( give_get_price_option_amount( $data['give-form-id'], $data['give-price-id'] ), $default_decimals ) ){
-            return true;
-        }
+		if ( $data['give-amount'] === give_sanitize_amount( give_get_price_option_amount( $data['give-form-id'], $data['give-price-id'] ), $default_decimals ) ) {
+			return true;
+		}
 
-        
-        // Find correct donation level from all donation levels.
-        foreach ( $variable_prices as $variable_price ) {
-            // Sanitize level amount.
-            $variable_price['_give_amount'] = give_sanitize_amount( $variable_price['_give_amount'], $default_decimals );
 
-            // Set first match donation level ID.
-            if( $data['give-amount'] === $variable_price['_give_amount'] ) {
-                $_POST['give-price-id'] = $variable_price['_give_id']['level_id'];
-                $donation_level_matched = true;
-                break;
-            }
-        }
+		// Find correct donation level from all donation levels.
+		foreach ( $variable_prices as $variable_price ) {
+			// Sanitize level amount.
+			$variable_price['_give_amount'] = give_sanitize_amount( $variable_price['_give_amount'], $default_decimals );
 
-        // If donation amount is not find in donation levels then check if form has custom donation feature enable or not.
-        // If yes then set price id to custom if amount is greater then custom minimum amount (if any).
-        if(
-            ! $donation_level_matched
-            && ( 'yes' === get_post_meta( $data['give-form-id'], '_give_custom_amount', true ) )
-        ) {
-            // Sanitize custom minimum amount.
-            $custom_minimum_amount = give_sanitize_amount( get_post_meta( $data['give-form-id'], '_give_custom_amount_minimum', true ), $default_decimals );
+			// Set first match donation level ID.
+			if ( $data['give-amount'] === $variable_price['_give_amount'] ) {
+				$_POST['give-price-id'] = $variable_price['_give_id']['level_id'];
+				$donation_level_matched = true;
+				break;
+			}
+		}
 
-            if( $data['give-amount'] >= $custom_minimum_amount ) {
-                $_POST['give-price-id'] = 'custom';
-                $donation_level_matched  = true;
-            }
-        }
-    }
+		// If donation amount is not find in donation levels then check if form has custom donation feature enable or not.
+		// If yes then set price id to custom if amount is greater then custom minimum amount (if any).
+		if (
+			! $donation_level_matched
+			&& ( 'yes' === get_post_meta( $data['give-form-id'], '_give_custom_amount', true ) )
+		) {
+			// Sanitize custom minimum amount.
+			$custom_minimum_amount = give_sanitize_amount( get_post_meta( $data['give-form-id'], '_give_custom_amount_minimum', true ), $default_decimals );
 
-    return ( $donation_level_matched ? true : false );
+			if ( $data['give-amount'] >= $custom_minimum_amount ) {
+				$_POST['give-price-id'] = 'custom';
+				$donation_level_matched = true;
+			}
+		}
+	}
+
+	return ( $donation_level_matched ? true : false );
 }
+
 add_action( 'give_checkout_error_checks', 'give_validate_multi_donation_form_level', 10, 2 );

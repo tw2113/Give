@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since  1.0
  *
- * @param  array  $args An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return string Donation form.
  */
@@ -73,7 +73,7 @@ function give_get_donation_form( $args = array() ) {
 	 * @since 1.0
 	 *
 	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
+	 * @param array $args An array of form arguments.
 	 */
 	do_action( 'give_pre_form_output', $form->ID, $args );
 
@@ -103,7 +103,7 @@ function give_get_donation_form( $args = array() ) {
 			 * @since 1.0
 			 *
 			 * @param int   $form_id The form ID.
-			 * @param array $args    An array of form arguments.
+			 * @param array $args An array of form arguments.
 			 */
 			do_action( 'give_pre_form', $form->ID, $args );
 			?>
@@ -144,7 +144,7 @@ function give_get_donation_form( $args = array() ) {
 				 * @since 1.0
 				 *
 				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
+				 * @param array $args An array of form arguments.
 				 */
 				do_action( 'give_checkout_form_top', $form->ID, $args );
 
@@ -154,7 +154,7 @@ function give_get_donation_form( $args = array() ) {
 				 * @since 1.0
 				 *
 				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
+				 * @param array $args An array of form arguments.
 				 */
 				do_action( 'give_payment_mode_select', $form->ID, $args );
 
@@ -164,7 +164,7 @@ function give_get_donation_form( $args = array() ) {
 				 * @since 1.0
 				 *
 				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
+				 * @param array $args An array of form arguments.
 				 */
 				do_action( 'give_checkout_form_bottom', $form->ID, $args );
 
@@ -178,7 +178,7 @@ function give_get_donation_form( $args = array() ) {
 			 * @since 1.0
 			 *
 			 * @param int   $form_id The form ID.
-			 * @param array $args    An array of form arguments.
+			 * @param array $args An array of form arguments.
 			 */
 			do_action( 'give_post_form', $form->ID, $args );
 
@@ -194,7 +194,7 @@ function give_get_donation_form( $args = array() ) {
 	 * @since 1.0
 	 *
 	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
+	 * @param array $args An array of form arguments.
 	 */
 	do_action( 'give_post_form_output', $form->ID, $args );
 
@@ -213,7 +213,7 @@ function give_get_donation_form( $args = array() ) {
  *
  * @since  1.0
  *
- * @param  int    $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return string
  */
@@ -322,7 +322,7 @@ add_action( 'give_purchase_form', 'give_show_purchase_form' );
  *
  * @since  1.4.1
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -384,7 +384,7 @@ add_action( 'give_purchase_form_register_login_fields', 'give_show_register_logi
  * @since  1.0
  *
  * @param  int   $form_id The form ID.
- * @param  array $args    An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return void
  */
@@ -406,7 +406,7 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 	 * @since 1.0
 	 *
 	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
+	 * @param array $args An array of form arguments.
 	 */
 	do_action( 'give_before_donation_levels', $form_id, $args );
 
@@ -448,7 +448,7 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 	 * @since 1.0
 	 *
 	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
+	 * @param array $args An array of form arguments.
 	 */
 	do_action( 'give_after_donation_amount', $form_id, $args );
 
@@ -468,7 +468,7 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 	 * @since 1.0
 	 *
 	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
+	 * @param array $args An array of form arguments.
 	 */
 	do_action( 'give_after_donation_levels', $form_id, $args );
 }
@@ -480,7 +480,7 @@ add_action( 'give_checkout_form_top', 'give_output_donation_amount_top', 10, 2 )
  *
  * @since  1.0
  *
- * @param  int   $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return string Donation levels.
  */
@@ -594,7 +594,7 @@ function give_output_levels( $form_id ) {
  * @since  1.0
  *
  * @param  int   $form_id The form ID.
- * @param  array $args    An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return string Checkout button.
  */
@@ -624,7 +624,7 @@ add_action( 'give_after_donation_levels', 'give_display_checkout_button', 10, 2 
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -738,7 +738,7 @@ add_action( 'give_register_fields_before', 'give_user_info_fields' );
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -852,6 +852,12 @@ add_action( 'give_cc_form', 'give_get_cc_form' );
  */
 function give_donor_address_fields( $form_id ) {
 
+	$global_option = give_get_option( 'donor_address' );
+
+	if ( empty( $global_option ) ) {
+		return;
+	}
+
 	$logged_in = is_user_logged_in();
 	$donor     = Give()->session->get( 'customer' );
 	$donor     = wp_parse_args( $donor, array(
@@ -892,7 +898,7 @@ function give_donor_address_fields( $form_id ) {
 			if ( give_field_is_required( 'donor_address', $form_id ) ) { ?>
 				<span class="give-required-indicator">*</span>
 			<?php } ?>
-			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The .', 'give' ); ?>"></span>
+			<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php esc_attr_e( 'The address where you live.', 'give' ); ?>"></span>
 		</label>
 
 		<input type="text" id="donor_address" name="donor_address" class="card-address give-input<?php if ( give_field_is_required( 'donor_address', $form_id ) ) {
@@ -1021,12 +1027,14 @@ function give_donor_address_fields( $form_id ) {
 
 add_action( 'give_purchase_form_user_info', 'give_donor_address_fields' );
 
+
+
 /**
  * Outputs the default credit card address fields.
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1225,7 +1233,7 @@ add_action( 'give_after_cc_fields', 'give_default_cc_address_fields' );
  *
  * @since  1.0
  *
- * @param  int   $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return string
  */
@@ -1367,7 +1375,7 @@ add_action( 'give_purchase_form_register_fields', 'give_get_register_fields' );
  *
  * @since  1.0
  *
- * @param  int   $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return string
  */
@@ -1473,7 +1481,7 @@ add_action( 'give_purchase_form_login_fields', 'give_get_login_fields', 10, 1 );
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1590,7 +1598,7 @@ add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1642,7 +1650,7 @@ add_action( 'give_purchase_form_before_submit', 'give_terms_agreement', 10, 1 );
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1673,7 +1681,7 @@ add_action( 'give_purchase_form_before_submit', 'give_checkout_final_total', 999
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1716,7 +1724,7 @@ add_action( 'give_purchase_form_after_cc_form', 'give_checkout_submit', 9999 );
  *
  * @since  1.0
  *
- * @param  int   $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return string
  */
@@ -1740,7 +1748,7 @@ function give_checkout_button_purchase( $form_id ) {
  *
  * @since  1.0
  *
- * @param  int  $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
@@ -1774,7 +1782,7 @@ add_action( 'give_checkout_form_top', 'give_agree_to_terms_js', 10, 2 );
  *               More info is on https://github.com/WordImpress/Give/issues/411
  *
  * @param  int   $form_id The form ID.
- * @param  array $args    An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return mixed
  */
@@ -1796,7 +1804,7 @@ add_action( 'give_pre_form', 'give_show_goal_progress', 10, 2 );
  * @since  1.0
  *
  * @param  int   $form_id The form ID.
- * @param  array $args    An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return void
  */
@@ -1822,7 +1830,7 @@ add_action( 'give_pre_form_output', 'give_form_content', 10, 2 );
  * @since  1.0
  *
  * @param  int   $form_id The form ID.
- * @param  array $args    An array of form arguments.
+ * @param  array $args An array of form arguments.
  *
  * @return void
  */
@@ -1851,7 +1859,7 @@ function give_form_display_content( $form_id, $args ) {
  *
  * @since 1.0
  *
- * @param  int   $form_id The form ID.
+ * @param  int $form_id The form ID.
  *
  * @return void
  */
