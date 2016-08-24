@@ -423,31 +423,36 @@ class Give_Plugin_Settings {
 				'show_on'    => array( 'key' => 'options-page', 'value' => array( $this->key, ), ),
 				'fields'     => apply_filters( 'give_settings_display', array(
 						array(
-							'name' => esc_html__( 'Display Settings', 'give' ),
+							'name' => esc_html__( 'Global Form Options', 'give' ),
 							'desc' => '',
 							'id'   => 'give_title_display_settings_1',
 							'type' => 'give_title'
 						),
 						array(
-							'name' => esc_html__( 'Disable CSS', 'give' ),
-							'desc' => esc_html__( 'Enable this option if you would like to disable all of Give\'s included CSS stylesheets.', 'give' ),
-							'id'   => 'disable_css',
-							'type' => 'checkbox'
-						),
-						array(
 							'name' => esc_html__( 'Enable Floating Labels', 'give' ),
 							/* translators: %s: https://givewp.com/documentation/core/give-forms/creating-give-forms/#floating-labels */
-							'desc' => sprintf( wp_kses( __( 'Enable this option if you would like to enable <a href="%s" target="_blank">floating labels</a> in Give\'s donation forms. <br />Be aware that if you have the "Disable CSS" option enabled, you will need to style the floating labels yourself.', 'give' ), array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), esc_url( 'https://givewp.com/documentation/core/give-forms/creating-give-forms/#floating-labels' ) ),
+							'desc' => sprintf( wp_kses( __( 'Enable this option if you would like to enable <a href="%s" target="_blank">floating labels</a> for Give\'s donation forms. <br />Be aware that if you have the "Disable CSS" option enabled, you will need to style the floating labels yourself.', 'give' ), array(
+								'a' => array(
+									'href'   => array(),
+									'target' => array()
+								)
+							) ), esc_url( 'https://givewp.com/documentation/core/give-forms/creating-give-forms/#floating-labels' ) ),
 							'id'   => 'enable_floatlabels',
 							'type' => 'checkbox'
 						),
 						array(
-							'name' => esc_html__( 'Disable Welcome Screen', 'give' ),
-							/* translators: %s: about page URL */
-							'desc' => sprintf( wp_kses( __( 'Enable this option if you would like to disable the Give Welcome screen every time Give is activated and/or updated. You can always access the <a href="%s">Welcome Screen</a> if you want in the future.', 'give' ), array( 'a' => array( 'href' => array() ) ) ), esc_url( admin_url( 'index.php?page=give-about' ) ) ),
-							'id'   => 'disable_welcome',
-							'type' => 'checkbox'
+							'name' => esc_html__( 'Donor Address', 'give' ),
+							'desc' => esc_html__( 'If enabled this will output address fields within your donation forms.', 'give' ),
+							'id'   => 'donor_address',
+							'type' => 'checkbox',
 						),
+						array(
+							'name' => esc_html__( 'Address Required', 'give' ),
+							'desc' => esc_html__( 'Require that the donor completes the address fields in order to donate.', 'give' ),
+							'id'   => 'donor_address_required',
+							'type' => 'checkbox',
+						),
+
 						array(
 							'name' => esc_html__( 'Post Types', 'give' ),
 							'desc' => '',
@@ -675,23 +680,43 @@ class Give_Plugin_Settings {
 							'default' => '',
 							'type'    => 'text'
 						),
+
 						array(
-							'name' => esc_html__( 'Data Control', 'give' ),
+							'name' => esc_html__( 'Script and Styles', 'give' ),
 							'desc' => '',
-							'id'   => 'give_title_data_control_2',
+							'id'   => 'give_title_script_control',
 							'type' => 'give_title'
 						),
 						array(
-							'name' => esc_html__( 'Remove All Data on Uninstall?', 'give' ),
+							'name' => esc_html__( 'Disable CSS', 'give' ),
+							'desc' => esc_html__( 'Enable this option if you would like to disable all of Give\'s included CSS stylesheets.', 'give' ),
+							'id'   => 'disable_css',
+							'type' => 'checkbox'
+						),
+						array(
+							'name' => esc_html__( 'Load Scripts in Footer', 'give' ),
+							'desc' => esc_html__( 'Check this box if you would like Give to load all frontend JavaScript files in the footer.', 'give' ),
+							'id'   => 'scripts_footer',
+							'type' => 'checkbox'
+						),
+						array(
+							'name' => esc_html__( 'Miscellaneous', 'give' ),
+							'desc' => '',
+							'id'   => 'give_title_advanced_misc',
+							'type' => 'give_title'
+						),
+						array(
+							'name' => esc_html__( 'Remove All Data on Uninstall', 'give' ),
 							'desc' => esc_html__( 'Check this box if you would like Give to completely remove all of its data when the plugin is deleted.', 'give' ),
 							'id'   => 'uninstall_on_delete',
 							'type' => 'checkbox'
 						),
 						array(
-							'name' => esc_html__( 'Filter Control', 'give' ),
-							'desc' => '',
-							'id'   => 'give_title_filter_control',
-							'type' => 'give_title'
+							'name' => esc_html__( 'Disable Welcome Screen', 'give' ),
+							/* translators: %s: about page URL */
+							'desc' => sprintf( wp_kses( __( 'Enable this option if you would like to disable the Give Welcome screen every time Give is activated and/or updated. You can always access the <a href="%s">Welcome Screen</a> if you want in the future.', 'give' ), array( 'a' => array( 'href' => array() ) ) ), esc_url( admin_url( 'index.php?page=give-about' ) ) ),
+							'id'   => 'disable_welcome',
+							'type' => 'checkbox'
 						),
 						array(
 							/* translators: %s: the_content */
@@ -701,18 +726,6 @@ class Give_Plugin_Settings {
 							'id'   => 'disable_the_content_filter',
 							'type' => 'checkbox'
 						),
-						array(
-							'name' => esc_html__( 'Script Loading', 'give' ),
-							'desc' => '',
-							'id'   => 'give_title_script_control',
-							'type' => 'give_title'
-						),
-						array(
-							'name' => esc_html__( 'Load Scripts in Footer?', 'give' ),
-							'desc' => esc_html__( 'Check this box if you would like Give to load all frontend JavaScript files in the footer.', 'give' ),
-							'id'   => 'scripts_footer',
-							'type' => 'checkbox'
-						)
 					)
 				)
 			),
