@@ -226,42 +226,34 @@ function give_show_purchase_form( $form_id ) {
 	}
 
 	/**
-	 * Fires while displaying donation form, before the form.
+	 * Fire before donation form render.
 	 *
-	 * @since 1.0
-	 *
-	 * @param int $form_id The form ID.
+	 * @since 1.7
 	 */
-	do_action( 'give_purchase_form_top', $form_id );
+	do_action( 'give_donation_form_top', $form_id );
 
 	if ( give_can_checkout() && isset( $form_id ) ) {
 
 		/**
-		 * Fires while displaying donation form, before registeration login  login.
+		 * Fires while displaying donation form, before registration login.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_before_register_login', $form_id );
+		do_action( 'give_donation_form_before_register_login', $form_id );
 
 		/**
-		 * Fires while displaying donation form, registeration login fields.
+		 * Fire when register/login form fields render.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_register_login_fields', $form_id );
+		do_action( 'give_donation_form_register_login_fields', $form_id );
 
 		/**
-		 * Fires while displaying donation form, before credit card form fields.
+		 * Fire when credit card form fields render.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_before_cc_form', $form_id );
+		do_action( 'give_donation_form_before_cc_form', $form_id );
 
 		// Load the credit card form and allow gateways to load their own if they wish
 		if ( has_action( 'give_' . $payment_mode . '_cc_form' ) ) {
@@ -285,37 +277,31 @@ function give_show_purchase_form( $form_id ) {
 		}
 
 		/**
-		 * Fires while displaying donation form, after credit card form fields.
+		 * Fire after credit card form fields render.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_after_cc_form', $form_id );
+		do_action( 'give_donation_form_after_cc_form', $form_id );
 
 	} else {
 		/**
-		 * Fires while displaying donation form, when no checkout access.
+		 * Fire if user can not donate.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_no_access', $form_id );
+		do_action( 'give_donation_form_no_access', $form_id );
 
 	}
 
 	/**
-	 * Fires while displaying donation form, after the form.
+	 * Fire after donation form rendered.
 	 *
-	 * @since 1.0
-	 *
-	 * @param int $form_id The form ID.
+	 * @since 1.7
 	 */
-	do_action( 'give_purchase_form_bottom', $form_id );
+	do_action( 'give_donation_form_bottom', $form_id );
 }
 
-add_action( 'give_purchase_form', 'give_show_purchase_form' );
+add_action( 'give_donation_form', 'give_show_purchase_form' );
 
 /**
  * Give Show Login/Register Form Fields.
@@ -335,13 +321,11 @@ function give_show_register_login_fields( $form_id ) {
 		<div id="give-checkout-login-register-<?php echo $form_id; ?>">
 			<?php
 			/**
-			 * Fires while displaying donation form, when displaying registeration fields.
+			 * Fire if user registration form render.
 			 *
-			 * @since 1.0
-			 *
-			 * @param int $form_id The form ID.
+			 * @since 1.7
 			 */
-			do_action( 'give_purchase_form_register_fields', $form_id );
+			do_action( 'give_donation_form_register_fields', $form_id );
 			?>
 		</div>
 		<?php
@@ -350,13 +334,11 @@ function give_show_register_login_fields( $form_id ) {
 		<div id="give-checkout-login-register-<?php echo $form_id; ?>">
 			<?php
 			/**
-			 * Fires while displaying donation form, when displaying login fields.
+			 * Fire if user login form render.
 			 *
-			 * @since 1.0
-			 *
-			 * @param int $form_id The form ID.
+			 * @since 1.7
 			 */
-			do_action( 'give_purchase_form_login_fields', $form_id );
+			do_action( 'give_donation_form_login_fields', $form_id );
 			?>
 		</div>
 		<?php
@@ -364,17 +346,15 @@ function give_show_register_login_fields( $form_id ) {
 
 	if ( ( ! isset( $_GET['login'] ) && is_user_logged_in() ) || ! isset( $show_register_form ) || 'none' === $show_register_form || 'login' === $show_register_form ) {
 		/**
-		 * Fires while displaying donation form, after login/registration.
+		 * Fire when user info render.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_after_user_info', $form_id );
+		do_action( 'give_donation_form_after_user_info', $form_id );
 	}
 }
 
-add_action( 'give_purchase_form_register_login_fields', 'give_show_register_login_fields' );
+add_action( 'give_donation_form_register_login_fields', 'give_show_register_login_fields' );
 
 /**
  * Donation Amount Field.
@@ -635,13 +615,11 @@ function give_user_info_fields( $form_id ) {
 	endif;
 
 	/**
-	 * Fires while displaying donation form, before personal information fields.
+	 * Fire before user personal information fields
 	 *
-	 * @since 1.0
-	 *
-	 * @param int $form_id The form ID.
+	 * @since 1.7
 	 */
-	do_action( 'give_purchase_form_before_personal_info', $form_id );
+	do_action( 'give_donation_form_before_personal_info', $form_id );
 	?>
 	<fieldset id="give_checkout_user_info">
 		<legend><?php echo apply_filters( 'give_checkout_personal_info_text', esc_html__( 'Personal Info', 'give' ) ); ?></legend>
@@ -676,13 +654,11 @@ function give_user_info_fields( $form_id ) {
 
 		<?php
 		/**
-		 * Fires while displaying donation form, before email field.
+		 * Fire before user email field
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_before_email', $form_id );
+		do_action( 'give_donation_form_before_email', $form_id );
 		?>
 		<p id="give-email-wrap" class="form-row form-row-wide">
 			<label class="give-label" for="give-email">
@@ -700,37 +676,30 @@ function give_user_info_fields( $form_id ) {
 		</p>
 		<?php
 		/**
-		 * Fires while displaying donation form, after email field.
+		 * Fire after user email field
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_after_email', $form_id );
+		do_action( 'give_donation_form_after_email', $form_id );
 
 		/**
-		 * Fires while displaying donation form, on user information fields.
+		 * Fire after personal email field
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_user_info', $form_id );
+		do_action( 'give_donation_form_user_info', $form_id );
 		?>
 	</fieldset>
 	<?php
 	/**
-	 * Fires while displaying donation form, after personal information fields.
+	 * Fire after user personal information fields
 	 *
-	 * @since 1.0
-	 *
-	 * @param int $form_id The form ID.
+	 * @since 1.7
 	 */
-	do_action( 'give_purchase_form_after_personal_info', $form_id );
-
+	do_action( 'give_donation_form_after_personal_info', $form_id );
 }
 
-add_action( 'give_purchase_form_after_user_info', 'give_user_info_fields' );
+add_action( 'give_donation_form_after_user_info', 'give_user_info_fields' );
 add_action( 'give_register_fields_before', 'give_user_info_fields' );
 
 /**
@@ -1145,13 +1114,11 @@ function give_get_register_fields( $form_id ) {
 
 		<?php
 		/**
-		 * Fires while rendering user registration form.
+		 * Fire after register or login form render
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_user_info', $form_id );
+		do_action( 'give_donation_form_user_info', $form_id );
 		?>
 
 	</fieldset>
@@ -1236,7 +1203,7 @@ function give_get_login_fields( $form_id ) {
 
 		<div id="give-forgot-password-wrap-<?php echo $form_id; ?>" class="give_login_forgot_password">
 			 <span class="give-forgot-password ">
-				 <a href="<?php echo wp_lostpassword_url() ?>" target="_blank"><?php esc_html_e( 'Reset Password' ) ?></a>
+				 <a href="<?php echo wp_lostpassword_url() ?>" target="_blank"><?php esc_html_e( 'Reset Password', 'give' ) ?></a>
 			 </span>
 		</div>
 
@@ -1359,27 +1326,22 @@ function give_payment_mode_select( $form_id ) {
 
 		<?php
 		/**
-		 * Fires after selecting payment gateways, while presenting donation form fields.
+		 * Fire after payment field render.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form', $form_id );
+		do_action( 'give_donation_form', $form_id );
 		?>
 
 	</div>
 
 	<?php
 	/**
-	 * Fires while selecting payment gateways, after all the fields and wrappers.
+	 * Fire after donation form render.
 	 *
-	 * @since 1.0
-	 *
-	 * @param int $form_id The form ID.
+	 * @since 1.7
 	 */
-	do_action( 'give_purchase_form_wrap_bottom', $form_id );
-
+	do_action( 'give_donation_form_wrap_bottom', $form_id );
 }
 
 add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
@@ -1434,7 +1396,7 @@ function give_terms_agreement( $form_id ) {
 	}
 }
 
-add_action( 'give_purchase_form_before_submit', 'give_terms_agreement', 10, 1 );
+add_action( 'give_donation_form_before_submit', 'give_terms_agreement', 10, 1 );
 
 /**
  * Checkout Final Total.
@@ -1467,7 +1429,7 @@ function give_checkout_final_total( $form_id ) {
 	<?php
 }
 
-add_action( 'give_purchase_form_before_submit', 'give_checkout_final_total', 999 );
+add_action( 'give_donation_form_before_submit', 'give_checkout_final_total', 999 );
 
 /**
  * Renders the Checkout Submit section.
@@ -1483,32 +1445,28 @@ function give_checkout_submit( $form_id ) {
 	<fieldset id="give_purchase_submit">
 		<?php
 		/**
-		 * Fires while rendering checkout submit, before the fields.
+		 * Fire before donation form submit.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_before_submit', $form_id );
+		do_action( 'give_donation_form_before_submit', $form_id );
 
 		give_checkout_hidden_fields( $form_id );
 
 		echo give_checkout_button_purchase( $form_id );
 
 		/**
-		 * Fires while rendering checkout submit, after the fields.
+		 * Fire after donation form submit.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id The form ID.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form_after_submit', $form_id );
+		do_action( 'give_donation_form_after_submit', $form_id );
 		?>
 	</fieldset>
 	<?php
 }
 
-add_action( 'give_purchase_form_after_cc_form', 'give_checkout_submit', 9999 );
+add_action( 'give_donation_form_after_cc_form', 'give_checkout_submit', 9999 );
 
 /**
  * Give Checkout Button.

@@ -40,13 +40,12 @@ add_action( 'give_gateway_select', 'give_process_gateway_select' );
 function give_load_ajax_gateway() {
 	if ( isset( $_POST['give_payment_mode'] ) ) {
 		/**
-		 * Fires while loading payment gateway via AJAX.
+		 * Fire to render donation form.
 		 *
-		 * @since 1.0
-		 *
-		 * @param int $form_id Give form id.
+		 * @since 1.7
 		 */
-		do_action( 'give_purchase_form', $_POST['give_form_id'] );
+		do_action( 'give_donation_form', $_POST['give_form_id'] );
+
 		exit();
 	}
 }

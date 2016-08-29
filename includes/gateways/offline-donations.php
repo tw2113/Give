@@ -176,10 +176,22 @@ function give_offline_send_donor_instructions( $payment_id = 0 ) {
 	}
 
 	$from_name = give_get_option( 'from_name', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
-	$from_name = apply_filters( 'give_purchase_from_name', $from_name, $payment_id, $payment_data );
+
+	/**
+	 * Filters the from name.
+	 *
+	 * @since 1.7
+	 */
+	$from_name = apply_filters( 'give_donation_from_name', $from_name, $payment_id, $payment_data );
 
 	$from_email = give_get_option( 'from_email', get_bloginfo( 'admin_email' ) );
-	$from_email = apply_filters( 'give_purchase_from_address', $from_email, $payment_id, $payment_data );
+
+	/**
+	 * Filters the from email.
+	 *
+	 * @since 1.7
+	 */
+	$from_email = apply_filters( 'give_donation_from_address', $from_email, $payment_id, $payment_data );
 
 	$to_email = give_get_payment_user_email( $payment_id );
 
