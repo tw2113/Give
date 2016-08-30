@@ -69,6 +69,11 @@ function give_sanitize_amount( $number, $dp = false, $trim_zeros = false ) {
         return $number;
     }
 
+	// Remove slash from amount.
+	// If thousand or decimal separator is set to ' then in $_POST or $_GET param we will get an escaped number.
+	// To prevent notices and warning remove slash from amount/number.
+	$number = wp_unslash( $number );
+
     $thousand_separator = give_get_price_thousand_separator();
 
     $locale   = localeconv();
@@ -131,39 +136,14 @@ function give_sanitize_amount( $number, $dp = false, $trim_zeros = false ) {
  * @return string $amount Newly formatted amount or Price Not Available
  */
 function give_format_amount( $amount, $decimals = true ) {
-
 	$thousands_sep = give_get_option( 'thousands_separator', ',' );
 	$decimal_sep   = give_get_option( 'decimal_separator', '.' );
 
-	// Format the amount
-	if ( $decimal_sep == ',' && false !== ( $sep_found = strpos( $amount, $decimal_sep ) ) ) {
-		$whole  = substr( $amount, 0, $sep_found );
-		$part   = substr( $amount, $sep_found + 1, ( strlen( $amount ) - 1 ) );
-		$amount = $whole . '.' . $part;
-	}
-
-	// Strip , from the amount (if set as the thousands separator)
-	if ( $thousands_sep == ',' && false !== ( $found = strpos( $amount, $thousands_sep ) ) ) {
-		$amount = str_replace( ',', '', $amount );
-	}
-
-	// Strip . from the amount (if set as the thousands separator) AND , set to decimal separator
-	if ( $thousands_sep == '.' && $decimal_sep == ',' && false !== ( $found = strpos( $amount, $thousands_sep ) ) ) {
-		$amount      = explode( '.', $amount );
-		$array_count = count( $amount );
-		if ( $decimals == true ) {
-			unset( $amount[ $array_count - 1 ] );
-		}
-		$amount = implode( '', $amount );
-	}
-
-	// Strip ' ' from the amount (if set as the thousands separator)
-	if ( $thousands_sep == ' ' && false !== ( $found = strpos( $amount, $thousands_sep ) ) ) {
-		$amount = str_replace( ' ', '', $amount );
-	}
-
 	if ( empty( $amount ) ) {
 		$amount = 0;
+	} else {
+		// Sanitize amount before formatting.
+		$amount = give_sanitize_amount( $amount );
 	}
 
 	$decimals = give_get_price_decimals();
@@ -388,11 +368,12 @@ add_filter( 'give_format_amount_decimals', 'give_currency_decimal_filter' );
 /**
  * Sanitize thousand separator
  *
- * @since 1.6
+ * @since   1.6
+ * @used-by Give_Plugin_Settings::give_settings()
  *
- * @param string $value
- * @param array  $field_args
- * @param object $field
+ * @param   string $value
+ * @param   array  $field_args
+ * @param   object $field
  *
  * @return mixed
  */
@@ -404,13 +385,14 @@ function give_sanitize_thousand_separator( $value, $field_args, $field ){
 /**
  * Sanitize number of decimals
  *
- * @since 1.6
+ * @since   1.6
+ * @used-by Give_Plugin_Settings::give_settings()
  *
- * @param string $value
- * @param array  $field_args
- * @param object $field
+ * @param   string $value
+ * @param   array  $field_args
+ * @param   object $field
  *
- * @return mixed
+ * @return  mixed
  */
 function give_sanitize_number_decimals( $value, $field_args, $field ){
 	return absint($value);
@@ -419,13 +401,14 @@ function give_sanitize_number_decimals( $value, $field_args, $field ){
 /**
  * Sanitize price file value
  *
- * @since 1.6
+ * @since   1.6
+ * @used-by give_single_forms_cmb2_metaboxes()
  *
- * @param string $value
- * @param array  $field_args
- * @param object $field
+ * @param   string $value
+ * @param   array  $field_args
+ * @param   object $field
  *
- * @return mixed
+ * @return  mixed
  */
 function give_sanitize_price_field_value( $value, $field_args, $field ){
     return give_sanitize_amount( $value );
@@ -480,4 +463,52 @@ function give_cmb_amount_field_render_row_cb( $field_args, $field ) {
 		</div>
 	</div>
 	<?php
+}
+
+
+/**
+ * Get date format string on basis of given context.
+ *
+ *
+ * @since 1.7
+ *
+ * @param  string $date_context    Date format context name.
+ *
+ * @return string                  Date format string
+ */
+function give_date_format ( $date_context = '' ) {
+	/**
+	 * Filter the date context
+	 *
+	 * You can add your own date context or use already exist context.
+	 * For example:
+	 *    add_filter( 'give_date_format_contexts', 'add_new_date_contexts' );
+	 *    function add_new_date_contexts( $date_format_contexts ) {
+	 *        // You can add single context like this $date_format_contexts['checkout'] = 'F j, Y';
+	 *        // Instead add multiple date context at once.
+	 *        $new_date_format_contexts = array(
+	 *            'checkout' => 'F j, Y',
+	 *            'report'   => 'Y-m-d',
+	 *            'email'    => 'm/d/Y',
+	 *        );
+	 *
+	 *       // Merge date contexts array only if you are adding multiple date contexts at once otherwise return  $date_format_contexts.
+	 *       return array_merge( $new_date_format_contexts, $date_format_contexts );
+	 *
+	 *    }
+	 */
+	$date_format_contexts = apply_filters( 'give_date_format_contexts', array() );
+
+	// Set date format to default date format.
+	$date_format = get_option('date_format');
+
+
+	// Update date format if we have non empty date format context array and non empty date format string for that context.
+	if( $date_context &&  ! empty( $date_format_contexts ) && array_key_exists( $date_context, $date_format_contexts ) ) {
+		$date_format = ! empty( $date_format_contexts[ $date_context ] )
+			? $date_format_contexts[ $date_context ]
+			: $date_format;
+	}
+
+	return apply_filters( 'give_date_format', $date_format );
 }

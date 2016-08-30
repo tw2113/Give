@@ -79,7 +79,7 @@ function give_get_users_purchases( $user = 0, $number = 20, $pagination = false,
 
 	}
 
-	$purchases = give_get_payments( apply_filters( 'give_get_users_purchases_args', $args ) );
+	$purchases = give_get_payments( apply_filters( 'give_get_users_donations_args', $args ) );
 
 	// No donations
 	if ( ! $purchases ) {
@@ -223,13 +223,6 @@ function give_get_purchase_stats_by_user( $user = '' ) {
 		$stats['total_spent'] = give_sanitize_amount( $customer->purchase_value );
 
 	}
-
-	/**
-	 * Filter the donation stats
-	 *
-	 * @deprecated 1.7 Use {@see 'give_donation_stats_by_user'} instead.
-	 */
-	$stats = (array) apply_filters_deprecated( 'give_purchase_stats_by_user', array( $stats, $user ), '1.7', 'give_donation_stats_by_user' );
 
 	/**
 	 * Filter the donation stats
@@ -423,26 +416,26 @@ function give_new_user_notification( $user_id = 0, $user_data = array() ) {
 	$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
 	/* translators: %s: site name */
-	$message  = sprintf( esc_attr__( 'New user registration on your site %s:' ), $blogname ) . "\r\n\r\n";
+	$message  = sprintf( esc_attr__( 'New user registration on your site %s:', 'give' ), $blogname ) . "\r\n\r\n";
 	/* translators: %s: user login */
-	$message .= sprintf( esc_attr__( 'Username: %s' ), $user_data['user_login'] ) . "\r\n\r\n";
+	$message .= sprintf( esc_attr__( 'Username: %s', 'give' ), $user_data['user_login'] ) . "\r\n\r\n";
 	/* translators: %s: user email */
-	$message .= sprintf( esc_attr__( 'E-mail: %s' ), $user_data['user_email'] ) . "\r\n";
+	$message .= sprintf( esc_attr__( 'E-mail: %s', 'give' ), $user_data['user_email'] ) . "\r\n";
 
 	@wp_mail(
 		get_option( 'admin_email' ),
 		sprintf(
 			/* translators: %s: site name */
-			esc_attr__( '[%s] New User Registration' ),
+			esc_attr__( '[%s] New User Registration', 'give' ),
 			$blogname
 		),
 		$message
 	);
 
 	/* translators: %s: user login */
-	$message  = sprintf( esc_attr__( 'Username: %s' ), $user_data['user_login'] ) . "\r\n";
+	$message  = sprintf( esc_attr__( 'Username: %s', 'give' ), $user_data['user_login'] ) . "\r\n";
 	/* translators: %s: paswword */
-	$message .= sprintf( esc_attr__( 'Password: %s' ), esc_attr__( '[Password entered during donation]', 'give' ) ) . "\r\n";
+	$message .= sprintf( esc_attr__( 'Password: %s', 'give' ), esc_attr__( '[Password entered during donation]', 'give' ) ) . "\r\n";
 
 	$message .= '<a href="' . wp_login_url() . '"> ' . esc_attr__( 'Click Here to Login &raquo;', 'give' ) . '</a>' . "\r\n";
 
@@ -450,7 +443,7 @@ function give_new_user_notification( $user_id = 0, $user_data = array() ) {
 		$user_data['user_email'],
 		sprintf(
 			/* translators: %s: site name */
-			esc_attr__( '[%s] Your username and password' ),
+			esc_attr__( '[%s] Your username and password', 'give' ),
 			$blogname
 		),
 		$message

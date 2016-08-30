@@ -377,7 +377,7 @@ $payment_mode   = $payment->mode;
 										<div class="column">
 											<p>
 												<strong><?php esc_html_e( 'Donation Date:', 'give' ); ?></strong><br>
-												<?php echo date_i18n( get_option( 'date_format' ), $payment_date ); ?>
+												<?php echo date_i18n( give_date_format(), $payment_date ); ?>
 											</p>
 											<p>
 												<strong><?php esc_html_e( 'Donation Level:', 'give' ); ?></strong><br>
@@ -498,7 +498,7 @@ $payment_mode   = $payment->mode;
 											</p>
 											<p>
 												<strong><?php esc_html_e( 'Donor Since:', 'give' ); ?></strong><br>
-												<?php echo date_i18n( get_option( 'date_format' ), strtotime( $customer->date_created ) ) ?>
+												<?php echo date_i18n( give_date_format(), strtotime( $customer->date_created ) ) ?>
 											</p>
 										</div>
 										<div class="column">
@@ -557,21 +557,21 @@ $payment_mode   = $payment->mode;
 									 *
 									 * The hook is left here for backwards compatibility.
 									 *
-									 * @since 1.0
+									 * @since 1.7
 									 *
 									 * @param array $payment_meta Payment meta.
 									 * @param array $user_info User information.
 									 */
-									do_action( 'give_payment_personal_details_list', $payment_meta, $user_info );
+									do_action( 'give_donation_personal_details_list', $payment_meta, $user_info );
 
 									/**
 									 * Fires in order details page, in the donor-details metabox.
 									 *
-									 * @since 1.0
+									 * @since 1.7
 									 *
 									 * @param int $payment_id Payment id.
 									 */
-									do_action( 'give_payment_view_details', $payment_id );
+									do_action( 'give_donation_view_details', $payment_id );
 									?>
 
 								</div>
@@ -667,11 +667,11 @@ $payment_mode   = $payment->mode;
 									 *
 									 * Allows you to insert new billing address fields.
 									 *
-									 * @since 1.0
+									 * @since 1.7
 									 *
 									 * @param int $payment_id Payment id.
 									 */
-									do_action( 'give_payment_billing_details', $payment_id );
+									do_action( 'give_donation_billing_details', $payment_id );
 									?>
 
 								</div>
