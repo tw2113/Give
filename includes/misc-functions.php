@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Is Test Mode
  *
  * @since 1.0
- * @global $give_options
+ *
  * @return bool $ret True if return mode is enabled, false otherwise
  */
 function give_is_test_mode() {
@@ -223,7 +223,7 @@ function give_get_current_page_url() {
  * Verify credit card numbers live?
  *
  * @since 1.0
- * @global $give_options
+ *
  * @return bool $ret True is verify credit cards is live
  */
 function give_is_cc_verify_enabled() {
@@ -611,6 +611,8 @@ function give_is_func_disabled( $function ) {
  */
 function give_get_newsletter() { ?>
 
+	<p class="newsletter-intro"><?php esc_html_e( 'Be sure to sign up for the Give newsletter below to stay informed of important updates and news.', 'give' ); ?></p>
+
 	<div class="give-newsletter-form-wrap">
 
 		<form action="//givewp.us3.list-manage.com/subscribe/post?u=3ccb75d68bda4381e2f45794c&amp;id=12a081aa13" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
@@ -796,16 +798,13 @@ if ( ! function_exists( 'array_column' ) ) {
 		$params = func_get_args();
 
 		if ( $argc < 2 ) {
-			trigger_error( "array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING );
+			trigger_error( sprintf( esc_html__( 'array_column() expects at least 2 parameters, %s given.', 'give' ), $argc ), E_USER_WARNING );
 
 			return null;
 		}
 
 		if ( ! is_array( $params[0] ) ) {
-			trigger_error(
-				'array_column() expects parameter 1 to be array, ' . gettype( $params[0] ) . ' given',
-				E_USER_WARNING
-			);
+			trigger_error( sprintf( esc_html__( 'array_column() expects parameter 1 to be array, %s given.', 'give' ), gettype( $params[0] ) ), E_USER_WARNING );
 
 			return null;
 		}
@@ -816,7 +815,7 @@ if ( ! function_exists( 'array_column' ) ) {
 		     && $params[1] !== null
 		     && ! ( is_object( $params[1] ) && method_exists( $params[1], '__toString' ) )
 		) {
-			trigger_error( 'array_column(): The column key should be either a string or an integer', E_USER_WARNING );
+			trigger_error( esc_html__( 'array_column(): The column key should be either a string or an integer.', 'give' ), E_USER_WARNING );
 
 			return false;
 		}
@@ -827,7 +826,7 @@ if ( ! function_exists( 'array_column' ) ) {
 		     && ! is_string( $params[2] )
 		     && ! ( is_object( $params[2] ) && method_exists( $params[2], '__toString' ) )
 		) {
-			trigger_error( 'array_column(): The index key should be either a string or an integer', E_USER_WARNING );
+			trigger_error( esc_html__( 'array_column(): The index key should be either a string or an integer.', 'give' ), E_USER_WARNING );
 
 			return false;
 		}
