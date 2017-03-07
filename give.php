@@ -305,6 +305,7 @@ if ( ! class_exists( 'Give' ) ) :
 			$give_options = give_get_settings();
 
 			require_once GIVE_PLUGIN_DIR . 'includes/admin/give-metabox-functions.php';
+			require_once GIVE_PLUGIN_DIR . 'includes/forms/api/class-give-form-api.php';
 			require_once GIVE_PLUGIN_DIR . 'includes/post-types.php';
 			require_once GIVE_PLUGIN_DIR . 'includes/scripts.php';
 			require_once GIVE_PLUGIN_DIR . 'includes/ajax-functions.php';
