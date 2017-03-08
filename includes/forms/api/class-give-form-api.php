@@ -10,6 +10,23 @@
  * @since       1.9
  */
 class Give_Form_API {
+	/**
+	 * Instance.
+	 *
+	 * @since  1.9
+	 * @access private
+	 * @var Give_Form_API
+	 */
+	static private $instance;
+
+	/**
+	 * Array of forms.
+	 *
+	 * @since  1.9
+	 * @access private
+	 * @var array
+	 */
+	private static $forms;
 
 	/**
 	 * The defaults for all elements
@@ -19,14 +36,30 @@ class Give_Form_API {
 	 */
 	static $field_defaults = array(
 		'name'       => '',
-		'desc'       => '',
-		'id'         => '',
-		'type'       => '',
-		'default'    => '',
-		'data_type'  => '',
-		'options'    => array(),
+		'method'     => 'post',
+		'action'     => '',
+		'template'   => '',
 		'attributes' => array(),
+		'fields'     => array(),
 	);
+
+
+	private function __construct() {
+	}
+
+
+	/**
+	 * Get instance.
+	 *
+	 * @return static
+	 */
+	public static function get_instance() {
+		if ( is_null( static::$instance ) ) {
+			self::$instance = new static();
+		}
+
+		return self::$instance;
+	}
 
 	/**
 	 * Initialize this module
@@ -34,42 +67,19 @@ class Give_Form_API {
 	 * @since  1.9
 	 * @access static
 	 */
-	static function init() {
-	}
+	public function init() {
+		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
 
+		self::$field_defaults['template'] = include GIVE_PLUGIN_DIR . 'includes/forms/api/view/simple-form-template.php';
+		self::$field_defaults['action']   = esc_url( $_SERVER['REQUEST_URI'] );
+		self::$field_defaults             = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
-	/**
-	 * Return HTML with tag $tagname and keyed attrs $attrs.
-	 *
-	 * @since  1.9
-	 * @access static
-	 */
-	static function make_tag() {
-	}
+		// Load fields API
+		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/class-give-fields-api.php';
+		Give_Fields_API::get_instance()->init();
 
-	/**
-	 * Get elements from a form.
-	 *
-	 * @since  1.9
-	 * @access static
-	 *
-	 * @param array $form
-	 */
-	static function get_elements( $form ) {
-	}
-
-	/**
-	 * Is the element a button?
-	 *
-	 * @since  1.9
-	 * @access static
-	 *
-	 * @param array $element
-	 *
-	 * @return bool
-	 */
-	static function is_button( $element ) {
-		return preg_match( '/^button|submit$/', $element['#type'] );
+		// Load form api filters
+		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/filters.php';
 	}
 
 	/**
@@ -77,17 +87,66 @@ class Give_Form_API {
 	 *
 	 * @since  1.9
 	 * @access static
+	 *
+	 * @param string $form_slug Form name.
+	 *
+	 * @return string
 	 */
-	static function render_form() {
+	static function render_form( $form_slug ) {
+		$form_html = '';
+
+		// Handle exception.
+		try {
+			if (
+				empty( $form_slug )
+				|| ! is_string( $form_slug )
+				|| ! ( $form = self::get_form( $form_slug ) )
+			) {
+				throw new Exception( __( 'Pass valid form slug to render form.', 'give' ) );
+			}
+		} catch ( Exception $e ) {
+			give_output_error( $e->getMessage(), true, 'error' );
+
+			return $form_html;
+		}
+
+		// Get all form tags from form template.
+		preg_match_all( '/\{\{form_(.+?)?\}\}/', $form['template'], $form_tags );
+
+		// Render form tags.
+		if ( 0 < count( $form_tags ) && ! empty( $form_tags[0] ) ) {
+			$form_html = self::render_form_tags( $form_tags[0], $form );
+		}
+
+
+		/**
+		 * Filter the form html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $form_html
+		 * @param array  $form
+		 */
+		return apply_filters( 'give_form_api_render_form', $form_html, $form );
 	}
 
+
 	/**
-	 * Render an element
+	 * Set default values form form.
+	 *
 	 * @since  1.9
-	 * @access static
+	 * @access private
+	 *
+	 * @param $form
+	 *
+	 * @return array
 	 */
-	static function render_element() {
+	private static function set_default_values( $form ) {
+		$form = wp_parse_args( $form, self::$field_defaults );
+
+		return $form;
 	}
+
 
 	/**
 	 * Process a form, filling in $values with what's been posted
@@ -103,10 +162,125 @@ class Give_Form_API {
 	 *
 	 * @since  1.9
 	 * @access static
+	 *
+	 * @param string $form_slug
+	 *
+	 * @return array
 	 */
-	static function process_element() {
+	static function get_form( $form_slug ) {
+		$form = array();
+
+		if ( ! empty( self::$forms ) ) {
+			foreach ( self::$forms as $index => $form_args ) {
+				if ( $form_slug === $index ) {
+					$form = wp_parse_args( $form_args, self::$field_defaults );
+					break;
+				}
+			}
+		}
+
+		if ( ! empty( $form ) ) {
+			// Set default form name.
+			$form['name'] = empty( $form['name'] ) ? $form_slug : $form['name'];
+		}
+
+		/**
+		 * Filter the result form.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array  $form
+		 * @param string $form_slug
+		 * @param        array self::$forms
+		 */
+		return apply_filters( 'give_form_api_get_form', $form, $form_slug, self::$forms );
+	}
+
+
+	/**
+	 * Get forms.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public static function get_forms() {
+		return self::$forms;
+	}
+
+	/**
+	 * Get forms.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @param array $form_tags
+	 * @param array $form
+	 *
+	 * @return string
+	 */
+	private function render_form_tags( $form_tags, $form ) {
+		$form_html = $form['template'];
+
+		/**
+		 *  Filter the for tags which you want to handle manually.
+		 *
+		 * @since 1.9
+		 *
+		 * @param       array
+		 * @param array $form
+		 * @param array $form_tag
+		 */
+		$custom_handler_for_form_tags = apply_filters(
+			'give_form_api_manually_render_form_tags',
+			array( '{{form_attributes}}', '{{form_fields}}' ),
+			$form,
+			$form_tags
+		);
+
+		// Replace form tags.
+		foreach ( $form_tags as $form_tag ) {
+			$form_param = str_replace( array( '{{form_', '}}' ), '', $form_tag );
+
+			// Process form tags which:
+			// 1. Has a value in form arguments.
+			// 2. Only has scalar value.
+			// 3. Developer do not want to handle them manually.
+			if (
+				! isset( $form[ $form_param ] )
+				|| ! is_scalar( $form[ $form_param ] )
+				|| in_array( $form_tag, $custom_handler_for_form_tags )
+			) {
+				continue;
+			}
+
+			$form_html = str_replace( $form_tag, $form[ $form_param ], $form_html );
+		}
+
+		/**
+		 *  Filters the form tags.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $form_html
+		 * @param array  $form
+		 * @param array  $form_tags
+		 */
+		$form_html = apply_filters(
+			'give_form_api_render_form_tags',
+			$form_html,
+			$form,
+			$form_tags
+		);
+
+		return $form_html;
 	}
 }
 
 // Initialize field API.
-add_action( 'init', array( 'Give_Form_API', 'init' ) );
+function give_init_forms_api() {
+	Give_Form_API::get_instance()->init();
+}
+
+add_action( 'init', 'give_init_forms_api', 9999 );
