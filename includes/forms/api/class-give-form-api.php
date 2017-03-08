@@ -38,6 +38,10 @@ class Give_Form_API {
 		'name'       => '',
 		'method'     => 'post',
 		'action'     => '',
+
+		// Supported form layout: simple, stepper.
+		'layout'     => 'simple',
+
 		'template'   => '',
 		'attributes' => array(),
 		'fields'     => array(),
@@ -118,7 +122,6 @@ class Give_Form_API {
 			$form_html = self::render_form_tags( $form_tags[0], $form );
 		}
 
-
 		/**
 		 * Filter the form html.
 		 *
@@ -143,6 +146,10 @@ class Give_Form_API {
 	 */
 	private static function set_default_values( $form ) {
 		$form = wp_parse_args( $form, self::$field_defaults );
+
+		$form['template'] = 'stepper' === $form['layout']
+			? include GIVE_PLUGIN_DIR . 'includes/forms/api/view/stepper-form-template.php'
+			: $form['template'];
 
 		return $form;
 	}
@@ -173,7 +180,7 @@ class Give_Form_API {
 		if ( ! empty( self::$forms ) ) {
 			foreach ( self::$forms as $index => $form_args ) {
 				if ( $form_slug === $index ) {
-					$form = wp_parse_args( $form_args, self::$field_defaults );
+					$form = self::$instance->set_default_values( $form_args );
 					break;
 				}
 			}

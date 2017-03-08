@@ -38,6 +38,18 @@ class Give_Fields_API {
 		'attributes' => array(),
 	);
 
+	/**
+	 * The defaults for all elements
+	 *
+	 * @since  1.9
+	 * @access static
+	 */
+	static $section_defaults = array(
+		'label'      => '',
+		'name'       => '',
+		'attributes' => array(),
+	);
+
 
 	private function __construct() {
 	}
@@ -77,7 +89,7 @@ class Give_Fields_API {
 	 *
 	 * @return string
 	 */
-	public static function render_tag( $field, $form ) {
+	public static function render_tag( $field, $form = null ) {
 		$field_html     = '';
 		$functions_name = "render_{$field['type']}_field";
 		$field          = self::get_instance()->set_default_values( $field );
@@ -114,14 +126,55 @@ class Give_Fields_API {
 		$fields_html = '';
 
 		foreach ( $form['fields'] as $key => $field ) {
-			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
-			$fields_html .= self::render_tag( $field, $form );
-		}
+			switch ( true ) {
+				// Section.
+				case array_key_exists( 'fields', $field ):
+					$fields_html .= self::$instance->render_section( $field, $form );
+					break;
 
+				// Field
+				default:
+					$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
+					$fields_html .= self::render_tag( $field, $form );
+			}
+		}
 
 		$form_html = str_replace( '{{form_fields}}', $fields_html, $form_html );
 
 		return $form_html;
+	}
+
+
+	/**
+	 * Render section.
+	 *
+	 * @since  1.9
+	 * @access public
+	 *
+	 * @param array $section
+	 * @param array $form
+	 *
+	 * @return string
+	 */
+	public static function render_section( $section, $form = null ) {
+		ob_start();
+		?>
+		<fieldset <?php echo self::$instance->get_attributes( $section ); ?>>
+			<?php
+			// Legend.
+			if ( ! empty( $section['label'] ) ) {
+				echo "<legend>{$section['label']}</legend>";
+			};
+
+			// Fields.
+			foreach ( $section['fields'] as $key => $field ) {
+				$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
+				echo self::render_tag( $field, $form );
+			}
+			?>
+		</fieldset>
+		<?php
+		return ob_get_clean();
 	}
 
 
@@ -141,9 +194,9 @@ class Give_Fields_API {
 		<p>
 			<?php echo self::$instance->render_label( $field ); ?>
 			<input
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
-				value="<?php echo $field ['value']; ?>"
+					type="<?php echo $field['type']; ?>"
+					name="<?php echo $field['name']; ?>"
+					value="<?php echo $field ['value']; ?>"
 				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 				<?php echo self::$instance->get_attributes( $field ); ?>
 			>
@@ -179,7 +232,7 @@ class Give_Fields_API {
 	public static function render_label( $field ) {
 		ob_start();
 		?>
-		<?php if ( ! empty( $field['label'] ) ): ?>
+		<?php if ( ! empty( $field['label'] ) ) : ?>
 			<label class="give-label" for="<?php echo $field['name']; ?>">
 				<?php echo $field['label']; ?>
 				<?php if ( $field['required'] ) : ?>
@@ -232,7 +285,11 @@ class Give_Fields_API {
 	 * @return array
 	 */
 	private function set_default_values( $field ) {
-		return wp_parse_args( $field, self::$field_defaults );
+		$default_values = array_key_exists( 'fields', $field )
+			? self::$section_defaults
+			: self::$field_defaults;
+
+		return wp_parse_args( $field, $default_values );
 	}
 
 	/**
