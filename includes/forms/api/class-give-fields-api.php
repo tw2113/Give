@@ -46,6 +46,7 @@ class Give_Fields_API {
 		'attributes'           => array(),
 
 		// Params to edit field html.
+		// @todo: Implement these params.
 		'before_field'         => '',
 		'after_field'          => '',
 		'before_field_wrapper' => '',
