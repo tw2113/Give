@@ -2260,3 +2260,11 @@ body.give-twentysixteen .give-submit {
 
 body.give-twentysixteen fieldset#give_terms_agreement {
   padding-right: 0; }
+
+.give-form-wrapper legend {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 10px 0 15px;
+  padding: 0 0 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%; }

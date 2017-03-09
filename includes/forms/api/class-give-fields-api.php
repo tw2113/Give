@@ -225,7 +225,7 @@ class Give_Fields_API {
 	public static function render_text_field( $field ) {
 		ob_start();
 		?>
-		<p>
+		<p class="give-form-row">
 			<?php echo self::$instance->render_label( $field ); ?>
 			<input
 					type="<?php echo $field['type']; ?>"
