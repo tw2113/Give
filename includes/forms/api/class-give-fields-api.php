@@ -26,18 +26,36 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'type'           => '',
-		'label'          => '',
-		'label_position' => 'before',
-		'name'           => '',
-		'data_type'      => '',
-		'value'          => '',
-		'default'        => '',
-		'template'       => '',
-		'tooltip'        => '',
-		'required'       => false,
-		'attributes'     => array(),
-		'callback'       => '',
+		'type'                 => '',
+		'name'                 => '',
+		'data_type'            => '',
+		'value'                => '',
+		'required'             => false,
+
+		// Set default value to field.
+		'default'              => '',
+
+		// Add label, before and after field.
+		'label'                => '',
+		'label_position'       => 'before',
+
+		// Add description to field as tooltip.
+		'tooltip'              => '',
+
+		// Add custom attributes.
+		'attributes'           => array(),
+
+		// Params to edit field html.
+		'before_field'         => '',
+		'after_field'          => '',
+		'before_field_wrapper' => '',
+		'after_field_wrapper'  => '',
+		'before_label'         => '',
+		'after_label'          => '',
+
+		// Manually render field.
+		'callback'             => '',
+
 	);
 
 	/**
