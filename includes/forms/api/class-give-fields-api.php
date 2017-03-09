@@ -92,7 +92,6 @@ class Give_Fields_API {
 	public static function render_tag( $field, $form = null ) {
 		$field_html     = '';
 		$functions_name = "render_{$field['type']}_field";
-		$field          = self::get_instance()->set_default_values( $field );
 
 		if ( method_exists( self::$instance, $functions_name ) ) {
 			$field_html .= self::$instance->{$functions_name}( $field );
@@ -126,6 +125,9 @@ class Give_Fields_API {
 		$fields_html = '';
 
 		foreach ( $form['fields'] as $key => $field ) {
+			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
+			$field         = self::get_instance()->set_default_values( $field );
+
 			switch ( true ) {
 				// Section.
 				case array_key_exists( 'fields', $field ):
@@ -134,7 +136,6 @@ class Give_Fields_API {
 
 				// Field
 				default:
-					$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
 					$fields_html .= self::render_tag( $field, $form );
 			}
 		}
@@ -233,8 +234,10 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
-			<label class="give-label" for="<?php echo $field['name']; ?>">
+			<label class="give-label" for="<?php echo $field['attributes']['id']; ?>">
+
 				<?php echo $field['label']; ?>
+
 				<?php if ( $field['required'] ) : ?>
 					<span class="give-required-indicator">*</span>
 				<?php endif; ?>
@@ -285,11 +288,30 @@ class Give_Fields_API {
 	 * @return array
 	 */
 	private function set_default_values( $field ) {
-		$default_values = array_key_exists( 'fields', $field )
+		$is_field = array_key_exists( 'fields', $field ) ? false : true;
+
+		// Get default values for section or field.
+		$default_values = ! $is_field
 			? self::$section_defaults
 			: self::$field_defaults;
 
-		return wp_parse_args( $field, $default_values );
+		// Default field classes.
+		$default_class = ! $is_field ? 'give-form-section give-form-section-js' : 'give-form-field give-form-field-js';
+
+		// Set default values for field or section.
+		$field = wp_parse_args( $field, $default_values );
+
+		// Set ID.
+		$field['attributes']['id'] = empty( $field['attributes']['id'] )
+			? ( $is_field ? "give-{$field['name']}-field" : "give-{$field['name']}-section" )
+			: $field['attributes']['id'];
+
+		// Set class.
+		$field['attributes']['class'] = empty( $field['attributes']['class'] )
+			? $default_class
+			: implode( ' ', $field['attributes']['class'] ) . $default_class;
+
+		return $field;
 	}
 
 	/**
