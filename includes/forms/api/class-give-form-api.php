@@ -38,13 +38,15 @@ class Give_Form_API {
 		'name'       => '',
 		'method'     => 'post',
 		'action'     => '',
+		'fields'     => array(),
+
+		// Add custom attributes.
+		'attributes' => array(),
 
 		// Supported form layout: simple, stepper.
 		'layout'     => 'simple',
 
-		'template'   => '',
-		'attributes' => array(),
-		'fields'     => array(),
+		// Manually render form.
 		'callback'   => ''
 	);
 
@@ -75,7 +77,7 @@ class Give_Form_API {
 	public function init() {
 		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
 
-		self::$field_defaults['template'] = include GIVE_PLUGIN_DIR . 'includes/forms/api/view/simple-form-template.php';
+		self::$field_defaults['_template'] = include GIVE_PLUGIN_DIR . 'includes/forms/api/view/simple-form-template.php';
 		self::$field_defaults['action']   = esc_url( $_SERVER['REQUEST_URI'] );
 		self::$field_defaults             = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
@@ -149,7 +151,7 @@ class Give_Form_API {
 		}
 
 		// Get all form tags from form template.
-		preg_match_all( '/\{\{form_(.+?)?\}\}/', $form['template'], $form_tags );
+		preg_match_all( '/\{\{form_(.+?)?\}\}/', $form['_template'], $form_tags );
 
 		// Render form tags.
 		if ( 0 < count( $form_tags ) && ! empty( $form_tags[0] ) ) {
@@ -182,9 +184,9 @@ class Give_Form_API {
 		$form = wp_parse_args( $form, self::$field_defaults );
 
 		// Set template.
-		$form['template'] = 'stepper' === $form['layout']
+		$form['_template'] = 'stepper' === $form['layout']
 			? include GIVE_PLUGIN_DIR . 'includes/forms/api/view/stepper-form-template.php'
-			: $form['template'];
+			: $form['_template'];
 
 		// Set ID.
 		$form['attributes']['id'] = empty( $form['attributes']['id'] )
@@ -264,7 +266,7 @@ class Give_Form_API {
 	 * @return string
 	 */
 	private function render_form_tags( $form_tags, $form ) {
-		$form_html = $form['template'];
+		$form_html = $form['_template'];
 
 		/**
 		 *  Filter the for tags which you want to handle manually.
