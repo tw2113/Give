@@ -26,17 +26,18 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'type'       => '',
-		'label'      => '',
-		'name'       => '',
-		'data_type'  => '',
-		'value'      => '',
-		'default'    => '',
-		'template'   => '',
-		'tooltip'    => '',
-		'required'   => false,
-		'attributes' => array(),
-		'callback'   => '',
+		'type'           => '',
+		'label'          => '',
+		'label_position' => 'before',
+		'name'           => '',
+		'data_type'      => '',
+		'value'          => '',
+		'default'        => '',
+		'template'       => '',
+		'tooltip'        => '',
+		'required'       => false,
+		'attributes'     => array(),
+		'callback'       => '',
 	);
 
 	/**
@@ -227,7 +228,13 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<p class="give-field-row">
-			<?php echo self::$instance->render_label( $field ); ?>
+			<?php
+			// Label: before field.
+			if ( 'before' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
+
 			<input
 					type="<?php echo $field['type']; ?>"
 					name="<?php echo $field['name']; ?>"
@@ -235,6 +242,13 @@ class Give_Fields_API {
 				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 				<?php echo self::$instance->get_attributes( $field ); ?>
 			>
+
+			<?php
+			// Label: before field.
+			if ( 'after' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
 		</p>
 		<?php
 		return ob_get_clean();
@@ -251,6 +265,20 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_submit_field( $field ) {
+		return self::$instance->render_text_field( $field );
+	}
+
+	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_checkbox_field( $field ) {
 		return self::$instance->render_text_field( $field );
 	}
 
