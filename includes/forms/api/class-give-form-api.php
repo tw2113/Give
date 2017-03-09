@@ -45,6 +45,7 @@ class Give_Form_API {
 		'template'   => '',
 		'attributes' => array(),
 		'fields'     => array(),
+		'callback'   => ''
 	);
 
 
@@ -86,6 +87,34 @@ class Give_Form_API {
 		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/filters.php';
 	}
 
+
+	/**
+	 * Render custom form.
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @param array $form
+	 *
+	 * @return bool
+	 */
+	private function render_custom_form( $form ) {
+		$form_html = '';
+
+		if( empty( $form['callback'] ) ) {
+			$callback = $form['callback'];
+
+			// Process callback to get form html.
+			if ( is_string( $callback ) && function_exists( "$callback" ) ) {
+				$form_html = $callback( $form );
+			} elseif ( is_array( $callback ) && method_exists( $callback[0], "$callback[1]" ) ) {
+				$form_html = $callback[0]->$callback[1]( $form );
+			}
+		}
+
+		return $form_html;
+	}
+
 	/**
 	 * Render forms.
 	 *
@@ -111,6 +140,11 @@ class Give_Form_API {
 		} catch ( Exception $e ) {
 			give_output_error( $e->getMessage(), true, 'error' );
 
+			return $form_html;
+		}
+
+		// Render custom form with callback.
+		if( $form_html = self::$instance->render_custom_form( $form ) ){
 			return $form_html;
 		}
 
