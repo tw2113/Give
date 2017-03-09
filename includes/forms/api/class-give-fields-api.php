@@ -36,6 +36,7 @@ class Give_Fields_API {
 		'tooltip'    => '',
 		'required'   => false,
 		'attributes' => array(),
+		'callback'   => '',
 	);
 
 	/**
@@ -89,10 +90,10 @@ class Give_Fields_API {
 	 *
 	 * @return bool
 	 */
-	private function render_custom_field( $field ){
+	private function render_custom_field( $field ) {
 		$field_html = '';
 
-		if( empty( $field['callback'] ) ) {
+		if ( empty( $field['callback'] ) ) {
 			$callback = $field['callback'];
 
 			// Process callback to get field html.
@@ -157,7 +158,7 @@ class Give_Fields_API {
 			$field         = self::get_instance()->set_default_values( $field );
 
 			// Render custom form with callback.
-			if( $field_html = self::$instance->render_custom_field( $field ) ){
+			if ( $field_html = self::$instance->render_custom_field( $field ) ) {
 				$fields_html .= $field_html;
 			}
 
@@ -225,7 +226,7 @@ class Give_Fields_API {
 	public static function render_text_field( $field ) {
 		ob_start();
 		?>
-		<p class="give-form-row">
+		<p class="give-field-row">
 			<?php echo self::$instance->render_label( $field ); ?>
 			<input
 					type="<?php echo $field['type']; ?>"
@@ -329,7 +330,7 @@ class Give_Fields_API {
 			: self::$field_defaults;
 
 		// Default field classes.
-		$default_class = ! $is_field ? 'give-form-section give-form-section-js' : 'give-form-field give-form-field-js';
+		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : 'give-form-field give-form-field-js';
 
 		// Set default values for field or section.
 		$field = wp_parse_args( $field, $default_values );
