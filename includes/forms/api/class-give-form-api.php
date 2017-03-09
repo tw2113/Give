@@ -181,9 +181,15 @@ class Give_Form_API {
 	private static function set_default_values( $form ) {
 		$form = wp_parse_args( $form, self::$field_defaults );
 
+		// Set template.
 		$form['template'] = 'stepper' === $form['layout']
 			? include GIVE_PLUGIN_DIR . 'includes/forms/api/view/stepper-form-template.php'
 			: $form['template'];
+
+		// Set ID.
+		$form['attributes']['id'] = empty( $form['attributes']['id'] )
+			? $form['name']
+			: $form['attributes']['id'];
 
 		return $form;
 	}
@@ -214,15 +220,11 @@ class Give_Form_API {
 		if ( ! empty( self::$forms ) ) {
 			foreach ( self::$forms as $index => $form_args ) {
 				if ( $form_slug === $index ) {
+					$form_args['name'] = empty( $form_args['name'] ) ? $form_slug : $form_args['name'];
 					$form = self::$instance->set_default_values( $form_args );
 					break;
 				}
 			}
-		}
-
-		if ( ! empty( $form ) ) {
-			// Set default form name.
-			$form['name'] = empty( $form['name'] ) ? $form_slug : $form['name'];
 		}
 
 		/**
