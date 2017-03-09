@@ -78,6 +78,34 @@ class Give_Fields_API {
 		add_filter( 'give_form_api_render_form_tags', array( $this, 'render_tags' ), 10, 2 );
 	}
 
+
+	/**
+	 * Render custom field.
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @param array $field
+	 *
+	 * @return bool
+	 */
+	private function render_custom_field( $field ){
+		$field_html = '';
+
+		if( empty( $field['callback'] ) ) {
+			$callback = $field['callback'];
+
+			// Process callback to get field html.
+			if ( is_string( $callback ) && function_exists( "$callback" ) ) {
+				$field_html = $callback( $field );
+			} elseif ( is_array( $callback ) && method_exists( $callback[0], "$callback[1]" ) ) {
+				$field_html = $callback[0]->$callback[1]( $field );
+			}
+		}
+
+		return $field_html;
+	}
+
 	/**
 	 * Render tag
 	 *
@@ -127,6 +155,11 @@ class Give_Fields_API {
 		foreach ( $form['fields'] as $key => $field ) {
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
 			$field         = self::get_instance()->set_default_values( $field );
+
+			// Render custom form with callback.
+			if( $field_html = self::$instance->render_custom_field( $field ) ){
+				$fields_html .= $field_html;
+			}
 
 			switch ( true ) {
 				// Section.
