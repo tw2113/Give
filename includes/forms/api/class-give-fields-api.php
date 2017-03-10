@@ -412,6 +412,53 @@ class Give_Fields_API {
 	}
 
 	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_select_field( $field ) {
+		ob_start();
+		echo $field['before_field_wrapper'];
+		?>
+		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
+			<?php
+			// Label: before field.
+			if ( 'before' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+
+			$options_html = '';
+			foreach ( $field['options'] as $key => $option ) {
+				$options_html .= "<option value=\"{$key}\">{$option}</option>";
+			}
+			?>
+
+			<select
+				type="<?php echo $field['type']; ?>"
+				name="<?php echo $field['name']; ?>"
+				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+				<?php echo self::$instance->get_field_attributes( $field ); ?>
+			><?php echo $options_html; ?></select>
+
+			<?php
+			// Label: before field.
+			if ( 'after' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
+		</p>
+		<?php
+		echo $field['after_field_wrapper'];
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Render label
 	 *
 	 * @since  1.9
