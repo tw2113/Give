@@ -74,6 +74,9 @@ class Give_Fields_API {
 		'label'      => '',
 		'name'       => '',
 		'attributes' => array(),
+
+		// Manually render section.
+		'callback'   => '',
 	);
 
 
@@ -183,8 +186,10 @@ class Give_Fields_API {
 
 		// Render fields.
 		foreach ( $form['fields'] as $key => $field ) {
+			// Set default value.
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
-			$field         = self::get_instance()->set_default_values( $field );
+			$field         = self::$instance->set_default_values( $field );
+
 
 			// Render custom form with callback.
 			if ( $field_html = self::$instance->render_custom_field( $field ) ) {
@@ -194,7 +199,17 @@ class Give_Fields_API {
 			switch ( true ) {
 				// Section.
 				case array_key_exists( 'fields', $field ):
+					// Set default values.
+					foreach ( $field['fields'] as $section_field_index => $section_field ){
+						$section_field['name'] = empty( $section_field['name'] )
+							? $section_field_index
+							: $section_field['name'];
+
+						$field['fields'][$section_field_index]= self::$instance->set_default_values( $section_field );
+					}
+
 					$fields_html .= self::$instance->render_section( $field, $form );
+
 					break;
 
 				// Field
@@ -456,7 +471,25 @@ class Give_Fields_API {
 		foreach ( $form['fields'] as $key => $field ) {
 			switch ( true ) {
 				case array_key_exists( 'fields', $field ):
-					// @todo: Fix reponsive field in section.
+					foreach ( $field['fields'] as $section_field_index => $section_field ) {
+						if ( ! self::$instance->is_sub_section( $section_field ) ) {
+							continue;
+						}
+
+						$form['fields'][ $key ]['fields'][$section_field_index]['row_attributes']['class'] = 'give-form-col';
+
+						if ( array_key_exists( 'sub_section_end', $section_field ) ) {
+							$form['fields'][ $key ]['fields'][$section_field_index]['row_attributes']['class'] = 'give-form-col give-form-col-end';
+
+							// Clear float left for next field.
+							$fields_keys = array_keys( $form['fields'][ $key ]['fields'] );
+
+							if ( $next_field_key = array_search( $key, $fields_keys ) ) {
+								$form['fields'][$key][ $fields_keys[ $next_field_key + 1 ] ]['row_attributes']['class'] = 'give-clearfix';
+							}
+						}
+					}
+
 					break;
 
 				default:
