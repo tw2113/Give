@@ -11,6 +11,7 @@
 Layout
 --------------------------------------*/
 .give-clearfix {
+  clear: both;
   @include clearfix();
 }
 

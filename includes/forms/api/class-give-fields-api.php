@@ -42,8 +42,13 @@ class Give_Fields_API {
 		// Add description to field as tooltip.
 		'tooltip'              => '',
 
+		// Show multiple fields in same row with in sub section.
+		'sub_section_start'    => false,
+		'sub_section_end'      => false,
+
 		// Add custom attributes.
 		'attributes'           => array(),
+		'row_attributes'       => array(),
 
 		// Params to edit field html.
 		// @todo: Implement these params.
@@ -173,6 +178,10 @@ class Give_Fields_API {
 
 		$fields_html = '';
 
+		// Set responsive fields.
+		self::$instance->set_responsive_field( $form );
+
+		// Render fields.
 		foreach ( $form['fields'] as $key => $field ) {
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
 			$field         = self::get_instance()->set_default_values( $field );
@@ -214,7 +223,7 @@ class Give_Fields_API {
 	public static function render_section( $section, $form = null ) {
 		ob_start();
 		?>
-		<fieldset <?php echo self::$instance->get_attributes( $section ); ?>>
+		<fieldset <?php echo self::$instance->get_field_attributes( $section ); ?>>
 			<?php
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
@@ -245,8 +254,9 @@ class Give_Fields_API {
 	 */
 	public static function render_text_field( $field ) {
 		ob_start();
+		echo $field['before_field_wrapper'];
 		?>
-		<p class="give-field-row">
+		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
 			<?php
 			// Label: before field.
 			if ( 'before' === $field['label_position'] ) {
@@ -259,7 +269,7 @@ class Give_Fields_API {
 					name="<?php echo $field['name']; ?>"
 					value="<?php echo $field ['value']; ?>"
 				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-				<?php echo self::$instance->get_attributes( $field ); ?>
+				<?php echo self::$instance->get_field_attributes( $field ); ?>
 			>
 
 			<?php
@@ -270,6 +280,8 @@ class Give_Fields_API {
 			?>
 		</p>
 		<?php
+		echo $field['after_field_wrapper'];
+
 		return ob_get_clean();
 	}
 
@@ -333,20 +345,20 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Get attribute string from field arguments.
+	 * Get field attribute string from field arguments.
 	 *
 	 * @since  1.9
 	 * @access private
 	 *
-	 * @param $field
+	 * @param array $attributes
 	 *
 	 * @return array|string
 	 */
-	private function get_attributes( $field ) {
+	private function get_attributes( $attributes ) {
 		$field_attributes_val = '';
 
-		if ( ! empty( $field['attributes'] ) ) {
-			foreach ( $field['attributes'] as $attribute_name => $attribute_val ) {
+		if ( ! empty( $attributes ) ) {
+			foreach ( $attributes as $attribute_name => $attribute_val ) {
 				$field_attributes_val[] = "{$attribute_name}=\"{$attribute_val}\"";
 			}
 		}
@@ -356,6 +368,34 @@ class Give_Fields_API {
 		}
 
 		return $field_attributes_val;
+	}
+
+	/**
+	 * Get field attribute string from field arguments.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $field
+	 *
+	 * @return array|string
+	 */
+	private function get_field_attributes( $field ) {
+		return self::$instance->get_attributes( $field['attributes'] );
+	}
+
+	/**
+	 * Get row attribute string from field arguments.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $field
+	 *
+	 * @return array|string
+	 */
+	private function get_row_attributes( $field ) {
+		return self::$instance->get_attributes( $field['row_attributes'] );;
 	}
 
 	/**
@@ -377,7 +417,7 @@ class Give_Fields_API {
 			: self::$field_defaults;
 
 		// Default field classes.
-		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : 'give-form-field give-form-field-js';
+		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : 'give-field give-field-js';
 
 		// Set default values for field or section.
 		$field = wp_parse_args( $field, $default_values );
@@ -390,9 +430,77 @@ class Give_Fields_API {
 		// Set class.
 		$field['attributes']['class'] = empty( $field['attributes']['class'] )
 			? $default_class
-			: implode( ' ', $field['attributes']['class'] ) . $default_class;
+			: "{$default_class} {$field['attributes']['class']}";
+
+		// Set wrapper class.
+		$field['row_attributes']['class'] = empty( $field['row_attributes']['class'] )
+			? 'give-field-row'
+			: ( self::$instance->is_sub_section( $field ) ? $field['row_attributes']['class'] : "give-field-row {$field['row_attributes']['class']}" );
 
 		return $field;
+	}
+
+
+	/**
+	 * Set responsive fields.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $form
+	 *
+	 * @return mixed
+	 */
+	private function set_responsive_field( &$form ) {
+
+		foreach ( $form['fields'] as $key => $field ) {
+			switch ( true ) {
+				case array_key_exists( 'fields', $field ):
+					// @todo: Fix reponsive field in section.
+					break;
+
+				default:
+					if ( ! self::$instance->is_sub_section( $field ) ) {
+						continue;
+					}
+
+					$form['fields'][ $key ]['row_attributes']['class'] = 'give-form-col';
+
+					if ( array_key_exists( 'sub_section_end', $field ) ) {
+						$form['fields'][ $key ]['row_attributes']['class'] = 'give-form-col give-form-col-end';
+
+						// Clear float left for next field.
+						$fields_keys = array_keys( $form['fields'] );
+
+						if ( $next_field_key = array_search( $key, $fields_keys ) ) {
+							$form['fields'][ $fields_keys[ $next_field_key + 1 ] ]['row_attributes']['class'] = 'give-clearfix';
+						}
+					}
+			}
+		}
+	}
+
+
+	/**
+	 * Check if current feld is part of sub section or not.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $field
+	 *
+	 * @return bool
+	 */
+	private function is_sub_section( $field ) {
+		$is_sub_section = false;
+		if (
+			array_key_exists( 'sub_section_start', $field )
+			|| array_key_exists( 'sub_section_end', $field )
+		) {
+			$is_sub_section = true;
+		}
+
+		return $is_sub_section;
 	}
 
 	/**

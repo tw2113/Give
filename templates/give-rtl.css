@@ -748,6 +748,7 @@ table#give_donation_receipt span.donation-level-text-wrap {
 Layout
 --------------------------------------*/
 .give-clearfix {
+  clear: both;
   *zoom: 1; }
   .give-clearfix:before, .give-clearfix:after {
     content: " ";
@@ -2268,3 +2269,28 @@ body.give-twentysixteen fieldset#give_terms_agreement {
   padding: 0 0 5px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%; }
+
+.give-form-wrapper .give-sub-section-label {
+  display: block; }
+
+.give-form-wrapper .give-field-row {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 0; }
+
+.give-form-wrapper .give-form-col {
+  padding-left: 10px;
+  display: inline-block;
+  float: right; }
+
+.give-form-wrapper .give-form-col-end {
+  padding-left: 0; }
+
+.give-form-wrapper .give-form-col-end:after {
+  visibility: hidden;
+  display: block;
+  content: "";
+  clear: both;
+  height: 0; }
