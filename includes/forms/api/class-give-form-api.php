@@ -89,6 +89,24 @@ class Give_Form_API {
 
 		// Load form api filters
 		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/filters.php';
+
+		// Add give_form_api shortcode.
+		add_shortcode( 'give_form_api', array( $this, 'render_shortcode' ) );
+	}
+
+
+	/**
+	 * Render form by shortcode.
+	 *
+	 * @since  1.9
+	 * @access public
+	 *
+	 * @param array $attrs
+	 */
+	public function render_shortcode( $attrs ) {
+		$attrs = shortcode_atts( array( 'id' => '', ), $attrs, 'give_form_api' );
+
+		echo self::$instance->render_form( $attrs['id'] );
 	}
 
 
