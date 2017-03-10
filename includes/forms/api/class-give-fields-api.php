@@ -459,6 +459,38 @@ class Give_Fields_API {
 		return ob_get_clean();
 	}
 
+	private function render_field_wrapper( $field ) {
+		ob_start();
+
+		echo $field['before_field_wrapper'];
+		?>
+		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
+			<?php
+			// Label: before field.
+			if ( 'before' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+
+			echo $field['before_field'];
+			?>
+
+			{{form_field}}
+
+			<?php
+			echo $field['before_field'];
+
+			// Label: before field.
+			if ( 'after' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
+		</p>
+		<?php
+		echo $field['after_field_wrapper'];
+
+		return ob_get_clean();
+	}
+
 
 
 	/**
@@ -475,6 +507,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
+			<?php echo $field['before_label']; ?>
 			<label class="give-label" for="<?php echo $field['field_attributes']['id']; ?>">
 
 				<?php echo $field['label']; ?>
@@ -487,6 +520,7 @@ class Give_Fields_API {
 					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['tooltip'] ?>"></span>
 				<?php endif; ?>
 			</label>
+			<?php echo $field['before_after']; ?>
 		<?php endif; ?>
 		<?php
 		return ob_get_clean();
