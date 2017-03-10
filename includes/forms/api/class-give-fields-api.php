@@ -368,8 +368,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
+			name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_field_attributes( $field ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -401,7 +400,6 @@ class Give_Fields_API {
 		?>
 
 		<select
-			type="<?php echo $field['type']; ?>"
 			name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_field_attributes( $field ); ?>
@@ -409,6 +407,23 @@ class Give_Fields_API {
 		<?php
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+	}
+
+	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_multi_select_field( $field ) {
+		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple') );
+		$field['name'] = "{$field['name']}[]";
+
+		return self::$instance->render_select_field( $field );
 	}
 
 
@@ -562,7 +577,7 @@ class Give_Fields_API {
 			: self::$field_defaults;
 
 		// Default field classes.
-		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : 'give-field give-field-js';
+		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : "give-field give-field-js give-field-type-{$field['type']}";
 
 		// Set default values for field or section.
 		$field = wp_parse_args( $field, $default_values );
