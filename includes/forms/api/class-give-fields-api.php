@@ -31,6 +31,7 @@ class Give_Fields_API {
 		'data_type'            => '',
 		'value'                => '',
 		'required'             => false,
+		'options'              => array(),
 
 		// Set default value to field.
 		'default'              => '',
@@ -457,7 +458,7 @@ class Give_Fields_API {
 
 		return ob_get_clean();
 	}
-	
+
 
 
 	/**
