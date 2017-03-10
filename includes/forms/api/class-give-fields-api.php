@@ -343,7 +343,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render number field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -353,6 +353,20 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_number_field( $field ) {
+		return self::$instance->render_text_field( $field );
+	}
+
+	/**
+	 * Render number field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_password_field( $field ) {
 		return self::$instance->render_text_field( $field );
 	}
 
