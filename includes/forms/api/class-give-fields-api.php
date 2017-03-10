@@ -51,7 +51,6 @@ class Give_Fields_API {
 		'wrapper_attributes'       => array(),
 
 		// Params to edit field html.
-		// @todo: Implement these params.
 		'before_field'         => '',
 		'after_field'          => '',
 		'before_field_wrapper' => '',
@@ -371,6 +370,48 @@ class Give_Fields_API {
 	}
 
 	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_textarea_field( $field ) {
+		ob_start();
+		echo $field['before_field_wrapper'];
+		?>
+		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
+			<?php
+			// Label: before field.
+			if ( 'before' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
+
+			<textarea
+				type="<?php echo $field['type']; ?>"
+				name="<?php echo $field['name']; ?>"
+				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+				<?php echo self::$instance->get_field_attributes( $field ); ?>
+			><?php echo $field ['value']; ?></textarea>
+
+			<?php
+			// Label: before field.
+			if ( 'after' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
+		</p>
+		<?php
+		echo $field['after_field_wrapper'];
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Render label
 	 *
 	 * @since  1.9
@@ -593,3 +634,4 @@ class Give_Fields_API {
 	}
 }
 // @todo auto fill field values.
+// @todo: Implement html edit params.
