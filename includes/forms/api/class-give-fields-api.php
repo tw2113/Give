@@ -284,7 +284,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render submit field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -298,7 +298,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render submit field.
+	 * Render checkbox field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -340,7 +340,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render number field.
+	 * Render password field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -354,7 +354,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render textarea field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -380,7 +380,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render select field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -410,7 +410,7 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render multi select field.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -424,6 +424,35 @@ class Give_Fields_API {
 		$field['name'] = "{$field['name']}[]";
 
 		return self::$instance->render_select_field( $field );
+	}
+
+	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_radio_field( $field ) {
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		ob_start();
+		foreach ( $field['options'] as $key => $option ) :
+			// @todo id issue.
+		?>
+			<input
+				type="<?php echo $field['type']; ?>"
+				name="<?php echo $field['name']; ?>"
+				value="<?php echo $key; ?>"
+				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+				<?php echo self::$instance->get_field_attributes( $field ); ?>
+			><?php echo $option; ?>
+		<?php
+		endforeach;
+
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
 
