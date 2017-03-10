@@ -329,6 +329,20 @@ class Give_Fields_API {
 	}
 
 	/**
+	 * Render text field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_email_field( $field ) {
+		return self::$instance->render_text_field( $field );
+	}
+
+	/**
 	 * Render label
 	 *
 	 * @since  1.9
