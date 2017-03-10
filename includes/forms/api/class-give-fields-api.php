@@ -268,36 +268,19 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_text_field( $field ) {
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
-		echo $field['before_field_wrapper'];
 		?>
-		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
-			<?php
-			// Label: before field.
-			if ( 'before' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-
-			<input
-					type="<?php echo $field['type']; ?>"
-					name="<?php echo $field['name']; ?>"
-					value="<?php echo $field ['value']; ?>"
-				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-				<?php echo self::$instance->get_field_attributes( $field ); ?>
-			>
-
-			<?php
-			// Label: before field.
-			if ( 'after' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-		</p>
+		<input
+			type="<?php echo $field['type']; ?>"
+			name="<?php echo $field['name']; ?>"
+			value="<?php echo $field ['value']; ?>"
+			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+			<?php echo self::$instance->get_field_attributes( $field ); ?>
+		>
 		<?php
-		echo $field['after_field_wrapper'];
 
-		return ob_get_clean();
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
 	/**
@@ -381,35 +364,20 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_textarea_field( $field ) {
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
-		echo $field['before_field_wrapper'];
 		?>
-		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
-			<?php
-			// Label: before field.
-			if ( 'before' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-
-			<textarea
+		<textarea
 				type="<?php echo $field['type']; ?>"
 				name="<?php echo $field['name']; ?>"
-				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-				<?php echo self::$instance->get_field_attributes( $field ); ?>
-			><?php echo $field ['value']; ?></textarea>
+			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+			<?php echo self::$instance->get_field_attributes( $field ); ?>
+		><?php echo $field ['value']; ?></textarea>
 
-			<?php
-			// Label: before field.
-			if ( 'after' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-		</p>
+
 		<?php
-		echo $field['after_field_wrapper'];
 
-		return ob_get_clean();
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
 	/**
@@ -423,42 +391,37 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_select_field( $field ) {
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
-		echo $field['before_field_wrapper'];
+
+		$options_html = '';
+		foreach ( $field['options'] as $key => $option ) {
+			$options_html .= "<option value=\"{$key}\">{$option}</option>";
+		}
 		?>
-		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
-			<?php
-			// Label: before field.
-			if ( 'before' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
 
-			$options_html = '';
-			foreach ( $field['options'] as $key => $option ) {
-				$options_html .= "<option value=\"{$key}\">{$option}</option>";
-			}
-			?>
-
-			<select
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
-				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-				<?php echo self::$instance->get_field_attributes( $field ); ?>
-			><?php echo $options_html; ?></select>
-
-			<?php
-			// Label: before field.
-			if ( 'after' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-		</p>
+		<select
+			type="<?php echo $field['type']; ?>"
+			name="<?php echo $field['name']; ?>"
+			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+			<?php echo self::$instance->get_field_attributes( $field ); ?>
+		><?php echo $options_html; ?></select>
 		<?php
-		echo $field['after_field_wrapper'];
 
-		return ob_get_clean();
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
+
+	/**
+	 * Render wrapper
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $field
+	 *
+	 * @return string
+	 */
 	private function render_field_wrapper( $field ) {
 		ob_start();
 
@@ -520,7 +483,7 @@ class Give_Fields_API {
 					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['tooltip'] ?>"></span>
 				<?php endif; ?>
 			</label>
-			<?php echo $field['before_after']; ?>
+			<?php echo $field['after_label']; ?>
 		<?php endif; ?>
 		<?php
 		return ob_get_clean();
@@ -718,4 +681,3 @@ class Give_Fields_API {
 	}
 }
 // @todo auto fill field values.
-// @todo: Implement html edit params.
