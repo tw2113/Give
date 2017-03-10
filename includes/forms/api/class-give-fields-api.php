@@ -457,18 +457,20 @@ class Give_Fields_API {
 
 		return ob_get_clean();
 	}
+	
+
 
 	/**
 	 * Render label
 	 *
 	 * @since  1.9
-	 * @access public
+	 * @access private
 	 *
 	 * @param $field
 	 *
 	 * @return string
 	 */
-	public static function render_label( $field ) {
+	private function render_label( $field ) {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
