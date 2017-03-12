@@ -92,7 +92,7 @@ class Give_Form_API {
 
 		// Add give_form_api shortcode.
 		add_shortcode( 'give_form_api', array( $this, 'render_shortcode' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'form_api_enqueue' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
 	}
 
 
@@ -165,6 +165,9 @@ class Give_Form_API {
 
 			return $form_html;
 		}
+
+		// Enqueue Form API js.
+		self::$instance->enqueue_scripts();
 
 		// Render custom form with callback.
 		if ( $form_html = self::$instance->render_custom_form( $form ) ) {
@@ -349,7 +352,7 @@ class Give_Form_API {
 	 * @since  1.9
 	 * @access public
 	 */
-	public function form_api_enqueue() {
+	public function register_form_api_scripts() {
 		$js_plugins     = GIVE_PLUGIN_URL . 'assets/js/plugins/';
 		$scripts_footer = ( give_is_setting_enabled( give_get_option( 'scripts_footer' ) ) ) ? true : false;
 
@@ -357,7 +360,21 @@ class Give_Form_API {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
 		// Register form api script.
-		wp_register( 'give-form-api-js', $js_plugins . "give-form-api{$suffix}.js", array( 'jquery' ), GIVE_VERSION, $scripts_footer );
+		wp_register_script( 'give-form-api-js', $js_plugins . "give-form-api{$suffix}.js", array( 'jquery' ), GIVE_VERSION, $scripts_footer );
+	}
+
+	/**
+	 * Load Form API scripts.
+	 *
+	 * @since  1.9
+	 * @access public
+	 */
+	private function enqueue_scripts() {
+		// DEBUG is On.
+		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+
+			wp_enqueue_script( 'give-form-api-js' );
+		}
 	}
 }
 
