@@ -43,7 +43,7 @@ class Give_Form_API {
 		// Add custom attributes.
 		'attributes'    => array(),
 
-		// Supported form layout: simple, stepper.
+		// Supported form layout: simple, stepper, reveal, modal, button.
 		'display_style' => 'simple',
 
 		// Manually render form.
@@ -92,6 +92,7 @@ class Give_Form_API {
 
 		// Add give_form_api shortcode.
 		add_shortcode( 'give_form_api', array( $this, 'render_shortcode' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'form_api_enqueue' ) );
 	}
 
 
@@ -340,6 +341,23 @@ class Give_Form_API {
 		);
 
 		return $form_html;
+	}
+
+	/**
+	 * Enqueue form api scripts.
+	 *
+	 * @since  1.9
+	 * @access public
+	 */
+	public function form_api_enqueue() {
+		$js_plugins     = GIVE_PLUGIN_URL . 'assets/js/plugins/';
+		$scripts_footer = ( give_is_setting_enabled( give_get_option( 'scripts_footer' ) ) ) ? true : false;
+
+		// Use minified libraries if SCRIPT_DEBUG is turned off.
+		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+		// Register form api script.
+		wp_register( 'give-form-api-js', $js_plugins . "give-form-api{$suffix}.js", array( 'jquery' ), GIVE_VERSION, $scripts_footer );
 	}
 }
 
