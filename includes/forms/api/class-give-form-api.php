@@ -35,19 +35,19 @@ class Give_Form_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'name'       => '',
-		'method'     => 'post',
-		'action'     => '',
-		'fields'     => array(),
+		'name'          => '',
+		'method'        => 'post',
+		'action'        => '',
+		'fields'        => array(),
 
 		// Add custom attributes.
-		'attributes' => array(),
+		'attributes'    => array(),
 
 		// Supported form layout: simple, stepper.
-		'layout'     => 'simple',
+		'display_style' => 'simple',
 
 		// Manually render form.
-		'callback'   => ''
+		'callback'      => ''
 
 		// @todo: Add html edit params.
 	);
@@ -80,8 +80,8 @@ class Give_Form_API {
 		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
 
 		self::$field_defaults['_template'] = include GIVE_PLUGIN_DIR . 'includes/forms/api/view/simple-form-template.php';
-		self::$field_defaults['action']   = esc_url( $_SERVER['REQUEST_URI'] );
-		self::$field_defaults             = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
+		self::$field_defaults['action']    = esc_url( $_SERVER['REQUEST_URI'] );
+		self::$field_defaults              = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
 		// Load fields API
 		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/class-give-fields-api.php';
@@ -123,7 +123,7 @@ class Give_Form_API {
 	private function render_custom_form( $form ) {
 		$form_html = '';
 
-		if( empty( $form['callback'] ) ) {
+		if ( empty( $form['callback'] ) ) {
 			$callback = $form['callback'];
 
 			// Process callback to get form html.
@@ -166,7 +166,7 @@ class Give_Form_API {
 		}
 
 		// Render custom form with callback.
-		if( $form_html = self::$instance->render_custom_form( $form ) ){
+		if ( $form_html = self::$instance->render_custom_form( $form ) ) {
 			return $form_html;
 		}
 
@@ -204,7 +204,7 @@ class Give_Form_API {
 		$form = wp_parse_args( $form, self::$field_defaults );
 
 		// Set template.
-		$form['_template'] = 'stepper' === $form['layout']
+		$form['_template'] = 'stepper' === $form['display_style']
 			? include GIVE_PLUGIN_DIR . 'includes/forms/api/view/stepper-form-template.php'
 			: $form['_template'];
 
@@ -243,7 +243,7 @@ class Give_Form_API {
 			foreach ( self::$forms as $index => $form_args ) {
 				if ( $form_slug === $index ) {
 					$form_args['name'] = empty( $form_args['name'] ) ? $form_slug : $form_args['name'];
-					$form = self::$instance->set_default_values( $form_args );
+					$form              = self::$instance->set_default_values( $form_args );
 					break;
 				}
 			}
