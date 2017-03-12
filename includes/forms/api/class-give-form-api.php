@@ -35,21 +35,36 @@ class Give_Form_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'name'          => '',
-		'method'        => 'post',
-		'action'        => '',
-		'fields'        => array(),
+		'name'                  => '',
+		'method'                => 'post',
+		'action'                => '',
+		'fields'                => array(),
 
 		// Add custom attributes.
-		'attributes'    => array(),
+		'attributes'            => array(),
 
 		// Supported form layout: simple, stepper, reveal, modal, button.
-		'display_style' => 'simple',
+		'display_style'         => 'simple',
+		'continue_button_html'  => '',
+		'continue_button_title' => '',
 
 		// Manually render form.
-		'callback'      => ''
+		'callback'              => ''
 
 		// @todo: Add html edit params.
+	);
+
+	/**
+	 * Display styles.
+	 *
+	 * @since  1.9
+	 * @access private
+	 * @var array
+	 */
+	private $display_styles = array(
+		'simple'  => 'includes/forms/api/view/simple-form-template.php',
+		'stepper' => 'includes/forms/api/view/stepper-form-template.php',
+		'reveal'  => 'includes/forms/api/view/reveal-form-template.php',
 	);
 
 
@@ -79,9 +94,10 @@ class Give_Form_API {
 	public function init() {
 		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
 
-		self::$field_defaults['_template'] = include GIVE_PLUGIN_DIR . 'includes/forms/api/view/simple-form-template.php';
-		self::$field_defaults['action']    = esc_url( $_SERVER['REQUEST_URI'] );
-		self::$field_defaults              = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
+		self::$field_defaults['_template']             = include GIVE_PLUGIN_DIR . self::$instance->display_styles['simple'];
+		self::$field_defaults['continue_button_title'] = __( 'Reveal Form', 'give' );
+		self::$field_defaults['action']                = esc_url( $_SERVER['REQUEST_URI'] );
+		self::$field_defaults                          = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
 		// Load fields API
 		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/class-give-fields-api.php';
@@ -208,8 +224,8 @@ class Give_Form_API {
 		$form = wp_parse_args( $form, self::$field_defaults );
 
 		// Set template.
-		$form['_template'] = 'stepper' === $form['display_style']
-			? include GIVE_PLUGIN_DIR . 'includes/forms/api/view/stepper-form-template.php'
+		$form['_template'] = array_key_exists( $form['display_style'], self::$instance->display_styles )
+			? include GIVE_PLUGIN_DIR . self::$instance->display_styles[ $form['display_style'] ]
 			: $form['_template'];
 
 		// Set ID.
