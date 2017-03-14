@@ -2284,7 +2284,8 @@ body.give-twentysixteen fieldset#give_terms_agreement {
 .mfp-wrap .give-hide-within-modal {
   display: none; }
 
-.give-display-style-modal form > *:not(.give-show-without-modal) {
+.give-display-style-modal form > *:not(.give-show-without-modal),
+.give-display-style-reveal form {
   display: none; }
 
 .give-form-wrapper .give-field-row {

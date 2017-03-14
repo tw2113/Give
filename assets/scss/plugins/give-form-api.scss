@@ -31,7 +31,8 @@
 }
 
 // Hide specific field in before modal view in modal display style.
-.give-display-style-modal form>*:not(.give-show-without-modal){
+.give-display-style-modal form>*:not(.give-show-without-modal),
+.give-display-style-reveal form{
 	display: none;
 }
 
