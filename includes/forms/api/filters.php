@@ -57,7 +57,11 @@ add_filter( 'give_form_api_manually_render_form_tags', 'give_do_not_process_cont
  */
 function give_render_form_continue_button_tag( $form_html, $form ) {
 	if( empty( $form['continue_button_html'] ) ) {
-		$form['continue_button_html'] = '<button class="give-btn-reveal">' . $form['continue_button_title'] . '</button>';
+		$class = ( 'modal' === $form['display_style']
+			? 'give-btn-modal'
+			: ( 'button' === $form['display_style'] ? 'give-btn-button' :'give-btn-reveal' )
+		);
+		$form['continue_button_html'] = '<button class="' . $class . '">' . $form['continue_button_title'] . '</button>';
 	}
 
 	$form_html = str_replace( '{{continue_button}}', $form['continue_button_html'], $form_html );

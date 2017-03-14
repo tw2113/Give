@@ -65,6 +65,8 @@ class Give_Form_API {
 		'simple'  => 'includes/forms/api/view/simple-form-template.php',
 		'stepper' => 'includes/forms/api/view/stepper-form-template.php',
 		'reveal'  => 'includes/forms/api/view/reveal-form-template.php',
+		'modal'   => 'includes/forms/api/view/modal-form-template.php',
+		'button'  => 'includes/forms/api/view/button-form-template.php',
 	);
 
 
@@ -95,7 +97,7 @@ class Give_Form_API {
 		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
 
 		self::$field_defaults['_template']             = include GIVE_PLUGIN_DIR . self::$instance->display_styles['simple'];
-		self::$field_defaults['continue_button_title'] = __( 'Reveal Form', 'give' );
+		self::$field_defaults['continue_button_title'] = __( 'Show Form', 'give' );
 		self::$field_defaults['action']                = esc_url( $_SERVER['REQUEST_URI'] );
 		self::$field_defaults                          = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
