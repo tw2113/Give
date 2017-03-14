@@ -663,6 +663,13 @@ class Give_Fields_API {
 							$fields_keys = array_keys( $form['fields'][ $key ]['fields'] );
 
 							if ( $next_field_key = array_search( $section_field_index, $fields_keys ) ) {
+								if (
+									! isset( $fields_keys[ $next_field_key + 1 ] )
+									|| ! isset( $form['fields'][ $key ]['fields'][ $fields_keys[ $next_field_key + 1 ] ] )
+								) {
+									continue;
+								}
+
 								$next_field = $form['fields'][ $key ]['fields'][ $fields_keys[ $next_field_key + 1 ] ];
 
 								$next_field['wrapper_attributes']['class'] = isset( $next_field['wrapper_attributes']['class'] )
