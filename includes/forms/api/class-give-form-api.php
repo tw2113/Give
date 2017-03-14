@@ -235,7 +235,16 @@ class Give_Form_API {
 			? $form['name']
 			: $form['attributes']['id'];
 
-		return $form;
+		/**
+		 * Filter the default values.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array  $form
+		 * @param string $form_slug
+		 * @param        array self::$forms
+		 */
+		return apply_filters( 'give_form_api_set_default_values', $form );
 	}
 
 

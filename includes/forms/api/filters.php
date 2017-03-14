@@ -70,3 +70,25 @@ function give_render_form_continue_button_tag( $form_html, $form ) {
 }
 
 add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_tag', 10, 2 );
+
+
+/**
+ * Set modal related classes.
+ *
+ * @since 1.9
+ *
+ * @param array $form
+ *
+ * @return array
+ */
+function give_set_display_style_class( $form ) {
+	if ( in_array( $form['display_style'], array( 'modal', 'button' ) ) ) {
+		$form['attributes']['class'] = isset( $form['attributes']['class'] )
+			? trim( $form['attributes']['class'] ) . ' give-form-modal mfp-hide'
+			: 'give-form-modal mfp-hide';
+	}
+
+	return $form;
+}
+
+add_filter( 'give_form_api_set_default_values', 'give_set_display_style_class' );
