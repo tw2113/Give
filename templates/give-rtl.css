@@ -748,7 +748,6 @@ table#give_donation_receipt span.donation-level-text-wrap {
 Layout
 --------------------------------------*/
 .give-clearfix {
-  clear: both;
   *zoom: 1; }
   .give-clearfix:before, .give-clearfix:after {
     content: " ";
@@ -2270,6 +2269,7 @@ body.give-twentysixteen fieldset#give_terms_agreement {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%; }
 
+.give-form-wrapper .give-label,
 .give-form-wrapper .give-sub-section-label {
   display: block; }
 

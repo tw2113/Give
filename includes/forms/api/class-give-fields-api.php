@@ -628,7 +628,7 @@ class Give_Fields_API {
 		// Set wrapper class.
 		$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
 			? 'give-field-row'
-			: ( self::$instance->is_sub_section( $field ) ? $field['wrapper_attributes']['class'] : "give-field-row {$field['wrapper_attributes']['class']}" );
+			: "give-field-row {$field['wrapper_attributes']['class']}";
 
 		return apply_filters( 'give_field_api_set_default_values', $field, $form );
 	}
@@ -662,8 +662,14 @@ class Give_Fields_API {
 							// Clear float left for next field.
 							$fields_keys = array_keys( $form['fields'][ $key ]['fields'] );
 
-							if ( $next_field_key = array_search( $key, $fields_keys ) ) {
-								$form['fields'][ $key ][ $fields_keys[ $next_field_key + 1 ] ]['wrapper_attributes']['class'] = 'give-clearfix';
+							if ( $next_field_key = array_search( $section_field_index, $fields_keys ) ) {
+								$next_field = $form['fields'][ $key ]['fields'][ $fields_keys[ $next_field_key + 1 ] ];
+
+								$next_field['wrapper_attributes']['class'] = isset( $next_field['wrapper_attributes']['class'] )
+									? $next_field['wrapper_attributes']['class'] . ' give-clearfix'
+									: 'give-clearfix';
+
+								$form['fields'][ $key ]['fields'][ $fields_keys[ $next_field_key + 1 ] ] = $next_field;
 							}
 						}
 					}
