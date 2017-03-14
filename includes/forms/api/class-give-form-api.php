@@ -26,7 +26,7 @@ class Give_Form_API {
 	 * @access private
 	 * @var array
 	 */
-	private static $forms;
+	private static $forms = array();
 
 	/**
 	 * The defaults for all elements
