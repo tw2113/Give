@@ -86,7 +86,7 @@
 						// Trigger custom event.
 						$button.trigger('give_button_form_popup_close');
 
-						$button.hide();
+						$button.show();
 					}
 				}
 			});
