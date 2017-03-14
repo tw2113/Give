@@ -46,6 +46,11 @@
 						// Trigger custom event.
 						$button.trigger('give_modal_form_popup_close');
 
+						// Remove hide class from form.
+						if( $( '.give-show-without-modal', $form_wrapper ).length ) {
+							$( 'form', $form_wrapper ).removeClass( 'mfp-hide' );
+						}
+
 						$button.show();
 					}
 				}

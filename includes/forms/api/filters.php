@@ -73,7 +73,7 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_
 
 
 /**
- * Set modal related classes.
+ * Set modal related classes in form.
  *
  * @since 1.9
  *
@@ -81,14 +81,51 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_
  *
  * @return array
  */
-function give_set_display_style_class( $form ) {
+function give_set_form_display_style_class( $form ) {
 	if ( in_array( $form['display_style'], array( 'modal', 'button' ) ) ) {
+		$class = 'give-form-modal';
+		$class = ( 'button' === $form['display_style'] ? "{$class} mfp-hide" : $class );
 		$form['attributes']['class'] = isset( $form['attributes']['class'] )
-			? trim( $form['attributes']['class'] ) . ' give-form-modal mfp-hide'
-			: 'give-form-modal mfp-hide';
+			? trim( $form['attributes']['class'] ) . " {$class}"
+			: $class;
 	}
 
 	return $form;
 }
 
-add_filter( 'give_form_api_set_default_values', 'give_set_display_style_class' );
+add_filter( 'give_form_api_set_default_values', 'give_set_form_display_style_class' );
+
+/**
+ * Set modal related classes in field.
+ *
+ * @since 1.9
+ *
+ * @param array $field
+ * @param array $form
+ *
+ * @return array
+ */
+function give_set_field_display_style_class( $field, $form ){
+	if( is_null( $form ) ) {
+		return $field;
+	}
+
+	if( 'modal' === $form['display_style'] ) {
+		$class = '';
+
+		if( ! empty( $field['show_without_modal'] ) ) {
+			$class = 'give-show-without-modal';
+		}
+
+		if( empty( $field['show_within_modal'] ) ) {
+			$class .= ' give-hide-within-modal';
+		}
+
+		$field['wrapper_attributes']['class'] = isset( $field['wrapper_attributes']['class'] )
+			? trim( $field['wrapper_attributes']['class'] ) . " {$class}"
+			: $class;
+	}
+
+	return $field;
+}
+add_filter( 'give_field_api_set_default_values', 'give_set_field_display_style_class', 10, 2 );

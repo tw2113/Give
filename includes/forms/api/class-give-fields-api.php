@@ -48,8 +48,12 @@ class Give_Fields_API {
 		'sub_section_end'      => false,
 
 		// Add custom attributes.
-		'field_attributes'           => array(),
-		'wrapper_attributes'       => array(),
+		'field_attributes'     => array(),
+		'wrapper_attributes'   => array(),
+
+		// Show/Hide field in before/after modal view.
+		'show_without_modal'   => false,
+		'show_within_modal'    => true,
 
 		// Params to edit field html.
 		'before_field'         => '',
@@ -71,12 +75,12 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $section_defaults = array(
-		'label'      => '',
-		'name'       => '',
+		'label'            => '',
+		'name'             => '',
 		'field_attributes' => array(),
 
 		// Manually render section.
-		'callback'   => '',
+		'callback'         => '',
 	);
 
 
@@ -153,7 +157,7 @@ class Give_Fields_API {
 		if ( method_exists( self::$instance, $functions_name ) ) {
 			$field_html .= self::$instance->{$functions_name}( $field );
 		} else {
-			$field_html .= apply_filters( "give_fields_api_render_{$field['type']}_field", '', $field, $form );
+			$field_html .= apply_filters( "give_field_api_render_{$field['type']}_field", '', $field, $form );
 		}
 
 		return $field_html;
@@ -188,7 +192,7 @@ class Give_Fields_API {
 		foreach ( $form['fields'] as $key => $field ) {
 			// Set default value.
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
-			$field         = self::$instance->set_default_values( $field );
+			$field         = self::$instance->set_default_values( $field, $form );
 
 
 			// Render custom form with callback.
@@ -200,12 +204,12 @@ class Give_Fields_API {
 				// Section.
 				case array_key_exists( 'fields', $field ):
 					// Set default values.
-					foreach ( $field['fields'] as $section_field_index => $section_field ){
+					foreach ( $field['fields'] as $section_field_index => $section_field ) {
 						$section_field['name'] = empty( $section_field['name'] )
 							? $section_field_index
 							: $section_field['name'];
 
-						$field['fields'][$section_field_index]= self::$instance->set_default_values( $section_field );
+						$field['fields'][ $section_field_index ] = self::$instance->set_default_values( $section_field );
 					}
 
 					$fields_html .= self::$instance->render_section( $field, $form );
@@ -272,9 +276,9 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<input
-			type="<?php echo $field['type']; ?>"
-			name="<?php echo $field['name']; ?>"
-			value="<?php echo $field ['value']; ?>"
+				type="<?php echo $field['type']; ?>"
+				name="<?php echo $field['name']; ?>"
+				value="<?php echo $field ['value']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_field_attributes( $field ); ?>
 		>
@@ -368,7 +372,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-			name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_field_attributes( $field ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -400,7 +404,7 @@ class Give_Fields_API {
 		?>
 
 		<select
-			name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_field_attributes( $field ); ?>
 		><?php echo $options_html; ?></select>
@@ -420,8 +424,8 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_multi_select_field( $field ) {
-		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple') );
-		$field['name'] = "{$field['name']}[]";
+		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple' ) );
+		$field['name']             = "{$field['name']}[]";
 
 		return self::$instance->render_select_field( $field );
 	}
@@ -441,15 +445,15 @@ class Give_Fields_API {
 		ob_start();
 		foreach ( $field['options'] as $key => $option ) :
 			// @todo id issue.
-		?>
+			?>
 			<input
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
-				value="<?php echo $key; ?>"
-				<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-				<?php echo self::$instance->get_field_attributes( $field ); ?>
+			type="<?php echo $field['type']; ?>"
+			name="<?php echo $field['name']; ?>"
+			value="<?php echo $key; ?>"
+			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+			<?php echo self::$instance->get_field_attributes( $field ); ?>
 			><?php echo $option; ?>
-		<?php
+			<?php
 		endforeach;
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
@@ -497,7 +501,6 @@ class Give_Fields_API {
 
 		return ob_get_clean();
 	}
-
 
 
 	/**
@@ -594,10 +597,11 @@ class Give_Fields_API {
 	 * @access private
 	 *
 	 * @param array $field
+	 * @param array $form
 	 *
 	 * @return array
 	 */
-	private function set_default_values( $field ) {
+	private function set_default_values( $field, $form = null ) {
 		$is_field = array_key_exists( 'fields', $field ) ? false : true;
 
 		// Get default values for section or field.
@@ -626,7 +630,7 @@ class Give_Fields_API {
 			? 'give-field-row'
 			: ( self::$instance->is_sub_section( $field ) ? $field['wrapper_attributes']['class'] : "give-field-row {$field['wrapper_attributes']['class']}" );
 
-		return $field;
+		return apply_filters( 'give_field_api_set_default_values', $field, $form );
 	}
 
 
@@ -650,16 +654,16 @@ class Give_Fields_API {
 							continue;
 						}
 
-						$form['fields'][ $key ]['fields'][$section_field_index]['wrapper_attributes']['class'] = 'give-form-col';
+						$form['fields'][ $key ]['fields'][ $section_field_index ]['wrapper_attributes']['class'] = 'give-form-col';
 
 						if ( array_key_exists( 'sub_section_end', $section_field ) ) {
-							$form['fields'][ $key ]['fields'][$section_field_index]['wrapper_attributes']['class'] = 'give-form-col give-form-col-end';
+							$form['fields'][ $key ]['fields'][ $section_field_index ]['wrapper_attributes']['class'] = 'give-form-col give-form-col-end';
 
 							// Clear float left for next field.
 							$fields_keys = array_keys( $form['fields'][ $key ]['fields'] );
 
 							if ( $next_field_key = array_search( $key, $fields_keys ) ) {
-								$form['fields'][$key][ $fields_keys[ $next_field_key + 1 ] ]['wrapper_attributes']['class'] = 'give-clearfix';
+								$form['fields'][ $key ][ $fields_keys[ $next_field_key + 1 ] ]['wrapper_attributes']['class'] = 'give-clearfix';
 							}
 						}
 					}

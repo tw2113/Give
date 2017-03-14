@@ -2273,13 +2273,19 @@ body.give-twentysixteen fieldset#give_terms_agreement {
 .give-form-wrapper .give-sub-section-label {
   display: block; }
 
-.give-form-modal {
+.mfp-wrap .give-form-modal {
   position: relative;
   background: #FFF;
   padding: 20px;
   width: auto;
   max-width: 500px;
   margin: 20px auto; }
+
+.mfp-wrap .give-hide-within-modal {
+  display: none; }
+
+.give-display-style-modal form > *:not(.give-show-without-modal) {
+  display: none; }
 
 .give-form-wrapper .give-field-row {
   -webkit-box-sizing: border-box;

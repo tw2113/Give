@@ -13,13 +13,26 @@
 	}
 }
 
-.give-form-modal {
-	position: relative;
-	background: #FFF;
-	padding: 20px;
-	width: auto;
-	max-width: 500px;
-	margin: 20px auto;
+.mfp-wrap {
+	.give-form-modal {
+		position: relative;
+		background: #FFF;
+		padding: 20px;
+		width: auto;
+		max-width: 500px;
+		margin: 20px auto;
+	}
+
+
+	// Hide specific field in modal view.
+	.give-hide-within-modal{
+		display: none;
+	}
+}
+
+// Hide specific field in before modal view in modal display style.
+.give-display-style-modal form>*:not(.give-show-without-modal){
+	display: none;
 }
 
 // --------------------------
