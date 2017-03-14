@@ -606,7 +606,7 @@ class Give_Fields_API {
 			: self::$field_defaults;
 
 		// Default field classes.
-		$default_class = ! $is_field ? 'give-form-section give-form-section-js give-clearfix' : "give-field give-field-js give-field-type-{$field['type']}";
+		$default_class = ! $is_field ? 'give-form-section js-give-form-section give-clearfix' : "give-field give-field-js give-field-type-{$field['type']}";
 
 		// Set default values for field or section.
 		$field = wp_parse_args( $field, $default_values );
