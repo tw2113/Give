@@ -75,6 +75,7 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $section_defaults = array(
+		'type'               => 'section',
 		'label'              => '',
 		'name'               => '',
 		'section_attributes' => array(),
