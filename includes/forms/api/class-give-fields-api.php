@@ -631,11 +631,27 @@ class Give_Fields_API {
 	 * @return array
 	 */
 	private function set_default_values( $field, $form = null, $fire_filter = true ) {
+		/**
+		 * Filter the field before set default values.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array $field
+		 * @param array $form
+		 */
+		$field = $fire_filter
+			? apply_filters( 'give_field_api_pre_set_default_values', $field, $form )
+			: $field;
 
 		switch ( self::$instance->get_field_type( $field ) ) {
 			case 'block':
 				// Set default values for block.
 				$field = wp_parse_args( $field, self::$block_defaults );
+
+				// Set wrapper class.
+				$field['block_attributes']['class'] = empty( $field['block_attributes']['class'] )
+					? "give-block-wrapper js-give-block-wrapper give-block-{$field['name']}"
+					: "give-block-wrapper js-give-block-wrapper give-block-{$field['name']} {$field['block_attributes']['class']}";
 
 				foreach ( $field['fields'] as $key => $single_field ) {
 					$single_field['name']    = ! empty( $single_field['name'] )
@@ -650,6 +666,11 @@ class Give_Fields_API {
 				// Set default values for block.
 				$field = wp_parse_args( $field, self::$section_defaults );
 
+				// Set wrapper class.
+				$field['section_attributes']['class'] = empty( $field['section_attributes']['class'] )
+					? 'give-section-wrapper'
+					: "give-section-wrapper {$field['section_attributes']['class']}";
+
 				foreach ( $field['fields'] as $key => $single_field ) {
 					$single_field['name']    = ! empty( $single_field['name'] )
 						? $single_field['name']
@@ -663,9 +684,6 @@ class Give_Fields_API {
 				// Set default values for field or section.
 				$field = wp_parse_args( $field, self::$field_defaults );
 
-				// Default field classes.
-				$default_class = "give-field give-field-js give-field-type-{$field['type']}";
-
 				// Set ID.
 				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
 					? "give-{$field['name']}-field"
@@ -673,17 +691,17 @@ class Give_Fields_API {
 
 				// Set class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
-					? $default_class
-					: "{$default_class} {$field['field_attributes']['class']}";
+					? "give-field js-give-field give-field-type-{$field['type']}"
+					: "give-field js-give-field give-field-type-{$field['type']} {$field['field_attributes']['class']}";
 
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
-					? 'give-field-row'
-					: "give-field-row {$field['wrapper_attributes']['class']}";
+					? 'give-field-wrapper'
+					: "give-field-wrapper {$field['wrapper_attributes']['class']}";
 		}
 
 		/**
-		 * Filter the field.
+		 * Filter the field after set default values.
 		 *
 		 * @since 1.9
 		 *
@@ -691,7 +709,7 @@ class Give_Fields_API {
 		 * @param array $form
 		 */
 		$field = $fire_filter
-			? apply_filters( 'give_field_api_set_default_values', $field, $form )
+			? apply_filters( 'give_field_api_post_set_default_values', $field, $form )
 			: $field;
 
 		return $field;
