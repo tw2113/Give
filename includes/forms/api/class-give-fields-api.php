@@ -742,3 +742,4 @@ class Give_Fields_API {
 	}
 }
 // @todo auto fill field values.
+// @todo set clearfix class for section also

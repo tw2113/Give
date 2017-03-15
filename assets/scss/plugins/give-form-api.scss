@@ -40,31 +40,28 @@
 // --------------------------
 // Responsive form css
 // --------------------------
-.give-form-wrapper{
-	.give-field-row{
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
-		overflow: visible;
-		padding: 0;
-	}
+.give-field-row{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	overflow: visible;
+	padding: 0;
+}
 
-	.give-form-col{
-		padding-right: 10px;
-		display: inline-block;
-		float: left;
-	}
+.give-form-col{
+	padding-right: 10px;
+	display: inline-block;
+	float: left;
+}
 
-	.give-form-col-end {
-		padding-right: 0;
-	}
+.give-form-col-end {
+	padding-right: 0;
+}
 
-	.give-form-col-end:after {
-		visibility: hidden;
-		display: block;
-		content: "";
-		clear: both;
-		height: 0;
-	}
-
+.give-form-col-end:after {
+	visibility: hidden;
+	display: block;
+	content: "";
+	clear: both;
+	height: 0;
 }

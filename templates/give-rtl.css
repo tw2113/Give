@@ -2288,22 +2288,22 @@ body.give-twentysixteen fieldset#give_terms_agreement {
 .give-display-style-reveal form {
   display: none; }
 
-.give-form-wrapper .give-field-row {
+.give-field-row {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: visible;
   padding: 0; }
 
-.give-form-wrapper .give-form-col {
+.give-form-col {
   padding-left: 10px;
   display: inline-block;
   float: right; }
 
-.give-form-wrapper .give-form-col-end {
+.give-form-col-end {
   padding-left: 0; }
 
-.give-form-wrapper .give-form-col-end:after {
+.give-form-col-end:after {
   visibility: hidden;
   display: block;
   content: "";
