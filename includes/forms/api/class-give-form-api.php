@@ -223,6 +223,15 @@ class Give_Form_API {
 	 * @return array
 	 */
 	private static function set_default_values( $form ) {
+		/**
+		 * Filter the form values before set default values.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array  $form
+		 */
+		$form = apply_filters( 'give_form_api_pre_set_default_values', $form );
+
 		$form = wp_parse_args( $form, self::$field_defaults );
 
 		// Set template.
@@ -236,15 +245,13 @@ class Give_Form_API {
 			: $form['attributes']['id'];
 
 		/**
-		 * Filter the default values.
+		 * Filter the default values after set form default values.
 		 *
 		 * @since 1.9
 		 *
 		 * @param array  $form
-		 * @param string $form_slug
-		 * @param        array self::$forms
 		 */
-		return apply_filters( 'give_form_api_set_default_values', $form );
+		return apply_filters( 'give_form_api_post_set_default_values', $form );
 	}
 
 

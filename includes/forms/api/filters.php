@@ -93,7 +93,7 @@ function give_set_form_display_style_class( $form ) {
 	return $form;
 }
 
-add_filter( 'give_form_api_set_default_values', 'give_set_form_display_style_class' );
+add_filter( 'give_form_api_post_set_default_values', 'give_set_form_display_style_class' );
 
 /**
  * Set modal related classes in field.
