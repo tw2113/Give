@@ -69,15 +69,30 @@ class Give_Fields_API {
 	);
 
 	/**
-	 * The defaults for all elements
+	 * The defaults for all sections.
 	 *
 	 * @since  1.9
 	 * @access static
 	 */
 	static $section_defaults = array(
+		'label'              => '',
+		'name'               => '',
+		'section_attributes' => array(),
+
+		// Manually render section.
+		'callback'           => '',
+	);
+
+	/**
+	 * The defaults for all blocks.
+	 *
+	 * @since  1.9
+	 * @access static
+	 */
+	static $block_defaults = array(
 		'label'            => '',
 		'name'             => '',
-		'field_attributes' => array(),
+		'block_attributes' => array(),
 
 		// Manually render section.
 		'callback'         => '',
@@ -179,31 +194,12 @@ class Give_Fields_API {
 			switch ( true ) {
 				// Block.
 				case ( array_key_exists( 'type', $field ) && 'block' === $field['type'] ):
-					// Set default values.
-					foreach ( $field['fields'] as $section_field_index => $section_field ) {
-						$section_field['name'] = empty( $section_field['name'] )
-							? $section_field_index
-							: $section_field['name'];
-
-						$field['fields'][ $section_field_index ] = self::$instance->set_default_values( $section_field );
-					}
-
 					$fields_html .= self::$instance->render_block( $field, $form );
 					break;
 
 				// Section.
 				case array_key_exists( 'fields', $field ):
-					// Set default values.
-					foreach ( $field['fields'] as $section_field_index => $section_field ) {
-						$section_field['name'] = empty( $section_field['name'] )
-							? $section_field_index
-							: $section_field['name'];
-
-						$field['fields'][ $section_field_index ] = self::$instance->set_default_values( $section_field );
-					}
-
 					$fields_html .= self::$instance->render_section( $field, $form );
-
 					break;
 
 				// Field
@@ -232,7 +228,7 @@ class Give_Fields_API {
 	public static function render_section( $section, $form = null ) {
 		ob_start();
 		?>
-		<fieldset <?php echo self::$instance->get_field_attributes( $section ); ?>>
+		<fieldset <?php echo self::$instance->get_attributes( $section['section_attributes'] ); ?>>
 			<?php
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
@@ -264,7 +260,7 @@ class Give_Fields_API {
 	public static function render_block( $section, $form = null ) {
 		ob_start();
 		?>
-		<div <?php echo self::$instance->get_field_attributes( $section ); ?>>
+		<div <?php echo self::$instance->get_attributes( $section['block_attributes'] ); ?>>
 			<?php
 			// Fields.
 			foreach ( $section['fields'] as $key => $field ) {
@@ -322,7 +318,7 @@ class Give_Fields_API {
 				name="<?php echo $field['name']; ?>"
 				value="<?php echo $field ['value']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_field_attributes( $field ); ?>
+			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
 		<?php
 
@@ -416,7 +412,7 @@ class Give_Fields_API {
 		<textarea
 				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_field_attributes( $field ); ?>
+			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $field ['value']; ?></textarea>
 
 
@@ -448,7 +444,7 @@ class Give_Fields_API {
 		<select
 				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_field_attributes( $field ); ?>
+			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $options_html; ?></select>
 		<?php
 
@@ -493,7 +489,7 @@ class Give_Fields_API {
 			name="<?php echo $field['name']; ?>"
 			value="<?php echo $key; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_field_attributes( $field ); ?>
+			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 			><?php echo $option; ?>
 			<?php
 		endforeach;
@@ -517,7 +513,7 @@ class Give_Fields_API {
 
 		echo $field['before_field_wrapper'];
 		?>
-		<p <?php echo self::$instance->get_row_attributes( $field ); ?>>
+		<p <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
 			<?php
 			// Label: before field.
 			if ( 'before' === $field['label_position'] ) {
@@ -605,34 +601,6 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Get field attribute string from field arguments.
-	 *
-	 * @since  1.9
-	 * @access private
-	 *
-	 * @param $field
-	 *
-	 * @return array|string
-	 */
-	private function get_field_attributes( $field ) {
-		return self::$instance->get_attributes( $field['field_attributes'] );
-	}
-
-	/**
-	 * Get row attribute string from field arguments.
-	 *
-	 * @since  1.9
-	 * @access private
-	 *
-	 * @param $field
-	 *
-	 * @return array|string
-	 */
-	private function get_row_attributes( $field ) {
-		return self::$instance->get_attributes( $field['wrapper_attributes'] );;
-	}
-
-	/**
 	 * Set default values for fields
 	 *
 	 * @since  1.0
@@ -640,39 +608,75 @@ class Give_Fields_API {
 	 *
 	 * @param array $field
 	 * @param array $form
+	 * @param bool  $fire_filter
 	 *
 	 * @return array
 	 */
-	private function set_default_values( $field, $form = null ) {
-		$is_field = array_key_exists( 'fields', $field ) ? false : true;
+	private function set_default_values( $field, $form = null, $fire_filter = true ) {
 
-		// Get default values for section or field.
-		$default_values = ! $is_field
-			? self::$section_defaults
-			: self::$field_defaults;
+		switch ( self::$instance->get_field_type( $field ) ) {
+			case 'block':
+				// Set default values for block.
+				$field = wp_parse_args( $field, self::$block_defaults );
 
-		// Set default values for field or section.
-		$field = wp_parse_args( $field, $default_values );
+				foreach ( $field['fields'] as $key => $single_field ) {
+					$single_field['name']    = ! empty( $single_field['name'] )
+						? $single_field['name']
+						: $key;
+					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+				}
 
-		// Default field classes.
-		$default_class = ! $is_field ? 'give-form-section js-give-form-section give-clearfix' : "give-field give-field-js give-field-type-{$field['type']}";
+				break;
 
-		// Set ID.
-		$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
-			? ( $is_field ? "give-{$field['name']}-field" : "give-{$field['name']}-section" )
-			: $field['field_attributes']['id'];
+			case 'section':
+				// Set default values for block.
+				$field = wp_parse_args( $field, self::$section_defaults );
 
-		// Set class.
-		$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
-			? $default_class
-			: "{$default_class} {$field['field_attributes']['class']}";
+				foreach ( $field['fields'] as $key => $single_field ) {
+					$single_field['name']    = ! empty( $single_field['name'] )
+						? $single_field['name']
+						: $key;
+					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+				}
 
-		// Set wrapper class.
-		$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
-			? 'give-field-row'
-			: "give-field-row {$field['wrapper_attributes']['class']}";
+				break;
 
-		return apply_filters( 'give_field_api_set_default_values', $field, $form );
+			default:
+				// Set default values for field or section.
+				$field = wp_parse_args( $field, self::$field_defaults );
+
+				// Default field classes.
+				$default_class = "give-field give-field-js give-field-type-{$field['type']}";
+
+				// Set ID.
+				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
+					? "give-{$field['name']}-field"
+					: $field['field_attributes']['id'];
+
+				// Set class.
+				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
+					? $default_class
+					: "{$default_class} {$field['field_attributes']['class']}";
+
+				// Set wrapper class.
+				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
+					? 'give-field-row'
+					: "give-field-row {$field['wrapper_attributes']['class']}";
+		}
+
+		/**
+		 * Filter the field.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array $field
+		 * @param array $form
+		 */
+		$field = $fire_filter
+			? apply_filters( 'give_field_api_set_default_values', $field, $form )
+			: $field;
+
+		return $field;
 	}
 
 
@@ -748,7 +752,7 @@ class Give_Fields_API {
 
 
 	/**
-	 * Check if current feld is part of sub section or not.
+	 * Check if current field is part of sub section or not.
 	 *
 	 * @since  1.9
 	 * @access private
@@ -759,14 +763,39 @@ class Give_Fields_API {
 	 */
 	private function is_sub_section( $field ) {
 		$is_sub_section = false;
-		if (
-			array_key_exists( 'sub_section_start', $field )
-			|| array_key_exists( 'sub_section_end', $field )
-		) {
+		if ( array_key_exists( 'sub_section_start', $field ) || array_key_exists( 'sub_section_end', $field ) ) {
 			$is_sub_section = true;
 		}
 
 		return $is_sub_section;
+	}
+
+
+	/**
+	 * Get field type.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param $field
+	 *
+	 * @return bool
+	 */
+	private function get_field_type( $field ) {
+		$field_type = 'field';
+
+		if (
+			isset( $field['type'] )
+			&& 'block' === $field['type']
+		) {
+			$field_type = 'block';
+
+		} else if ( array_key_exists( 'fields', $field ) ) {
+			$field_type = 'section';
+
+		}
+
+		return $field_type;
 	}
 
 	/**
