@@ -401,6 +401,20 @@ class Give_Fields_API {
 	}
 
 	/**
+	 * Render button field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_button_field( $field ) {
+		return self::$instance->render_text_field( $field );
+	}
+
+	/**
 	 * Render textarea field.
 	 *
 	 * @since  1.9
