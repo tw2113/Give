@@ -91,6 +91,7 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $block_defaults = array(
+		'type'             => 'block',
 		'label'            => '',
 		'name'             => '',
 		'block_attributes' => array(),
