@@ -36,7 +36,7 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_attributes_tag',
  * @return string
  */
 function give_do_not_process_continue_button_tag( $form_tags, $form ) {
-	if( in_array( $form['display_style'], array( 'reveal')  ) ) {
+	if ( in_array( $form['display_style'], array( 'reveal' ) ) ) {
 		$form_tags[] = '{{continue_button}}';
 	}
 
@@ -56,10 +56,10 @@ add_filter( 'give_form_api_manually_render_form_tags', 'give_do_not_process_cont
  * @return string
  */
 function give_render_form_continue_button_tag( $form_html, $form ) {
-	if( empty( $form['continue_button_html'] ) ) {
-		$class = ( 'modal' === $form['display_style']
+	if ( empty( $form['continue_button_html'] ) ) {
+		$class                        = ( 'modal' === $form['display_style']
 			? 'give-btn-modal'
-			: ( 'button' === $form['display_style'] ? 'give-btn-button' :'give-btn-reveal' )
+			: ( 'button' === $form['display_style'] ? 'give-btn-button' : 'give-btn-reveal' )
 		);
 		$form['continue_button_html'] = '<button class="' . $class . '">' . $form['continue_button_title'] . '</button>';
 	}
@@ -83,8 +83,8 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_
  */
 function give_set_form_display_style_class( $form ) {
 	if ( in_array( $form['display_style'], array( 'modal', 'button' ) ) ) {
-		$class = 'give-form-modal';
-		$class = ( 'button' === $form['display_style'] ? "{$class} mfp-hide" : $class );
+		$class                       = 'give-form-modal';
+		$class                       = ( 'button' === $form['display_style'] ? "{$class} mfp-hide" : $class );
 		$form['attributes']['class'] = isset( $form['attributes']['class'] )
 			? trim( $form['attributes']['class'] ) . " {$class}"
 			: $class;
@@ -105,19 +105,19 @@ add_filter( 'give_form_api_set_default_values', 'give_set_form_display_style_cla
  *
  * @return array
  */
-function give_set_field_display_style_class( $field, $form ){
-	if( is_null( $form ) ) {
+function give_set_field_display_style_class( $field, $form ) {
+	if ( is_null( $form ) ) {
 		return $field;
 	}
 
-	if( 'modal' === $form['display_style'] ) {
+	if ( 'modal' === $form['display_style'] ) {
 		$class = '';
 
-		if( ! empty( $field['show_without_modal'] ) ) {
+		if ( ! empty( $field['show_without_modal'] ) ) {
 			$class = 'give-show-without-modal';
 		}
 
-		if( empty( $field['show_within_modal'] ) ) {
+		if ( empty( $field['show_within_modal'] ) ) {
 			$class .= ' give-hide-within-modal';
 		}
 
@@ -128,4 +128,40 @@ function give_set_field_display_style_class( $field, $form ){
 
 	return $field;
 }
-add_filter( 'give_field_api_set_default_values', 'give_set_field_display_style_class', 10, 2 );
+
+add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_style_class', 10, 2 );
+
+
+/**
+ * Set step buttons for stepper form.
+ *
+ * @since 1.9
+ *
+ * @param array $field
+ * @param array $form
+ *
+ * @return array
+ */
+function give_set_step_buttons_for_stepper_from( $field, $form ) {
+	if ( ! isset( $field['fields']['prev'] ) ) {
+		$field['fields']['prev'] = array(
+			'type'         => 'button',
+			'value'        => __( 'Previous' ),
+			'wrapper'      => false,
+			'before_field' => '<p class="give-clearfix">',
+		);
+	}
+
+	if ( ! isset( $field['fields']['next'] ) ) {
+		$field['fields']['next'] = array(
+			'type'        => 'button',
+			'value'       => __( 'Next' ),
+			'wrapper'     => false,
+			'after_field' => '</p>',
+		);
+	}
+
+	return $field;
+}
+
+add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_stepper_from', 10, 2 );
