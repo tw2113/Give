@@ -139,30 +139,6 @@ class Give_Fields_API {
 		return $field_html;
 	}
 
-	/**
-	 * Render tag
-	 *
-	 * @since   1.9
-	 * @access  public
-	 *
-	 * @param $field
-	 * @param $form
-	 *
-	 * @return string
-	 */
-	public static function render_tag( $field, $form = null ) {
-		$field_html     = '';
-		$functions_name = "render_{$field['type']}_field";
-
-		if ( method_exists( self::$instance, $functions_name ) ) {
-			$field_html .= self::$instance->{$functions_name}( $field );
-		} else {
-			$field_html .= apply_filters( "give_field_api_render_{$field['type']}_field", '', $field, $form );
-		}
-
-		return $field_html;
-	}
-
 
 	/**
 	 * Render `{{form_fields}}` tag.
@@ -201,6 +177,20 @@ class Give_Fields_API {
 			}
 
 			switch ( true ) {
+				// Block.
+				case ( array_key_exists( 'type', $field ) && 'block' === $field['type'] ):
+					// Set default values.
+					foreach ( $field['fields'] as $section_field_index => $section_field ) {
+						$section_field['name'] = empty( $section_field['name'] )
+							? $section_field_index
+							: $section_field['name'];
+
+						$field['fields'][ $section_field_index ] = self::$instance->set_default_values( $section_field );
+					}
+
+					$fields_html .= self::$instance->render_block( $field, $form );
+					break;
+
 				// Section.
 				case array_key_exists( 'fields', $field ):
 					// Set default values.
@@ -251,13 +241,65 @@ class Give_Fields_API {
 
 			// Fields.
 			foreach ( $section['fields'] as $key => $field ) {
-				$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
 				echo self::render_tag( $field, $form );
 			}
 			?>
 		</fieldset>
 		<?php
 		return ob_get_clean();
+	}
+
+
+	/**
+	 * Render block.
+	 *
+	 * @since  1.9
+	 * @access public
+	 *
+	 * @param array $section
+	 * @param array $form
+	 *
+	 * @return string
+	 */
+	public static function render_block( $section, $form = null ) {
+		ob_start();
+		?>
+		<div <?php echo self::$instance->get_field_attributes( $section ); ?>>
+			<?php
+			// Fields.
+			foreach ( $section['fields'] as $key => $field ) {
+				echo array_key_exists( 'fields', $field )
+					? self::render_section( $field, $form )
+					: self::render_tag( $field, $form );
+			}
+			?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render tag
+	 *
+	 * @since   1.9
+	 * @access  public
+	 *
+	 * @param $field
+	 * @param $form
+	 *
+	 * @return string
+	 */
+	public static function render_tag( $field, $form = null ) {
+		$field_html     = '';
+		$functions_name = "render_{$field['type']}_field";
+
+		if ( method_exists( self::$instance, $functions_name ) ) {
+			$field_html .= self::$instance->{$functions_name}( $field );
+		} else {
+			$field_html .= apply_filters( "give_field_api_render_{$field['type']}_field", '', $field, $form );
+		}
+
+		return $field_html;
 	}
 
 
