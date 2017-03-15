@@ -36,6 +36,9 @@ class Give_Fields_API {
 		// Set default value to field.
 		'default'              => '',
 
+		// Field with wrapper.
+		'wrapper'              => true,
+
 		// Add label, before and after field.
 		'label'                => '',
 		'label_position'       => 'before',
