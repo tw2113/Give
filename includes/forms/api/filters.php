@@ -184,6 +184,9 @@ add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_
 function give_field_api_set_field_value( $field ) {
 	switch ( $field['type'] ) {
 		case 'text':
+		case 'password':
+		case 'number':
+		case 'email':
 			// Set default value.
 			$field['field_attributes']['value'] = $field['default'];
 
@@ -194,12 +197,37 @@ function give_field_api_set_field_value( $field ) {
 			}
 			break;
 
+		case 'textarea':
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			}
+			break;
+
 		case 'checkbox':
 			$field['field_attributes']['value'] = 'enabled';
 			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
 				$field['value'] = 'enabled';
 				$field['field_attributes']['checked'] = 'checked';
 			}
+			break;
+
+		case 'radio':
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			}
+			break;
+
+		case 'select':
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			}
+			break;
+
+		case 'multi_select':
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			}
+			break;
 	}
 
 	return $field;

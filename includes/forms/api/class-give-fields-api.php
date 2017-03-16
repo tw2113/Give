@@ -190,7 +190,6 @@ class Give_Fields_API {
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
 			$field         = self::$instance->set_default_values( $field, $form );
 
-
 			// Render custom form with callback.
 			if ( $field_html = self::$instance->render_custom_field( $field ) ) {
 				$fields_html .= $field_html;
@@ -439,7 +438,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-				name="<?php echo $field['name']; ?>"
+			name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -466,7 +465,18 @@ class Give_Fields_API {
 
 		$options_html = '';
 		foreach ( $field['options'] as $key => $option ) {
-			$options_html .= "<option value=\"{$key}\">{$option}</option>";
+			$selected = '';
+
+			if ( is_array( $field['value'] ) ) {
+				$selected = in_array( $key, $field['value'] )
+					? 'selected="selected"'
+					: '';
+
+			} else {
+				$selected = selected( $key, $field['value'], false );
+			}
+
+			$options_html .= '<option value="' . $key . '" ' . $selected . '>' . $option . '</option>';
 		}
 		?>
 
@@ -517,6 +527,7 @@ class Give_Fields_API {
 			type="<?php echo $field['type']; ?>"
 			name="<?php echo $field['name']; ?>"
 			value="<?php echo $key; ?>"
+			<?php checked( $key, $field['value'] )?>
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 			><?php echo $option; ?>
@@ -540,7 +551,7 @@ class Give_Fields_API {
 	private function render_field_wrapper( $field ) {
 		ob_start();
 
-		if( $field['wrapper'] ) :
+		if ( $field['wrapper'] ) :
 
 			echo $field['before_field_wrapper'];
 			?>
@@ -846,7 +857,7 @@ class Give_Fields_API {
 		) {
 			$field_type = 'block';
 
-		} else if ( array_key_exists( 'fields', $field ) ) {
+		} elseif ( array_key_exists( 'fields', $field ) ) {
 			$field_type = 'section';
 
 		}
