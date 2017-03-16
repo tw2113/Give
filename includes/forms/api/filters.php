@@ -170,3 +170,39 @@ function give_set_step_buttons_for_stepper_from( $field, $form ) {
 }
 
 add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_stepper_from', 10, 2 );
+
+
+/**
+ * Set field value.
+ *
+ * @since 1.9
+ *
+ * @param $field
+ *
+ * @return mixed
+ */
+function give_field_api_set_field_value( $field ) {
+	switch ( $field['type'] ) {
+		case 'text':
+			// Set default value.
+			$field['field_attributes']['value'] = $field['default'];
+
+			if ( ! empty( $field['value'] ) ) {
+				$field['field_attributes']['value'] = $field['value'];
+			} elseif ( isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['field_attributes']['value'] = $_REQUEST[ $field['name'] ];
+			}
+			break;
+
+		case 'checkbox':
+			$field['field_attributes']['value'] = 'enabled';
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = 'enabled';
+				$field['field_attributes']['checked'] = 'checked';
+			}
+	}
+
+	return $field;
+}
+
+add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value' );

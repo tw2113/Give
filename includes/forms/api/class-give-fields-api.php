@@ -319,9 +319,8 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<input
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
-				value="<?php echo $field ['value']; ?>"
+			type="<?php echo $field['type']; ?>"
+			name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -355,7 +354,18 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_checkbox_field( $field ) {
-		return self::$instance->render_text_field( $field );
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		ob_start();
+		?>
+		<input
+			type="checkbox"
+			name="<?php echo $field['name']; ?>"
+			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
+		>
+		<?php
+
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
 	/**
@@ -461,7 +471,7 @@ class Give_Fields_API {
 		?>
 
 		<select
-				name="<?php echo $field['name']; ?>"
+			name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $options_html; ?></select>
