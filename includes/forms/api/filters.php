@@ -143,6 +143,11 @@ add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_st
  * @return array
  */
 function give_set_step_buttons_for_stepper_from( $field, $form ) {
+	// Bailout
+	if ( 'stepper' !== $form['display_style'] ) {
+		return $field;
+	}
+
 	if ( ! isset( $field['fields']['prev'] ) ) {
 		$field['fields']['prev'] = array(
 			'type'         => 'button',
