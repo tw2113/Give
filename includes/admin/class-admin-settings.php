@@ -389,7 +389,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 								'before_label'       => '<th scope="row" class="titledesc">',
 								'label'              => self::get_field_title( $value ),
 								'after_label'        => '</th>',
-								'id'                 => esc_attr( $value['id'] ),
 								'value'              => self::get_option( $option_name, $value['id'], $value['default'] ),
 								'wrapper_type'       => 'tr',
 								'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
@@ -397,6 +396,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 								'field_attributes'   => array(
 									'class' => 'give-input-field' . ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
 									'style' => esc_attr( $value['css'] ),
+									'id'    => esc_attr( $value['id'] ),
+
 								),
 								'wrapper_attributes' => array(
 									'class'  => $value['wrapper_class'],
