@@ -382,54 +382,67 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'email':
 					case 'number':
 					case 'password' :
-						echo Give_Fields_API::render_tag(
-							array(
-								'name'               => $value['id'],
-								'type'               => $value['type'],
-								'before_label'       => '<th scope="row" class="titledesc">',
-								'label'              => self::get_field_title( $value ),
-								'after_label'        => '</th>',
-								'value'              => self::get_option( $option_name, $value['id'], $value['default'] ),
-								'wrapper_type'       => 'tr',
-								'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
-								'after_field'        => "{$description}</td>",
-								'field_attributes'   => array(
-									'class' => 'give-input-field' . ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
-									'style' => esc_attr( $value['css'] ),
-									'id'    => esc_attr( $value['id'] ),
+						$field_args = array(
+							'name'               => $value['id'],
+							'type'               => $value['type'],
+							'before_label'       => '<th scope="row" class="titledesc">',
+							'label'              => self::get_field_title( $value ),
+							'after_label'        => '</th>',
+							'value'              => esc_textarea( self::get_option( $option_name, $value['id'], $value['default'] ) ),
+							'wrapper_type'       => 'tr',
+							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
+							'after_field'        => "{$description}</td>",
+							'field_attributes'   => array(
+								'class' => 'give-input-field' . ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
+								'style' => esc_attr( $value['css'] ),
+								'id'    => esc_attr( $value['id'] ),
 
-								),
-								'wrapper_attributes' => array(
-									'class'  => $value['wrapper_class'],
-									'valign' => 'top',
-								),
-							)
+							),
+							'wrapper_attributes' => array(
+								'class'  => ( ! empty( $value['wrapper_class'] ) ? $value['wrapper_class'] : '' ),
+								'valign' => 'top',
+							),
 						);
+
+						if( ! empty( $value['attributes'] ) ) {
+							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
+						}
+
+						echo Give_Fields_API::render_tag( $field_args );
 						break;
 
 					// Textarea.
 					case 'textarea':
+						$field_args = array(
+							'name'               => $value['id'],
+							'type'               => $value['type'],
+							'before_label'       => '<th scope="row" class="titledesc">',
+							'label'              => self::get_field_title( $value ),
+							'after_label'        => '</th>',
+							'value'              => esc_textarea( self::get_option( $option_name, $value['id'], $value['default'] ) ),
+							'wrapper_type'       => 'tr',
+							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
+							'after_field'        => "{$description}</td>",
+							'field_attributes'   => array(
+								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
+								'style' => esc_attr( $value['css'] ),
+								'id'    => esc_attr( $value['id'] ),
+								'rows'   => 10,
+								'cols'  => 60,
 
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
+							),
+							'wrapper_attributes' => array(
+								'class'  => ( ! empty( $value['wrapper_class'] ) ? $value['wrapper_class'] : '' ),
+								'valign' => 'top',
+							),
+						);
 
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp give-forminp-<?php echo sanitize_title( $value['type'] ) ?>">
-								<textarea
-                                        name="<?php echo esc_attr( $value['id'] ); ?>"
-                                        id="<?php echo esc_attr( $value['id'] ); ?>"
-                                        style="<?php echo esc_attr( $value['css'] ); ?>"
-                                        class="<?php echo esc_attr( $value['class'] ); ?>"
-                                        rows="10"
-                                        cols="60"
-									<?php echo implode( ' ', $custom_attributes ); ?>
-                                ><?php echo esc_textarea( $option_value ); ?></textarea>
-							<?php echo $description; ?>
-                        </td>
-                        </tr><?php
+
+						if( ! empty( $value['attributes'] ) ) {
+							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
+						}
+
+						echo Give_Fields_API::render_tag( $field_args );
 						break;
 
 					// Select boxes.
