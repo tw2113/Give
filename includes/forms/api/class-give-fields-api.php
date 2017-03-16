@@ -570,7 +570,7 @@ class Give_Fields_API {
 					echo self::$instance->render_label( $field );
 				}
 
-				echo "{$field['before_field']}{{form_field}}{$field['before_field']}";
+				echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
 
 				// Label: before field.
 				if ( 'after' === $field['label_position'] ) {
