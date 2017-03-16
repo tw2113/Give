@@ -38,6 +38,7 @@ class Give_Fields_API {
 
 		// Field with wrapper.
 		'wrapper'              => true,
+		'wrapper_type'         => 'p',
 
 		// Add label, before and after field.
 		'label'                => '',
@@ -562,7 +563,7 @@ class Give_Fields_API {
 
 			echo $field['before_field_wrapper'];
 			?>
-			<p <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
+			<<?php echo $field['wrapper_type']; ?> <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
 				<?php
 				// Label: before field.
 				if ( 'before' === $field['label_position'] ) {
@@ -576,7 +577,7 @@ class Give_Fields_API {
 					echo self::$instance->render_label( $field );
 				}
 				?>
-			</p>
+			</<?php echo $field['wrapper_type']; ?>>
 			<?php
 			echo $field['after_field_wrapper'];
 		else :
