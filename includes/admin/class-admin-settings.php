@@ -295,6 +295,9 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 				// Set title.
 				$defaults['title'] = isset( $value['name'] ) ? $value['name'] : '';
 
+				// Set name attribute for new field api
+				$value['name'] = ! empty( $value['id'] ) ? $value['id'] : $value['name'];
+
 				// Set default setting.
 				$value = wp_parse_args( $value, $defaults );
 
@@ -384,19 +387,19 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'number':
 					case 'password' :
 						$field_args = array(
-							'name'               => $value['id'],
+							'name'               => $value['name'],
 							'type'               => $value['type'],
 							'before_label'       => '<th scope="row" class="titledesc">',
 							'label'              => self::get_field_title( $value ),
 							'after_label'        => '</th>',
-							'value'              => esc_textarea( self::get_option( $option_name, $value['id'], $value['default'] ) ),
+							'value'              => esc_attr( self::get_option( $option_name, $value['name'], $value['default'] ) ),
 							'wrapper_type'       => 'tr',
 							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
 							'after_field'        => "{$description}</td>",
 							'field_attributes'   => array(
 								'class' => 'give-input-field' . ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
 								'style' => esc_attr( $value['css'] ),
-								'id'    => esc_attr( $value['id'] ),
+								'id'    => esc_attr( $value['name'] ),
 
 							),
 							'wrapper_attributes' => array(
@@ -409,25 +412,30 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
 						}
 
+						// Backward compatibility: version 1.8
+						if( ! empty( $value['id'] ) ) {
+							$field_args = array_merge( $value, $field_args );
+						}
+
 						echo Give_Fields_API::render_tag( $field_args );
 						break;
 
 					// Textarea.
 					case 'textarea':
 						$field_args = array(
-							'name'               => $value['id'],
+							'name'               => $value['name'],
 							'type'               => $value['type'],
 							'before_label'       => '<th scope="row" class="titledesc">',
 							'label'              => self::get_field_title( $value ),
 							'after_label'        => '</th>',
-							'value'              => esc_textarea( self::get_option( $option_name, $value['id'], $value['default'] ) ),
+							'value'              => esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) ),
 							'wrapper_type'       => 'tr',
 							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
 							'after_field'        => "{$description}</td>",
 							'field_attributes'   => array(
 								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
 								'style' => esc_attr( $value['css'] ),
-								'id'    => esc_attr( $value['id'] ),
+								'id'    => esc_attr( $value['name'] ),
 								'rows'   => 10,
 								'cols'  => 60,
 
@@ -441,6 +449,11 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 						if( ! empty( $value['attributes'] ) ) {
 							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
+						}
+
+						// Backward compatibility: version 1.8
+						if( ! empty( $value['id'] ) ) {
+							$field_args = array_merge( $value, $field_args );
 						}
 
 						echo Give_Fields_API::render_tag( $field_args );
@@ -803,6 +816,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		 * @return array The description and tip as a 2 element array
 		 */
 		public static function get_field_title( $value ) {
+			// Backward compatibility: version 1.8
 			$title = ! empty( $value['id'] )
 				? $value['title']
 				: ( empty( $value['label'] ) ? '' : $value['label'] );
