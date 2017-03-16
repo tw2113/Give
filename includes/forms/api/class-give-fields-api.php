@@ -139,10 +139,13 @@ class Give_Fields_API {
 	 * @access private
 	 *
 	 * @param array $field
+	 * @param array $form
 	 *
 	 * @return bool
 	 */
-	private function render_custom_field( $field ) {
+	private function render_custom_field( $field, $form = null ) {
+		$field = self::$instance->set_default_values( $field, $form );
+
 		$field_html = '';
 
 		if ( empty( $field['callback'] ) ) {
@@ -188,10 +191,9 @@ class Give_Fields_API {
 		foreach ( $form['fields'] as $key => $field ) {
 			// Set default value.
 			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
-			$field         = self::$instance->set_default_values( $field, $form );
 
 			// Render custom form with callback.
-			if ( $field_html = self::$instance->render_custom_field( $field ) ) {
+			if ( $field_html = self::$instance->render_custom_field( $field, $form ) ) {
 				$fields_html .= $field_html;
 			}
 
@@ -230,6 +232,8 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_section( $section, $form = null ) {
+		$section = self::$instance->set_default_values( $section, $form );
+
 		ob_start();
 		?>
 		<fieldset <?php echo self::$instance->get_attributes( $section['section_attributes'] ); ?>>
@@ -256,18 +260,20 @@ class Give_Fields_API {
 	 * @since  1.9
 	 * @access public
 	 *
-	 * @param array $section
+	 * @param array $block
 	 * @param array $form
 	 *
 	 * @return string
 	 */
-	public static function render_block( $section, $form = null ) {
+	public static function render_block( $block, $form = null ) {
+		$block = self::$instance->set_default_values( $block, $form );
+
 		ob_start();
 		?>
-		<div <?php echo self::$instance->get_attributes( $section['block_attributes'] ); ?>>
+		<div <?php echo self::$instance->get_attributes( $block['block_attributes'] ); ?>>
 			<?php
 			// Fields.
-			foreach ( $section['fields'] as $key => $field ) {
+			foreach ( $block['fields'] as $key => $field ) {
 				echo array_key_exists( 'fields', $field )
 					? self::render_section( $field, $form )
 					: self::render_tag( $field, $form );
@@ -290,6 +296,8 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_tag( $field, $form = null ) {
+		$field = self::$instance->set_default_values( $field, $form );
+
 		$field_html     = '';
 		$functions_name = "render_{$field['type']}_field";
 
@@ -318,8 +326,8 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<input
-			type="<?php echo $field['type']; ?>"
-			name="<?php echo $field['name']; ?>"
+				type="<?php echo $field['type']; ?>"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -357,8 +365,8 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<input
-			type="checkbox"
-			name="<?php echo $field['name']; ?>"
+				type="checkbox"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -438,7 +446,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-			name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -481,7 +489,7 @@ class Give_Fields_API {
 		?>
 
 		<select
-			name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['name']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $options_html; ?></select>
@@ -526,7 +534,7 @@ class Give_Fields_API {
 			type="<?php echo $field['type']; ?>"
 			name="<?php echo $field['name']; ?>"
 			value="<?php echo $key; ?>"
-			<?php checked( $key, $field['value'] )?>
+			<?php checked( $key, $field['value'] ) ?>
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 			><?php echo $option; ?>
