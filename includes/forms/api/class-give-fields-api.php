@@ -521,7 +521,6 @@ class Give_Fields_API {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 		foreach ( $field['options'] as $key => $option ) :
-			// @todo id issue.
 			?>
 			<input
 			type="<?php echo $field['type']; ?>"
@@ -879,5 +878,3 @@ class Give_Fields_API {
 		return preg_match( '/^button|submit$/', $element['#type'] );
 	}
 }
-// @todo auto fill field values.
-// @todo set clearfix class for section also
