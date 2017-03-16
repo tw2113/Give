@@ -291,15 +291,12 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					continue;
 				}
 
+
 				// Set title.
 				$defaults['title'] = isset( $value['name'] ) ? $value['name'] : '';
 
 				// Set default setting.
 				$value = wp_parse_args( $value, $defaults );
-
-				// Colorpicker field.
-				$value['class'] = ( 'colorpicker' === $value['type'] ? trim( $value['class'] ) . ' give-colorpicker' : $value['class'] );
-				$value['type']  = ( 'colorpicker' === $value['type'] ? 'text' : $value['type'] );
 
 
 				// Custom attribute handling.
@@ -379,6 +376,9 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Standard text inputs and subtypes like 'number'.
 					case 'colorpicker':
+						$value['field_attributes']['class'] = trim( $value['class'] ) . ' give-colorpicker';
+						$value['type'] = 'text';
+
 					case 'text':
 					case 'email':
 					case 'number':
