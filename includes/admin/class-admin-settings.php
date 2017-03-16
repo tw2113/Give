@@ -375,27 +375,28 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'email':
 					case 'number':
 					case 'password' :
-
-						$type = $value['type'];
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
-
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp give-forminp-<?php echo sanitize_title( $value['type'] ) ?>">
-                            <input
-                                    name="<?php echo esc_attr( $value['id'] ); ?>"
-                                    id="<?php echo esc_attr( $value['id'] ); ?>"
-                                    type="<?php echo esc_attr( $type ); ?>"
-                                    style="<?php echo esc_attr( $value['css'] ); ?>"
-                                    value="<?php echo esc_attr( $option_value ); ?>"
-                                    class="give-input-field<?php echo( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ); ?>"
-								<?php echo implode( ' ', $custom_attributes ); ?>
-                            /> <?php echo $description; ?>
-                        </td>
-                        </tr><?php
+						echo Give_Fields_API::render_tag(
+							array(
+								'name'               => $value['id'],
+								'type'               => $value['type'],
+								'before_label'       => '<th scope="row" class="titledesc">',
+								'label'              => self::get_field_title( $value ),
+								'after_label'        => '</th>',
+								'id'                 => esc_attr( $value['id'] ),
+								'value'              => self::get_option( $option_name, $value['id'], $value['default'] ),
+								'wrapper_type'       => 'tr',
+								'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
+								'after_field'        => "{$description}</td>",
+								'field_attributes'   => array(
+									'class' => 'give-input-field' . ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
+									'style' => esc_attr( $value['css'] ),
+								),
+								'wrapper_attributes' => array(
+									'class'  => $value['wrapper_class'],
+									'valign' => 'top',
+								),
+							)
+						);
 						break;
 
 					// Textarea.
