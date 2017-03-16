@@ -177,7 +177,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		 * Handles the display of the main give settings page in admin.
 		 *
 		 * @since  1.8
-		 * @return void|bool
+		 *
+		 * @return bool
 		 */
 		public static function output() {
 			// Get current setting page.
@@ -234,7 +235,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		 * @param  string $field_id
 		 * @param  mixed  $default
 		 *
-		 * @return string|bool
+		 * @return array|string|bool
 		 */
 		public static function get_option( $option_name = '', $field_id = '', $default = false ) {
 			// Bailout.
