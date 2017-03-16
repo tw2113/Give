@@ -698,6 +698,16 @@ class Give_Fields_API {
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
 					? 'give-field-wrapper'
 					: "give-field-wrapper {$field['wrapper_attributes']['class']}";
+
+				/**
+				 * Filter the field values.
+				 *
+				 * @since 1.9
+				 *
+				 * @param array $field
+				 * @param array $form
+				 */
+				$field = apply_filters( 'give_field_api_set_values', $field, $form );
 		}
 
 		/**
