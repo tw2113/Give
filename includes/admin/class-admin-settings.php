@@ -412,7 +412,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
 						}
 
-						// Backward compatibility: version 1.8
+						// Backward compatibility: version >= 1.8, version < 1.9
 						if( ! empty( $value['id'] ) ) {
 							$field_args = array_merge( $value, $field_args );
 						}
@@ -451,7 +451,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
 						}
 
-						// Backward compatibility: version 1.8
+						// Backward compatibility: version >= 1.8, version < 1.9
 						if( ! empty( $value['id'] ) ) {
 							$field_args = array_merge( $value, $field_args );
 						}
@@ -851,20 +851,23 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 			// Loop options and get values to save.
 			foreach ( $options as $option ) {
-				if ( ! isset( $option['id'] ) || ! isset( $option['type'] ) ) {
+				if ( ! isset( $option['name'] ) || ! isset( $option['type'] ) ) {
 					continue;
 				}
 
+				// Backward compatibility: version >= 1.8, version < 1.9
+				$option['name'] = ! empty( $option['id'] ) ?  $option['id'] : $option['name'];
+
 				// Get posted value.
-				if ( strstr( $option['id'], '[' ) ) {
-					parse_str( $option['id'], $option_name_array );
+				if ( strstr( $option['name'], '[' ) ) {
+					parse_str( $option['name'], $option_name_array );
 					$field_option_name = current( array_keys( $option_name_array ) );
 					$setting_name      = key( $option_name_array[ $field_option_name ] );
 					$raw_value         = isset( $_POST[ $field_option_name ][ $setting_name ] ) ? wp_unslash( $_POST[ $field_option_name ][ $setting_name ] ) : null;
 				} else {
-					$field_option_name = $option['id'];
+					$field_option_name = $option['name'];
 					$setting_name      = '';
-					$raw_value         = isset( $_POST[ $option['id'] ] ) ? wp_unslash( $_POST[ $option['id'] ] ) : null;
+					$raw_value         = isset( $_POST[ $option['name'] ] ) ? wp_unslash( $_POST[ $option['name'] ] ) : null;
 				}
 
 				// Format the value based on option type.
