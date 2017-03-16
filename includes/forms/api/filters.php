@@ -204,9 +204,9 @@ function give_field_api_set_field_value( $field ) {
 			break;
 
 		case 'checkbox':
-			$field['field_attributes']['value'] = 'enabled';
+			$field['field_attributes']['value'] = 'on';
 			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = 'enabled';
+				$field['value'] = 'on';
 				$field['field_attributes']['checked'] = 'checked';
 			}
 			break;
