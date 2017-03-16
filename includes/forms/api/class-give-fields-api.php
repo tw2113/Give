@@ -827,7 +827,7 @@ class Give_Fields_API {
 	 *
 	 * @return bool
 	 */
-	private function get_field_type( $field ) {
+	public static function get_field_type( $field ) {
 		$field_type = 'field';
 
 		if (
