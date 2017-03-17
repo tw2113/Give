@@ -521,8 +521,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 							'after_label'        => '</th>',
 							'value'              => esc_attr( self::get_option( $option_name, $value['name'], $value['default'] ) ),
 							'wrapper_type'       => 'tr',
-							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
-							'after_field'        => "{$description}</td>",
+							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '"><fieldset>',
+							'after_field'        => "{$description}</fieldset></td>",
 							'field_attributes'   => array(
 								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
 								'style' => esc_attr( $value['css'] ),
