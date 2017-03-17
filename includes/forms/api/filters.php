@@ -12,8 +12,8 @@
 function give_render_form_attributes_tag( $form_html, $form ) {
 	$form_attributes_val = array();
 
-	if ( ! empty( $form['attributes'] ) ) {
-		foreach ( $form['attributes'] as $attribute_name => $attribute_val ) {
+	if ( ! empty( $form['form_attributes'] ) ) {
+		foreach ( $form['form_attributes'] as $attribute_name => $attribute_val ) {
 			$form_attributes_val[] = "{$attribute_name}=\"{$attribute_val}\"";
 		}
 	}
@@ -85,8 +85,8 @@ function give_set_form_display_style_class( $form ) {
 	if ( in_array( $form['display_style'], array( 'modal', 'button' ) ) ) {
 		$class                       = 'give-form-modal';
 		$class                       = ( 'button' === $form['display_style'] ? "{$class} mfp-hide" : $class );
-		$form['attributes']['class'] = isset( $form['attributes']['class'] )
-			? trim( $form['attributes']['class'] ) . " {$class}"
+		$form['form_attributes']['class'] = isset( $form['form_attributes']['class'] )
+			? trim( $form['form_attributes']['class'] ) . " {$class}"
 			: $class;
 	}
 

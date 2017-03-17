@@ -41,7 +41,7 @@ class Give_Form_API {
 		'fields'                => array(),
 
 		// Add custom attributes.
-		'attributes'            => array(),
+		'form_attributes'            => array(),
 
 		// Supported form layout: simple, stepper, reveal, modal, button.
 		'display_style'         => 'simple',
@@ -240,9 +240,9 @@ class Give_Form_API {
 			: $form['_template'];
 
 		// Set ID.
-		$form['attributes']['id'] = empty( $form['attributes']['id'] )
+		$form['form_attributes']['id'] = empty( $form['form_attributes']['id'] )
 			? $form['name']
-			: $form['attributes']['id'];
+			: $form['form_attributes']['id'];
 
 		/**
 		 * Filter the default values after set form default values.
