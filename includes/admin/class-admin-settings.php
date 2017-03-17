@@ -487,26 +487,15 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Checkbox input.
 					case 'checkbox' :
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
-						?>
-                        <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                            <th scope="row" class="titledesc">
-                                <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                            </th>
-                            <td class="give-forminp">
-                                <input
-                                        name="<?php echo esc_attr( $value['id'] ); ?>"
-                                        id="<?php echo esc_attr( $value['id'] ); ?>"
-                                        type="checkbox"
-                                        class="<?php echo esc_attr( isset( $value['class'] ) ? $value['class'] : '' ); ?>"
-                                        value="1"
-									<?php checked( $option_value, 'on' ); ?>
-									<?php echo implode( ' ', $custom_attributes ); ?>
-                                />
-								<?php echo $description; ?>
-                            </td>
-                        </tr>
-						<?php
+						self::backward_compatibility_1_8( $value );
+
+						// Set field value.
+						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Multi Checkbox input.
