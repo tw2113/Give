@@ -381,6 +381,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'number':
 					case 'password' :
 						self::backward_compatibility_1_8( $value );
+
+						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
 						// Add input specific class.
@@ -395,41 +397,19 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Textarea.
 					case 'textarea':
-						$field_args = array(
-							'name'               => $value['name'],
-							'type'               => $value['type'],
-							'before_label'       => '<th scope="row" class="titledesc">',
-							'label'              => self::get_field_title( $value ),
-							'after_label'        => '</th>',
-							'value'              => esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) ),
-							'wrapper_type'       => 'tr',
-							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
-							'after_field'        => "{$description}</td>",
-							'field_attributes'   => array(
-								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
-								'style' => esc_attr( $value['css'] ),
-								'id'    => esc_attr( $value['name'] ),
-								'rows'   => 10,
-								'cols'  => 60,
+						self::backward_compatibility_1_8( $value );
 
-							),
-							'wrapper_attributes' => array(
-								'class'  => ( ! empty( $value['wrapper_class'] ) ? $value['wrapper_class'] : '' ),
-								'valign' => 'top',
-							),
-						);
+						// Set field value.
+						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
 
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
-						if( ! empty( $value['attributes'] ) ) {
-							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
-						}
+						// Add rows and cols for textarea.
+						$value['field_attributes']['rows'] = 10;
+						$value['field_attributes']['cols'] = 60;
 
-						// Backward compatibility: version >= 1.8, version < 1.9
-						if( ! empty( $value['id'] ) ) {
-							$field_args = array_merge( $value, $field_args );
-						}
-
-						echo Give_Fields_API::render_tag( $field_args );
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Select boxes.
