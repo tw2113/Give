@@ -529,16 +529,23 @@ class Give_Fields_API {
 	public static function render_radio_field( $field ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
+
+		$id_base = $field['field_attributes']['id'];
+		unset( $field['field_attributes']['id'] );
+
 		foreach ( $field['options'] as $key => $option ) :
 			?>
-			<input
-			type="<?php echo $field['type']; ?>"
-			name="<?php echo $field['name']; ?>"
-			value="<?php echo $key; ?>"
-			<?php checked( $key, $field['value'] ) ?>
-			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-			><?php echo $option; ?>
+			<label for="<?php echo "{$id_base}-{$key}"?>">
+				<input
+					type="<?php echo $field['type']; ?>"
+					name="<?php echo $field['name']; ?>"
+					value="<?php echo $key; ?>"
+					id="<?php echo "{$id_base}-{$key}"; ?>"
+					<?php checked( $key, $field['value'] ) ?>
+					<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+					<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
+				><?php echo $option; ?>
+			</label>
 			<?php
 		endforeach;
 
