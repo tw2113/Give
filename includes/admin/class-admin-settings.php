@@ -942,7 +942,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					'field_attributes'   => array(
 						'class' => ( empty( $field['class'] ) ? '' : ' ' . esc_attr( $field['class'] ) ),
 						'style' => esc_attr( $field['css'] ),
-						'id'    => esc_attr( $field['name'] ),
+						'id'    => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
 
 					),
 					'wrapper_attributes' => array(
