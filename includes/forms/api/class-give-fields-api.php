@@ -229,11 +229,15 @@ class Give_Fields_API {
 	 *
 	 * @param array $section
 	 * @param array $form
+	 * @param array $args Helper argument to render section.
 	 *
 	 * @return string
 	 */
-	public static function render_section( $section, $form = null ) {
-		$section = self::$instance->set_default_values( $section, $form );
+	public static function render_section( $section, $form = null, $args = array() ) {
+		// Set default values if necessary.
+		if ( ! isset( $args['set_default'] ) || (bool) $args['set_default'] ) {
+			$section = self::$instance->set_default_values( $section, $form );
+		}
 
 		ob_start();
 		?>
@@ -246,7 +250,7 @@ class Give_Fields_API {
 
 			// Fields.
 			foreach ( $section['fields'] as $key => $field ) {
-				echo self::render_tag( $field, $form );
+				echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 			}
 			?>
 		</fieldset>
@@ -263,11 +267,15 @@ class Give_Fields_API {
 	 *
 	 * @param array $block
 	 * @param array $form
+	 * @param array $args Helper argument to render section.
 	 *
 	 * @return string
 	 */
-	public static function render_block( $block, $form = null ) {
-		$block = self::$instance->set_default_values( $block, $form );
+	public static function render_block( $block, $form = null, $args = array() ) {
+		// Set default values if necessary.
+		if ( ! isset( $args['set_default'] ) || (bool) $args['set_default'] ) {
+			$block = self::$instance->set_default_values( $block, $form );
+		}
 
 		ob_start();
 		?>
@@ -276,8 +284,8 @@ class Give_Fields_API {
 			// Fields.
 			foreach ( $block['fields'] as $key => $field ) {
 				echo array_key_exists( 'fields', $field )
-					? self::render_section( $field, $form )
-					: self::render_tag( $field, $form );
+					? self::render_section( $field, $form, array( 'set_default' => false ) )
+					: self::render_tag( $field, $form, array( 'set_default' => false ) );
 			}
 			?>
 		</div>
@@ -291,21 +299,44 @@ class Give_Fields_API {
 	 * @since   1.9
 	 * @access  public
 	 *
-	 * @param $field
-	 * @param $form
+	 * @param array $field
+	 * @param array $form
+	 * @param array $args Helper argument to render section.
 	 *
 	 * @return string
 	 */
-	public static function render_tag( $field, $form = null ) {
-		$field = self::$instance->set_default_values( $field, $form );
+	public static function render_tag( $field, $form = null, $args = array() ) {
+		// Set default values if necessary.
+		if ( ! isset( $args['set_default'] ) || (bool) $args['set_default'] ) {
+			$field = self::$instance->set_default_values( $field, $form );
+		}
 
 		$field_html     = '';
 		$functions_name = "render_{$field['type']}_field";
 
-		if ( method_exists( self::$instance, $functions_name ) ) {
+		if ( 'section' === self::$instance->get_field_type( $field ) ) {
+			echo self::$instance->render_section( $field, $form, array( 'set_default' => false ) );
+
+		} elseif ( method_exists( self::$instance, $functions_name ) ) {
 			$field_html .= self::$instance->{$functions_name}( $field );
+
 		} else {
-			$field_html .= apply_filters( "give_field_api_render_{$field['type']}_field", '', $field, $form );
+			/**
+			 * Filter the custom field type html.
+			 * Developer can use this hook to render custom field type.
+			 *
+			 * @since 1.9
+			 *
+			 * @param string $field_html
+			 * @param array  $field
+			 * @param array  $form
+			 */
+			$field_html .= apply_filters(
+				"give_field_api_render_{$field['type']}_field",
+				$field_html,
+				$field,
+				$form
+			);
 		}
 
 		return $field_html;
@@ -535,12 +566,12 @@ class Give_Fields_API {
 
 		foreach ( $field['options'] as $key => $option ) :
 			?>
-			<label for="<?php echo "{$id_base}-{$key}"?>">
+			<label for="<?php echo "{$id_base}-{$key}" ?>">
 				<input
-					type="<?php echo $field['type']; ?>"
-					name="<?php echo $field['name']; ?>"
-					value="<?php echo $key; ?>"
-					id="<?php echo "{$id_base}-{$key}"; ?>"
+						type="<?php echo $field['type']; ?>"
+						name="<?php echo $field['name']; ?>"
+						value="<?php echo $key; ?>"
+						id="<?php echo "{$id_base}-{$key}"; ?>"
 					<?php checked( $key, $field['value'] ) ?>
 					<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 					<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
@@ -570,20 +601,20 @@ class Give_Fields_API {
 
 			echo $field['before_field_wrapper'];
 			?>
-			<<?php echo $field['wrapper_type']; ?> <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
-				<?php
-				// Label: before field.
-				if ( 'before' === $field['label_position'] ) {
-					echo self::$instance->render_label( $field );
-				}
+			<<?php echo $field['wrapper_type']; ?><?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
+			<?php
+			// Label: before field.
+			if ( 'before' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
 
-				echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
+			echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
 
-				// Label: before field.
-				if ( 'after' === $field['label_position'] ) {
-					echo self::$instance->render_label( $field );
-				}
-				?>
+			// Label: before field.
+			if ( 'after' === $field['label_position'] ) {
+				echo self::$instance->render_label( $field );
+			}
+			?>
 			</<?php echo $field['wrapper_type']; ?>>
 			<?php
 			echo $field['after_field_wrapper'];

@@ -507,37 +507,46 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Radio inputs.
 					case 'radio_inline' :
-						$value['class'] = empty( $value['class'] ) ? 'give-radio-inline' : $value['class'] . ' give-radio-inline';
+						$value['type']  = 'radio';
+						$value['wrapper_class'] = empty( $value['class'] )
+							? 'give-radio-inline'
+							: $value['class'] . ' give-radio-inline';
+
 					case 'radio' :
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp give-forminp-<?php echo sanitize_title( $value['type'] ) ?> <?php echo( ! empty( $value['class'] ) ? $value['class'] : '' ); ?>">
-                            <fieldset>
-                                <ul>
-									<?php
-									foreach ( $value['options'] as $key => $val ) {
-										?>
-                                        <li>
-                                            <label><input
-                                                        name="<?php echo esc_attr( $value['id'] ); ?>"
-                                                        value="<?php echo $key; ?>"
-                                                        type="radio"
-                                                        style="<?php echo esc_attr( $value['css'] ); ?>"
-													<?php echo implode( ' ', $custom_attributes ); ?>
-													<?php checked( $key, $option_value ); ?>
-                                                /> <?php echo $val ?></label>
-                                        </li>
-										<?php
-									}
-									?>
-									<?php echo $description; ?>
-                            </fieldset>
-                        </td>
-                        </tr><?php
+						$field_args = array(
+							'name'               => $value['name'],
+							'type'               => $value['type'],
+							'before_label'       => '<th scope="row" class="titledesc">',
+							'label'              => self::get_field_title( $value ),
+							'after_label'        => '</th>',
+							'value'              => esc_attr( self::get_option( $option_name, $value['name'], $value['default'] ) ),
+							'wrapper_type'       => 'tr',
+							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '">',
+							'after_field'        => "{$description}</td>",
+							'field_attributes'   => array(
+								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
+								'style' => esc_attr( $value['css'] ),
+								'id'    => esc_attr( $value['name'] )
+
+							),
+							'options'            => $value['options'],
+							'wrapper_attributes' => array(
+								'class'  => ( ! empty( $value['wrapper_class'] ) ? $value['wrapper_class'] : '' ),
+								'valign' => 'top',
+							),
+						);
+
+
+						if ( ! empty( $value['attributes'] ) ) {
+							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
+						}
+
+						// Backward compatibility: version >= 1.8, version < 1.9
+						if ( ! empty( $value['id'] ) ) {
+							$field_args = array_merge( $value, $field_args );
+						}
+
+						echo Give_Fields_API::render_tag( $field_args );
 						break;
 
 					// Checkbox input.
