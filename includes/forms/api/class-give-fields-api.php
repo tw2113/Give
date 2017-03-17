@@ -566,7 +566,7 @@ class Give_Fields_API {
 
 		foreach ( $field['options'] as $key => $option ) :
 			?>
-			<label for="<?php echo "{$id_base}-{$key}" ?>">
+			<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
 				<input
 						type="<?php echo $field['type']; ?>"
 						name="<?php echo $field['name']; ?>"
@@ -601,7 +601,7 @@ class Give_Fields_API {
 
 			echo $field['before_field_wrapper'];
 			?>
-			<<?php echo $field['wrapper_type']; ?><?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
+			<<?php echo $field['wrapper_type']; ?> <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
 			<?php
 			// Label: before field.
 			if ( 'before' === $field['label_position'] ) {
