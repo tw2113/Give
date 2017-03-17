@@ -460,46 +460,29 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Radio inputs.
 					case 'radio_inline' :
-						$value['type']  = 'radio';
-						$value['wrapper_class'] = empty( $value['class'] )
-							? 'give-radio-inline'
-							: $value['class'] . ' give-radio-inline';
-
 					case 'radio' :
-						$field_args = array(
-							'name'               => $value['name'],
-							'type'               => $value['type'],
-							'before_label'       => '<th scope="row" class="titledesc">',
-							'label'              => self::get_field_title( $value ),
-							'after_label'        => '</th>',
-							'value'              => esc_attr( self::get_option( $option_name, $value['name'], $value['default'] ) ),
-							'wrapper_type'       => 'tr',
-							'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '"><fieldset>',
-							'after_field'        => "{$description}</fieldset></td>",
-							'field_attributes'   => array(
-								'class' => ( empty( $value['class'] ) ? '' : ' ' . esc_attr( $value['class'] ) ),
-								'style' => esc_attr( $value['css'] ),
-								'id'    => esc_attr( $value['name'] )
+						self::backward_compatibility_1_8( $value );
 
-							),
-							'options'            => $value['options'],
-							'wrapper_attributes' => array(
-								'class'  => ( ! empty( $value['wrapper_class'] ) ? $value['wrapper_class'] : '' ),
-								'valign' => 'top',
-							),
-						);
+						// Set field value.
+						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+
+						// Update td wrapper.
+						$value['before_field'] = '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '"><fieldset>';
+						$value['after_field']  = "{$description}</fieldset></td>";
 
 
-						if ( ! empty( $value['attributes'] ) ) {
-							$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $value['attributes'] );
+						// Update param for radio_inline field type.
+						if( 'radio_inline' === $value['type'] ) {
+							$value['type']  = 'radio';
+							$value['wrapper_attributes']['class'] = empty( $value['wrapper_attributes']['class'] )
+								? 'give-radio-inline'
+								: trim( $value['wrapper_attributes']['class'] ) . ' give-radio-inline';
 						}
 
-						// Backward compatibility: version >= 1.8, version < 1.9
-						if ( ! empty( $value['id'] ) ) {
-							$field_args = array_merge( $value, $field_args );
-						}
-
-						echo Give_Fields_API::render_tag( $field_args );
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Checkbox input.
