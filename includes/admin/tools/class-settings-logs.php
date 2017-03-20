@@ -54,6 +54,9 @@ if ( ! class_exists( 'Give_Settings_Logs' ) ) :
 				add_action( 'give-tools_open_form', '__return_empty_string' );
 				add_action( 'give-tools_close_form', '__return_empty_string' );
 			}
+
+			// Render logs field type.
+			add_action( 'give_admin_field_logs', array( $this, 'render_logs_field' ) );
 		}
 
 		/**
@@ -142,6 +145,19 @@ if ( ! class_exists( 'Give_Settings_Logs' ) ) :
 			$settings = $this->get_settings();
 
 			Give_Admin_Settings::output_fields( $settings, 'give_settings' );
+		}
+
+
+		/**
+		 * Render logs field.
+		 *
+		 * @since 1.9
+		 * @access public
+		 * @param $field
+		 */
+		public function render_logs_field( $field ) {
+			give_reports_tab_logs();
+			echo Give_Admin_Settings::get_field_description( $field );
 		}
 	}
 

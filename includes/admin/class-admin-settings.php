@@ -641,13 +641,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
                         </tr><?php
 						break;
 
-					// Custom: Log field.
-					case 'logs' :
-						// Note: there are no need to check for html field param because we want custom html to this field.
-						give_reports_tab_logs();
-						echo $description;
-						break;
-
 					// Custom: API field.
 					case 'data' :
 						give_tools_recount_stats_display();
