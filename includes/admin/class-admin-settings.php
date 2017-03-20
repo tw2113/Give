@@ -449,7 +449,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						self::backward_compatibility_1_8( $value );
 
 						// Set field value.
-						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
+						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -475,7 +475,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						self::backward_compatibility_1_8( $value );
 
 						// Set field value.
-						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
+						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -794,7 +794,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 			$field_args = array(
 				'before_label' => '<th scope="row" class="titledesc">',
 				'after_label'  => '</th>',
-				'value'        => ! empty( $field['value'] ) ? $field['value'] : esc_attr( self::get_option( $option_name, $field['name'], $field['default'] ) ),
+				'value'        => ! empty( $field['value'] ) ? $field['value'] : give_clean( self::get_option( $option_name, $field['name'], $field['default'] ) ),
 				'wrapper_type' => 'tr',
 				'before_field' => '<td class="give-forminp give-forminp-' . sanitize_title( $field['type'] ) . '">',
 				'after_field'  => self::get_field_description( $field ) . '</td>',
