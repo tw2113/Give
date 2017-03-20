@@ -464,6 +464,22 @@ class Give_Fields_API {
 	}
 
 	/**
+	 * Render hidden field.
+	 *
+	 * @since  1.9
+	 * @access public
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_hidden_field( $field ) {
+		$field['wrapper'] = false;
+
+		return self::$instance->render_text_field( $field );
+	}
+
+	/**
 	 * Render textarea field.
 	 *
 	 * @since  1.9

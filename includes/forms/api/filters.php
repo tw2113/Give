@@ -187,6 +187,7 @@ function give_field_api_set_field_value( $field ) {
 		case 'password':
 		case 'number':
 		case 'email':
+		case 'hidden':
 			// Set default value.
 			$field['field_attributes']['value'] = $field['default'];
 
