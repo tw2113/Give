@@ -601,7 +601,7 @@ class Give_Fields_API {
 		unset( $field['field_attributes']['id'] );
 
 		foreach ( $field['options'] as $key => $option ) :
-			$checked = in_array( $key, $field['value'] )
+			$checked = ! empty( $field['value'] ) && in_array( $key, $field['value'] )
 				? 'checked="checked"'
 				: '';
 			?>
