@@ -752,7 +752,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		public static function get_field_title( $value ) {
 			// Backward compatibility: version 1.8
 			$title = ! empty( $value['id'] )
-				? $value['name']
+				? ( ! empty( $value['title'] ) ? $value['title'] : $value['name'] )
 				: ( ! empty( $value['label'] ) ? $value['label'] : '' );
 
 			// If html tag detected then allow them to print.
