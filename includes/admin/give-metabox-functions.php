@@ -61,6 +61,7 @@ function give_get_field_callback( $field ) {
 			$func_name = "{$func_name_prefix}_{$field['type']}";
 			break;
 
+		case 'hidden':
 		case 'levels_id':
 			$func_name = "{$func_name_prefix}_hidden_input";
 			break;
@@ -207,6 +208,7 @@ function give_render_field( $field ) {
  * Output a text input box.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -261,17 +263,10 @@ function give_text_input( $field ) {
  * Output a hidden input box.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
- * @param  array $field      {
- *                           Optional. Array of hidden text input field arguments.
- *
- * @type string  $id         Field ID. Default ''.
- * @type string  $value      Value of input field. Default ''.
- * @type string  $name       Name of input field. Default ''.
- * @type string  $type       Type of input field. Default 'text'.
- * @type array   $attributes List of attributes of input field. Default array().
- *                                               for example: 'attributes' => array( 'placeholder' => '*****', 'class'
- *                                               => '****' )
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
  * }
  * @return void
  */
@@ -281,25 +276,13 @@ function give_hidden_input( $field ) {
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
-	// Custom attribute handling
-	$custom_attributes = array();
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
 
-	if ( ! empty( $field['attributes'] ) && is_array( $field['attributes'] ) ) {
-
-		foreach ( $field['attributes'] as $attribute => $value ) {
-			$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $value ) . '"';
-		}
-	}
-	?>
-
-	<input
-			type="hidden"
-			name="<?php echo give_get_field_name( $field ); ?>"
-			id="<?php echo esc_attr( $field['id'] ); ?>"
-			value="<?php echo esc_attr( $field['value'] ); ?>"
-		<?php echo give_get_custom_attributes( $field ); ?>
-	/>
-	<?php
+	// Reset label for repeater field compatibility.
+	$field['name'] = give_get_field_name( $field );
+	
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
 }
 
 /**
