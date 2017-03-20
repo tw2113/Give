@@ -35,6 +35,9 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 
 			// Render default gateway field.
 			add_action( 'give_admin_field_default_gateway', array( $this, 'render_default_gateway_field' ), 10, 2 );
+
+			// Render enabled gateways field.
+			add_action( 'give_admin_field_enabled_gateways', array( $this, 'render_enabled_gateways_field' ), 10, 2 );
 		}
 
 		/**
@@ -271,6 +274,30 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 				</th>
 				<td class="give-forminp">
 					<?php give_default_gateway_callback( $field, $option_value ); ?>
+					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
+				</td>
+			</tr>
+			<?php
+		}
+
+
+		/**
+		 * Render enabled gateways field.
+		 *
+		 * @since  1.9
+		 * @access public
+		 *
+		 * @param $field
+		 * @param $option_value
+		 */
+		public function render_enabled_gateways_field( $field, $option_value ) {
+			?>
+			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+				<th scope="row" class="titledesc">
+					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
+				</th>
+				<td class="give-forminp">
+					<?php give_enabled_gateways_callback( $field, $option_value ); ?>
 					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
 				</td>
 			</tr>
