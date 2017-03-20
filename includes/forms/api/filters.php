@@ -231,6 +231,12 @@ function give_field_api_set_field_value( $field ) {
 				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
 			}
 			break;
+
+		case 'multi_checkbox':
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			}
+			break;
 	}
 
 	return $field;

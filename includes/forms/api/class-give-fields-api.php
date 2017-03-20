@@ -583,6 +583,45 @@ class Give_Fields_API {
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
 
+	/**
+	 * Render multi checkbox field.
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function render_multi_checkbox_field( $field ) {
+		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		ob_start();
+
+		$id_base = $field['field_attributes']['id'];
+		unset( $field['field_attributes']['id'] );
+
+		foreach ( $field['options'] as $key => $option ) :
+			$checked = in_array( $key, $field['value'] )
+				? 'checked="checked"'
+				: '';
+			?>
+			<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
+				<input
+						type="checkbox"
+						name="<?php echo $field['name']; ?>[]"
+						value="<?php echo $key; ?>"
+						id="<?php echo "{$id_base}-{$key}"; ?>"
+					<?php echo $checked ?>
+					<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+					<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
+				><?php echo $option; ?>
+			</label>
+			<?php
+		endforeach;
+
+		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+	}
+
 
 	/**
 	 * Render wrapper
