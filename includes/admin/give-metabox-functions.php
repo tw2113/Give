@@ -420,48 +420,38 @@ function give_checkbox( $field ) {
  * Output a select input box.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
- * @param  array $field         {
- *                              Optional. Array of select field arguments.
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
  *
- * @type string  $id            Field ID. Default ''.
- * @type string  $style         CSS style for input field. Default ''.
- * @type string  $wrapper_class CSS class to use for wrapper of input field. Default ''.
- * @type string  $value         Value of input field. Default ''.
- * @type string  $name          Name of input field. Default ''.
- * @type string  $description   Description of input field. Default ''.
- * @type array   $attributes    List of attributes of input field. Default array().
- *                                               for example: 'attributes' => array( 'placeholder' => '*****', 'class'
- *                                               => '****' )
- * @type array   $options       List of options. Default array().
- *                                               for example: 'options' => array( '' => 'None', 'yes' => 'Yes' )
- * }
  * @return void
  */
 function give_select( $field ) {
 	global $thepostid, $post;
 
 	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
-	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
 	$field['value']         = give_get_field_value( $field, $thepostid );
-	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
-	?>
-	<p class="give-field-wrap <?php echo esc_attr( $field['id'] ); ?>_field <?php echo esc_attr( $field['wrapper_class'] ); ?>">
-	<label for="<?php echo give_get_field_name( $field ); ?>"><?php echo wp_kses_post( $field['name'] ); ?></label>
-	<select
-	id="<?php echo esc_attr( $field['id'] ); ?>"
-	name="<?php echo give_get_field_name( $field ); ?>"
-	style="<?php echo esc_attr( $field['style'] ) ?>"
-	<?php echo give_get_custom_attributes( $field ); ?>
-	>
-	<?php
-	foreach ( $field['options'] as $key => $value ) {
-		echo '<option value="' . esc_attr( $key ) . '" ' . selected( esc_attr( $field['value'] ), esc_attr( $key ), false ) . '>' . esc_html( $value ) . '</option>';
-	}
-	echo '</select>';
-	echo give_get_field_description( $field );
-	echo '</p>';
+
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
+
+	// Set default class.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
+		? "{$field['wrapper_attributes']['class']} give-field-wrap"
+		: 'give-field-wrap';
+
+	// Set description.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['after_field'] = ! empty( $field['after_field'] )
+		? $field['after_field'] . give_get_field_description( $field )
+		: give_get_field_description( $field );
+
+	// Reset label for repeater field compatibility.
+	$field['name'] = give_get_field_name( $field );
+
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
 }
 
 /**
@@ -626,6 +616,8 @@ function give_default_gateway( $field ) {
 	if ( is_object( $post ) && 'give_forms' === $post->post_type ) {
 		$field['options'] = array_merge( array( 'global' => esc_html__( 'Global Default', 'give' ) ), $field['options'] );
 	}
+
+	$field['type'] = 'select';
 
 	// Render select field.
 	give_select( $field );
