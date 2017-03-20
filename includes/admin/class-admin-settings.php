@@ -689,7 +689,14 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 			// Loop options and get values to save.
 			foreach ( $options as $option ) {
-				if ( ! isset( $option['name'] ) || ! isset( $option['type'] ) ) {
+				// Backward compatibility ( 1.8=<version>1.9)
+				$option['name'] = ! empty( $option['id'] ) ? $option['id'] : $option['name'];
+
+				if (
+					! isset( $option['name'] )
+					|| ! isset( $option['type'] )
+					|| empty( $option['name'] )
+				) {
 					continue;
 				}
 
