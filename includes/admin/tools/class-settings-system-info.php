@@ -53,6 +53,9 @@ if ( ! class_exists( 'Give_Settings_System_Info' ) ) :
 				add_action( "give-tools_open_form", '__return_empty_string' );
 				add_action( "give-tools_close_form", '__return_empty_string' );
 			}
+
+			// Render system info field.
+			add_action( 'give_admin_field_system_info', array( $this, 'render_system_info_field' ) );
 		}
 
 		/**
@@ -77,6 +80,29 @@ if ( ! class_exists( 'Give_Settings_System_Info' ) ) :
 		public function output() {
 			$GLOBALS['give_hide_save_button'] = true;
 			include_once( 'views/html-admin-page-system-info.php' );
+		}
+
+
+		/**
+		 * Render system info field.
+		 *
+		 * @since  1.9
+		 * @access public
+		 *
+		 * @param $field
+		 */
+		public function render_system_info_field( $field ) {
+			?>
+			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+				<th scope="row" class="titledesc">
+					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo self::get_field_title( $field ); ?></label>
+				</th>
+				<td class="give-forminp">
+					<?php give_system_info_callback(); ?>
+					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
+				</td>
+			</tr>
+			<?php
 		}
 	}
 
