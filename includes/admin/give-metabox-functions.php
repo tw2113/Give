@@ -267,7 +267,7 @@ function give_text_input( $field ) {
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
- * }
+ *
  * @return void
  */
 function give_hidden_input( $field ) {
@@ -280,7 +280,7 @@ function give_hidden_input( $field ) {
 
 	// Reset label for repeater field compatibility.
 	$field['name'] = give_get_field_name( $field );
-	
+
 	// Render Field.
 	echo Give_Fields_API::render_tag( $field );
 }
