@@ -49,7 +49,7 @@ class Give_Form_API {
 		'continue_button_title' => '',
 
 		// Manually render form.
-		'callback'              => ''
+		'callback'              => '',
 
 		// @todo: Add html edit params.
 	);
@@ -123,7 +123,7 @@ class Give_Form_API {
 	 * @param array $attrs
 	 */
 	public function render_shortcode( $attrs ) {
-		$attrs = shortcode_atts( array( 'id' => '', ), $attrs, 'give_form_api' );
+		$attrs = shortcode_atts( array( 'id' => '' ), $attrs, 'give_form_api' );
 
 		echo self::$instance->render_form( $attrs['id'] );
 	}

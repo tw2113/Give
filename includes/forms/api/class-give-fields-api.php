@@ -347,7 +347,7 @@ class Give_Fields_API {
 	 * Render text field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -372,7 +372,7 @@ class Give_Fields_API {
 	 * Render submit field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -386,7 +386,7 @@ class Give_Fields_API {
 	 * Render checkbox field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -411,7 +411,7 @@ class Give_Fields_API {
 	 * Render email field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -425,7 +425,7 @@ class Give_Fields_API {
 	 * Render number field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -439,7 +439,7 @@ class Give_Fields_API {
 	 * Render password field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -453,7 +453,7 @@ class Give_Fields_API {
 	 * Render button field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -483,7 +483,7 @@ class Give_Fields_API {
 	 * Render textarea field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -509,7 +509,7 @@ class Give_Fields_API {
 	 * Render select field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -550,7 +550,7 @@ class Give_Fields_API {
 	 * Render multi select field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -564,10 +564,10 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Render text field.
+	 * Render radio field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
@@ -603,7 +603,7 @@ class Give_Fields_API {
 	 * Render multi checkbox field.
 	 *
 	 * @since  1.9
-	 * @access private
+	 * @access public
 	 *
 	 * @param  array $field
 	 *
