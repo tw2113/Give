@@ -832,7 +832,11 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					),
 				);
 
-				$field_args['type'] = ( 'multiselect' === $field['type'] ? 'multi_select' : $field['type'] );
+				if( 'multiselect' === $field['type'] ) {
+					$field_args['type'] = 'multi_select';
+				}elseif ( 'multicheck' === $field['type'] ) {
+					$field_args['type'] = 'multi_checkbox';
+				}
 
 				if ( ! empty( $field['attributes'] ) ) {
 					$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
