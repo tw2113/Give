@@ -74,7 +74,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'type'    => 'radio_inline',
 							'options' => array(
 								'donation' => __( 'Donation', 'give' ),
-								'standard' => __( 'Standard Transaction', 'give' )
+								'standard' => __( 'Standard Transaction', 'give' ),
 							),
 							'default' => 'donation',
 						),
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'options' => array(
 								'enabled'  => __( 'Enabled', 'give' ),
 								'disabled' => __( 'Disabled', 'give' ),
-							)
+							),
 						),
 						array(
 							'name'    => __( 'PayPal IPN Verification', 'give' ),
@@ -98,19 +98,19 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'options' => array(
 								'enabled'  => __( 'Enabled', 'give' ),
 								'disabled' => __( 'Disabled', 'give' ),
-							)
+							),
 						),
-                        array(
-                            'name'  => __( 'PayPal Standard Gateway Settings Docs Link', 'give' ),
-                            'id'    => 'paypal_standard_gateway_settings_docs_link',
-                            'url'   => esc_url( 'http://docs.givewp.com/settings-gateway-paypal-standard' ),
-                            'title' => __( 'PayPal Standard Gateway Settings', 'give' ),
-                            'type'  => 'give_docs_link',
-                        ),
+						array(
+							'name'  => __( 'PayPal Standard Gateway Settings Docs Link', 'give' ),
+							'id'    => 'paypal_standard_gateway_settings_docs_link',
+							'url'   => esc_url( 'http://docs.givewp.com/settings-gateway-paypal-standard' ),
+							'title' => __( 'PayPal Standard Gateway Settings', 'give' ),
+							'type'  => 'give_docs_link',
+						),
 						array(
 							'type' => 'sectionend',
 							'id'   => 'give_title_gateway_settings_2',
-						)
+						),
 					);
 					break;
 
@@ -129,8 +129,8 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'default' => 'disabled',
 							'options' => array(
 								'enabled'  => __( 'Enabled', 'give' ),
-								'disabled' => __( 'Disabled', 'give' )
-							)
+								'disabled' => __( 'Disabled', 'give' ),
+							),
 						),
 						array(
 							'name'    => __( 'Offline Donation Instructions', 'give' ),
@@ -140,14 +140,14 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'type'    => 'wysiwyg',
 							'options' => array(
 								'textarea_rows' => 6,
-							)
+							),
 						),
 						array(
 							'name'    => __( 'Offline Donation Email Instructions Subject', 'give' ),
 							'desc'    => __( 'Enter the subject line for the donation receipt email.', 'give' ),
 							'id'      => 'offline_donation_subject',
 							'default' => esc_attr__( '{donation} - Offline Donation Instructions', 'give' ),
-							'type'    => 'text'
+							'type'    => 'text',
 						),
 						array(
 							'name'    => __( 'Offline Donation Email Instructions', 'give' ),
@@ -157,19 +157,19 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'type'    => 'wysiwyg',
 							'options' => array(
 								'textarea_rows' => 6,
-							)
+							),
 						),
-                        array(
-                            'name'  => __( 'Offline Donations Settings Docs Link', 'give' ),
-                            'id'    => 'offline_gateway_settings_docs_link',
-                            'url'   => esc_url( 'http://docs.givewp.com/settings-gateway-offline-donations' ),
-                            'title' => __( 'Offline Gateway Settings', 'give' ),
-                            'type'  => 'give_docs_link',
-                        ),
+						array(
+							'name'  => __( 'Offline Donations Settings Docs Link', 'give' ),
+							'id'    => 'offline_gateway_settings_docs_link',
+							'url'   => esc_url( 'http://docs.givewp.com/settings-gateway-offline-donations' ),
+							'title' => __( 'Offline Gateway Settings', 'give' ),
+							'type'  => 'give_docs_link',
+						),
 						array(
 							'type' => 'sectionend',
 							'id'   => 'give_title_gateway_settings_3',
-						)
+						),
 					);
 					break;
 
@@ -178,7 +178,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 						// Section 1: Gateways.
 						array(
 							'id'   => 'give_title_gateway_settings_1',
-							'type' => 'title'
+							'type' => 'title',
 						),
 						array(
 							'name'    => __( 'Test Mode', 'give' ),
@@ -189,30 +189,30 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 							'options' => array(
 								'enabled'  => __( 'Enabled', 'give' ),
 								'disabled' => __( 'Disabled', 'give' ),
-							)
+							),
 						),
 						array(
 							'name' => __( 'Enabled Gateways', 'give' ),
 							'desc' => __( 'Enable your payment gateway. Can be ordered by dragging.', 'give' ),
 							'id'   => 'gateways',
-							'type' => 'enabled_gateways'
+							'type' => 'enabled_gateways',
 						),
 						array(
 							'name' => __( 'Default Gateway', 'give' ),
 							'desc' => __( 'The gateway that will be selected by default.', 'give' ),
 							'id'   => 'default_gateway',
-							'type' => 'default_gateway'
+							'type' => 'default_gateway',
 						),
-                        array(
-                            'name'  => __( 'Gateways Docs Link', 'give' ),
-                            'id'    => 'gateway_settings_docs_link',
-                            'url'   => esc_url( 'http://docs.givewp.com/settings-gateways' ),
-                            'title' => __( 'Gateway Settings', 'give' ),
-                            'type'  => 'give_docs_link',
-                        ),
+						array(
+							'name'  => __( 'Gateways Docs Link', 'give' ),
+							'id'    => 'gateway_settings_docs_link',
+							'url'   => esc_url( 'http://docs.givewp.com/settings-gateways' ),
+							'title' => __( 'Gateway Settings', 'give' ),
+							'type'  => 'give_docs_link',
+						),
 						array(
 							'id'   => 'give_title_gateway_settings_1',
-							'type' => 'sectionend'
+							'type' => 'sectionend',
 						),
 					);
 					break;
