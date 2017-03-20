@@ -36,6 +36,9 @@ class Give_Fields_API {
 		// Set default value to field.
 		'default'              => '',
 
+		// Set checkbox value.
+		'cbvalue'              => 'on',
+
 		// Field with wrapper.
 		'wrapper'              => true,
 		'wrapper_type'         => 'p',
