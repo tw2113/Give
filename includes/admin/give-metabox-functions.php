@@ -1462,3 +1462,38 @@ function give_repeater_field_set_editor_id( $field_name, $field ) {
 }
 
 add_filter( 'give_get_field_name', 'give_repeater_field_set_editor_id', 10, 2 );
+
+
+/**
+ * backward compatibility for metabox setting api.
+ * Backward compatibility ( 1.8=<version>1.9).
+ *
+ * @since  1.9
+ *
+ * @param array $field
+ *
+ * @return array
+ */
+function give_backward_compatibility_metabox_setting_api_1_8( &$field ) {
+	if ( ! empty( $field['id'] ) ) {
+		$field_args = array(
+			'name'               => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
+			'label'              => ! empty( $field['id'] ) ? ( $field['name'] ) : ( ! empty( $field['label'] ) ? $field['label'] : '' ),
+			'field_attributes'   => array(
+				'class' => ( empty( $field['class'] ) ? '' : ' ' . esc_attr( $field['class'] ) ),
+				'style' => ( empty( $field['style'] ) ? '' : $field['style'] ),
+				'id'    => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
+
+			),
+			'wrapper_attributes' => array(
+				'class'  => ( ! empty( $field['wrapper_class'] ) ? $field['wrapper_class'] : '' ),
+			),
+		);
+
+		if ( ! empty( $field['attributes'] ) ) {
+			$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
+		}
+
+		$field = array_merge( $field, $field_args );
+	}
+}
