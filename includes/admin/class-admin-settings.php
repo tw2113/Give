@@ -612,12 +612,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
                         </tr><?php
 						break;
 
-					// Custom: API field.
-					case 'api' :
-						give_api_callback();
-						echo $description;
-						break;
-
 					// Custom: Gateway API key.
 					case 'api_key' :
 						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );

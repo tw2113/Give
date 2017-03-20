@@ -47,6 +47,9 @@ if ( ! class_exists( 'Give_Settings_API' ) ) :
 
 			add_filter( 'give-tools_tabs_array', array( $this, 'add_settings_page' ), 20 );
 			add_action( "give-tools_settings_{$this->id}_page", array( $this, 'output' ) );
+
+			// Render api field type.
+			add_action( 'give_admin_field_api', array( $this, 'render_api_field' ) );
 		}
 
 		/**
@@ -113,6 +116,19 @@ if ( ! class_exists( 'Give_Settings_API' ) ) :
 			$settings = $this->get_settings();
 
 			Give_Admin_Settings::output_fields( $settings, 'give_settings' );
+		}
+
+
+		/**
+		 * Render api field.
+		 *
+		 * @since 1.9
+		 * @access public
+		 * @param $field
+		 */
+		public function render_api_field( $field ){
+			give_api_callback();
+			echo Give_Admin_Settings::get_field_description( $field );
 		}
 	}
 
