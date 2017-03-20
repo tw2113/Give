@@ -268,7 +268,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 		 */
 		public function render_default_gateway_field( $field, $option_value ) {
 			?>
-			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
 				</th>
@@ -292,7 +292,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 		 */
 		public function render_enabled_gateways_field( $field, $option_value ) {
 			?>
-			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
 				</th>
