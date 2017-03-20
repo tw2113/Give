@@ -485,41 +485,16 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Multi Checkbox input.
 					case 'multicheck' :
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
-						$option_value = is_array( $option_value ) ? $option_value : array();
-						?>
-                        <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                            <th scope="row" class="titledesc">
-                                <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                            </th>
-                            <td class="give-forminp give-forminp-<?php echo sanitize_title( $value['type'] ) ?> <?php echo( ! empty( $value['class'] ) ? $value['class'] : '' ); ?>">
-                                <fieldset>
-                                    <ul>
-										<?php
-										foreach ( $value['options'] as $key => $val ) {
-											?>
-                                            <li>
-                                                <label>
-                                                    <input
-                                                            name="<?php echo esc_attr( $value['id'] ); ?>[]"
-                                                            value="<?php echo $key; ?>"
-                                                            type="checkbox"
-                                                            style="<?php echo esc_attr( $value['css'] ); ?>"
-														<?php echo implode( ' ', $custom_attributes ); ?>
-														<?php if ( in_array( $key, $option_value ) ) {
-															echo 'checked="checked"';
-														} ?>
-                                                    /> <?php echo $val ?>
-                                                </label>
-                                            </li>
-											<?php
-										}
-										?>
-										<?php echo $description; ?>
-                                </fieldset>
-                            </td>
-                        </tr>
-						<?php
+						self::backward_compatibility_1_8( $value );
+
+						// Set field value.
+						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
+						$value['value'] = is_array( $value['value'] ) ? $value['value'] : array();
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// File input field.
