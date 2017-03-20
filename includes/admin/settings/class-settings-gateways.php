@@ -32,6 +32,9 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 			$this->default_tab = 'gateways-settings';
 
 			parent::__construct();
+
+			// Render default gateway field.
+			add_action( 'give_admin_field_default_gateway', array( $this, 'render_default_gateway_field' ), 10, 2 );
 		}
 
 		/**
@@ -244,10 +247,34 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 			$sections = array(
 				'gateways-settings' => __( 'Gateways', 'give' ),
 				'paypal-standard'   => __( 'PayPal Standard', 'give' ),
-				'offline-donations' => __( 'Offline Donations', 'give' )
+				'offline-donations' => __( 'Offline Donations', 'give' ),
 			);
 
 			return apply_filters( 'give_get_sections_' . $this->id, $sections );
+		}
+
+
+		/**
+		 * Render default gateway field.
+		 *
+		 * @since  1.9
+		 * @access public
+		 *
+		 * @param $field
+		 * @param $option_value
+		 */
+		public function render_default_gateway_field( $field, $option_value ) {
+			?>
+			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+				<th scope="row" class="titledesc">
+					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
+				</th>
+				<td class="give-forminp">
+					<?php give_default_gateway_callback( $field, $option_value ); ?>
+					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
+				</td>
+			</tr>
+			<?php
 		}
 	}
 
