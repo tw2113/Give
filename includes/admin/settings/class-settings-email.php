@@ -32,6 +32,9 @@ if ( ! class_exists( 'Give_Settings_Email' ) ) :
 			$this->default_tab = 'email-settings';
 
 			parent::__construct();
+
+			// Render email preview buttons field.
+			add_action( 'give_admin_field_email_preview_buttons', array( $this, 'render_email_preview_buttons_field' ) );
 		}
 
 		/**
@@ -222,6 +225,29 @@ if ( ! class_exists( 'Give_Settings_Email' ) ) :
 			);
 
 			return apply_filters( 'give_get_sections_' . $this->id, $sections );
+		}
+
+
+		/**
+		 * Render email preview buttons field.
+		 *
+		 * @since  1.9
+		 * @access public
+		 *
+		 * @param $field
+		 */
+		public function render_email_preview_buttons_field( $field ) {
+			?>
+			<tr valign="top" <?php echo ! empty( $field['wrapper_class'] ) ? 'class="' . $field['wrapper_class'] . '"' : '' ?>>
+				<th scope="row" class="titledesc">
+					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
+				</th>
+				<td class="give-forminp">
+					<?php give_email_preview_buttons_callback(); ?>
+					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
+				</td>
+			</tr>
+			<?php
 		}
 	}
 

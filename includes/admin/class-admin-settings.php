@@ -569,20 +569,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
                         </tr><?php
 						break;
 
-					// Custom: Email preview buttons field.
-					case 'email_preview_buttons' :
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp">
-							<?php give_email_preview_buttons_callback(); ?>
-							<?php echo $description; ?>
-                        </td>
-                        </tr><?php
-						break;
-
 					// Custom: Gateway API key.
 					case 'api_key' :
 						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
