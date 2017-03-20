@@ -415,47 +415,28 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					// Select boxes.
 					case 'select' :
 					case 'multiselect' :
+						self::backward_compatibility_1_8( $value );
 
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
+						// Set field value.
+						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
 
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp give-forminp-<?php echo sanitize_title( $value['type'] ) ?>">
-                            <select
-                                    name="<?php echo esc_attr( $value['id'] ); ?><?php if ( $value['type'] == 'multiselect' ) {
-										echo '[]';
-									} ?>"
-                                    id="<?php echo esc_attr( $value['id'] ); ?>"
-                                    style="<?php echo esc_attr( $value['css'] ); ?>"
-                                    class="<?php echo esc_attr( $value['class'] ); ?>"
-								<?php echo implode( ' ', $custom_attributes ); ?>
-								<?php echo ( 'multiselect' == $value['type'] ) ? 'multiple="multiple"' : ''; ?>
-                            >
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
-								<?php
-								if ( ! empty( $value['options'] ) ) {
-									foreach ( $value['options'] as $key => $val ) {
-										?>
-                                        <option value="<?php echo esc_attr( $key ); ?>" <?php
+						// Update td wrapper.
+						$value['before_field'] = '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . '"><fieldset>';
+						$value['after_field']  = "{$description}</fieldset></td>";
 
-										if ( is_array( $option_value ) ) {
-											selected( in_array( $key, $option_value ), true );
-										} else {
-											selected( $option_value, $key );
-										}
 
-										?>><?php echo $val ?></option>
-										<?php
-									}
-								}
-								?>
+						// Update param for radio_inline field type.
+						if( 'radio_inline' === $value['type'] ) {
+							$value['type']  = 'radio';
+							$value['wrapper_attributes']['class'] = empty( $value['wrapper_attributes']['class'] )
+								? 'give-radio-inline'
+								: trim( $value['wrapper_attributes']['class'] ) . ' give-radio-inline';
+						}
 
-                            </select> <?php echo $description; ?>
-                        </td>
-                        </tr><?php
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Radio inputs.
