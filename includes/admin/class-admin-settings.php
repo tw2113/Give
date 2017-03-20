@@ -641,12 +641,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
                         </tr><?php
 						break;
 
-					// Custom: API field.
-					case 'data' :
-						give_tools_recount_stats_display();
-						echo $description;
-						break;
-
 					// Custom: Give Docs Link field type.
 					case 'give_docs_link' :
 						?>

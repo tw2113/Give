@@ -53,6 +53,9 @@ if ( ! class_exists( 'Give_Settings_Data' ) ) :
 				add_action( "give-tools_open_form", '__return_empty_string' );
 				add_action( "give-tools_close_form", '__return_empty_string' );
 			}
+
+			// Render data field type.
+			add_action( 'give_admin_field_data', array( $this, 'render_data_field' ) );
 		}
 
 		/**
@@ -119,6 +122,19 @@ if ( ! class_exists( 'Give_Settings_Data' ) ) :
 			$settings = $this->get_settings();
 
 			Give_Admin_Settings::output_fields( $settings, 'give_settings' );
+		}
+
+
+		/**
+		 * Render data field.
+		 *
+		 * @since 1.9
+		 * @access public
+		 * @param $field
+		 */
+		public function render_data_field( $field ){
+			give_tools_recount_stats_display();
+			echo Give_Admin_Settings::get_field_description($field);
 		}
 	}
 
