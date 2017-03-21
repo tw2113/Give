@@ -256,6 +256,8 @@ add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value' );
  * @return string
  */
 function give_render_docs_link_field( $field_html, $field ) {
+	$field = Give_Fields_API::set_default_values( $field );
+
 	// Set default values.
 	$field['url'] = ! empty( $field['url'] ) ? $field['url'] : 'https://givewp.com/documentation';
 	$label        = ! empty( $field['label'] ) ? $field['label'] : __( 'Documentation', 'give' );
