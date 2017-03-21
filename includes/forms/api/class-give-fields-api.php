@@ -652,7 +652,7 @@ class Give_Fields_API {
 	 *
 	 * @return string
 	 */
-	private function render_field_wrapper( $field ) {
+	public static function render_field_wrapper( $field ) {
 		ob_start();
 
 		if ( $field['wrapper'] ) :
