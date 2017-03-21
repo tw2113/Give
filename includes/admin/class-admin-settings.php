@@ -531,21 +531,15 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// WordPress Editor.
 					case 'wysiwyg' :
-						// Get option value.
-						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
+						self::backward_compatibility_1_8( $value );
 
-						// Get editor settings.
-						$editor_settings = ! empty( $value['options'] ) ? $value['options'] : array();
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <th scope="row" class="titledesc">
-                            <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo self::get_field_title( $value ); ?></label>
-                        </th>
-                        <td class="give-forminp">
-							<?php wp_editor( $option_value, $value['id'], $editor_settings ); ?>
-							<?php echo $description; ?>
-                        </td>
-                        </tr><?php
+						// Set field value.
+						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+						
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Custom: Give Docs Link field type.

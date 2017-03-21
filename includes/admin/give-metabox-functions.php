@@ -353,14 +353,6 @@ function give_wysiwyg( $field ) {
 
 	give_backward_compatibility_metabox_setting_api_1_8( $field );
 
-	$field['editor_attributes']        = array(
-		'textarea_name' => isset( $field['repeatable_field_id'] )
-			? $field['repeatable_field_id']
-			: $field['id'],
-		'textarea_rows' => '10',
-		'editor_class'  => $field['attributes']['class'],
-	);
-
 	$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
 			$field['value'],
 			$field['unique_field_id'],
