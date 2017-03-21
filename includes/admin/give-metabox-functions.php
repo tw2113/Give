@@ -1427,21 +1427,19 @@ function give_backward_compatibility_metabox_setting_api_1_8( &$field ) {
 			),
 		);
 
-		if ( ! empty( $field['attributes'] ) ) {
-			$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
-		}
-
-		$field = array_merge( $field, $field_args );
-
 	}  elseif ( 'docs_link' === $field['type'] ) {
 
 		$field_args = array(
 			'label' => ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['label'] ) ? $field['label'] : '' ),
 		);
+	}
 
-		if ( ! empty( $field['attributes'] ) ) {
-			$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
-		}
+	if ( ! empty( $field['attributes'] ) ) {
+		$field_args['field_attributes'] = isset( $field_args['field_attributes'] )
+			? $field_args['field_attributes']
+			: array();
+
+		$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
 
 		$field = array_merge( $field, $field_args );
 	}
