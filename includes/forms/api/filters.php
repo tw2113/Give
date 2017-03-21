@@ -243,3 +243,38 @@ function give_field_api_set_field_value( $field ) {
 }
 
 add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value' );
+
+
+/**
+ * Render docs link field.
+ *
+ * @since 1.9
+ *
+ * @param string $field_html
+ * @param array  $field
+ *
+ * @return string
+ */
+function give_render_docs_link_field( $field_html, $field ) {
+	// Set default values.
+	$field['url'] = ! empty( $field['url'] ) ? $field['url'] : 'https://givewp.com/documentation';
+	$label        = ! empty( $field['label'] ) ? $field['label'] : __( 'Documentation', 'give' );
+
+	// We do not want to print label for this field, that why we unset this before getting wrapper.
+	unset( $field['label'] );
+
+	$field_wrapper = Give_Fields_API::get_instance()->render_field_wrapper( $field );
+
+	ob_start();
+
+	?>
+	<a href="<?php echo  esc_url( $field['url'] ); ?>" target="_blank">
+		<?php echo sprintf( esc_html__( 'Need Help? See docs on "%s"' ), $label ); ?>
+		<span class="dashicons dashicons-editor-help"></span>
+	</a>
+	<?php
+
+	return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+}
+
+add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_field', 10, 2 );
