@@ -320,3 +320,26 @@ function give_render_wysiwyg_field( $field_html, $field ) {
 }
 
 add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 10, 2 );
+
+/**
+ * Render file field.
+ *
+ * @since 1.9
+ *
+ * @param string $field_html
+ * @param array  $field
+ *
+ * @return string
+ */
+function give_render_file_field( $field_html, $field ) {
+	$field = Give_Fields_API::set_default_values( $field );
+
+	// Allow developer to save attachment ID or attachment url as metadata.
+	$field['fvalue'] = isset( $field['fvalue'] ) ? $field['fvalue'] : 'url';
+	$field['type']   = 'text';
+	$field['after_field'] = '<input class="give-media-upload button" type="button" value="' . __( 'Add or Upload File', 'give' ) . '">' . $field_html['after_field'];
+
+	return Give_Fields_API::get_instance()->render_text_field( $field );
+}
+
+add_filter( 'give_field_api_render_file_field', 'give_render_file_field', 10, 2 );

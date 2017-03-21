@@ -356,7 +356,7 @@ function give_wysiwyg( $field ) {
 	$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
 			$field['value'],
 			$field['unique_field_id'],
-			$field['editor_attributes'],
+			//$field['editor_attributes'],
 	) ) ) . '"';
 
 	// Set default class.
@@ -566,32 +566,29 @@ function give_colorpicker( $field ) {
 function give_media( $field ) {
 	global $thepostid, $post;
 
-	$thepostid                    = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['style']               = isset( $field['style'] ) ? $field['style'] : '';
-	$field['wrapper_class']       = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['value']               = give_get_field_value( $field, $thepostid );
-	$field['name']                = isset( $field['name'] ) ? $field['name'] : $field['id'];
-	$field['type']                = 'text';
-	$field['attributes']['class'] = "{$field['attributes']['class']} give-text-medium";
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
 
-	// Allow developer to save attachment ID or attachment url as metadata.
-	$field['fvalue'] = isset( $field['fvalue'] ) ? $field['fvalue'] : 'url';
-	?>
-	<p class="give-field-wrap <?php echo esc_attr( $field['id'] ); ?>_field <?php echo esc_attr( $field['wrapper_class'] ); ?>">
-		<label for="<?php echo give_get_field_name( $field ) ?>"><?php echo wp_kses_post( $field['name'] ); ?></label>
-		<input
-				name="<?php echo give_get_field_name( $field ); ?>"
-				id="<?php echo esc_attr( $field['id'] ); ?>"
-				type="text"
-				value="<?php echo $field['value']; ?>"
-				style="<?php echo esc_attr( $field['style'] ); ?>"
-				data-fvalue="<?php echo $field['fvalue']; ?>"
-			<?php echo give_get_custom_attributes( $field ); ?>
-		/>&nbsp;&nbsp;&nbsp;&nbsp;<input class="give-media-upload button" type="button"
-										 value="<?php echo esc_html__( 'Add or Upload File', 'give' ); ?>">
-		<?php echo give_get_field_description( $field ); ?>
-	</p>
-	<?php
+	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['value'] = give_get_field_value( $field, $thepostid );
+	$field['type']  = 'file';
+
+	// Set default class.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
+		? "{$field['wrapper_attributes']['class']} give-field-wrap"
+		: 'give-field-wrap';
+
+	// Set description.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['after_field'] = ! empty( $field['after_field'] )
+		? $field['after_field'] . give_get_field_description( $field )
+		: give_get_field_description( $field );
+
+	// Reset label for repeater field compatibility.
+	$field['name'] = give_get_field_name( $field );
+
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
 }
 
 /**
