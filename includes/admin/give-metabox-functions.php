@@ -510,20 +510,12 @@ function give_radio( $field ) {
  * Output a colorpicker.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
- * @param  array $field         {
- *                              Optional. Array of colorpicker field arguments.
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
+ * @param array $field
  *
- * @type string  $id            Field ID. Default ''.
- * @type string  $style         CSS style for input field. Default ''.
- * @type string  $wrapper_class CSS class to use for wrapper of input field. Default ''.
- * @type string  $value         Value of input field. Default ''.
- * @type string  $name          Name of input field. Default ''.
- * @type string  $description   Description of input field. Default ''.
- * @type array   $attributes    List of attributes of input field. Default array().
- *                                               for example: 'attributes' => array( 'placeholder' => '*****', 'class'
- *                                               => '****' )
- * }
  * @return void
  */
 function give_colorpicker( $field ) {
@@ -560,8 +552,13 @@ function give_colorpicker( $field ) {
  * Output a media upload field.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
  * @param array $field
+ *
+ * @return void
  */
 function give_media( $field ) {
 	global $thepostid, $post;
