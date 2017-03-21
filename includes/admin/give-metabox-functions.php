@@ -627,29 +627,25 @@ function give_default_gateway( $field ) {
  * Output the documentation link.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
- * @param  array $field      {
- *                           Optional. Array of customizable link attributes.
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
  *
- * @type string  $name       Name of input field. Default ''.
- * @type string  $type       Type of input field. Default 'text'.
- * @type string  $url        Value to be passed as a link. Default 'https://givewp.com/documentation'.
- * @type string  $title      Value to be passed as text of link. Default 'Documentation'.
- * @type array   $attributes List of attributes of input field. Default array().
- *                                               for example: 'attributes' => array( 'placeholder' => '*****', 'class'
- *                                               => '****' )
- * }
  * @return void
  */
 
 function give_docs_link( $field ) {
-	$field['url']   = isset( $field['url'] ) ? $field['url'] : 'https://givewp.com/documentation';
-	$field['title'] = isset( $field['title'] ) ? $field['title'] : 'Documentation';
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
 
-	echo '<p class="give-docs-link"><a href="' . esc_url( $field['url'] )
-	     . '" target="_blank">'
-	     . sprintf( esc_html__( 'Need Help? See docs on "%s"' ), $field['title'] )
-	     . '<span class="dashicons dashicons-editor-help"></span></a></p>';
+	// Set default class.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
+		? "{$field['wrapper_attributes']['class']} give-docs-link"
+		: 'give-docs-link';
+
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
 }
 
 /**
@@ -1429,6 +1425,18 @@ function give_backward_compatibility_metabox_setting_api_1_8( &$field ) {
 			'wrapper_attributes' => array(
 				'class'  => ( ! empty( $field['wrapper_class'] ) ? $field['wrapper_class'] : '' ),
 			),
+		);
+
+		if ( ! empty( $field['attributes'] ) ) {
+			$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
+		}
+
+		$field = array_merge( $field, $field_args );
+
+	}  elseif ( 'docs_link' === $field['type'] ) {
+
+		$field_args = array(
+			'label' => ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['label'] ) ? $field['label'] : '' ),
 		);
 
 		if ( ! empty( $field['attributes'] ) ) {
