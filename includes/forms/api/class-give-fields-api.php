@@ -755,7 +755,7 @@ class Give_Fields_API {
 	 *
 	 * @return array
 	 */
-	private function set_default_values( $field, $form = null, $fire_filter = true ) {
+	public static function set_default_values( $field, $form = null, $fire_filter = true ) {
 		/**
 		 * Filter the field before set default values.
 		 *
