@@ -550,17 +550,13 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Custom: Give Docs Link field type.
 					case 'give_docs_link' :
-						?>
-                    <tr valign="top" <?php echo ! empty( $value['wrapper_class'] ) ? 'class="' . $value['wrapper_class'] . '"' : '' ?>>
-                        <td class="give-docs-link" colspan="2">
-							<?php
-							echo '<p class="give-docs-link"><a href="' . esc_url( $value['url'] )
-							     . '" target="_blank">'
-							     . sprintf( esc_html__( 'Need Help? See docs on "%s"' ), self::get_field_title( $value ) )
-							     . '<span class="dashicons dashicons-editor-help"></span></a></p>';
-							?>
-                        </td>
-                        </tr><?php
+						self::backward_compatibility_1_8( $value );
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+						$value['before_field'] = '<td class="give-forminp give-forminp-' . sanitize_title( $value['type'] ) . ' give-docs-link" colspan="2">';
+
+						echo Give_Fields_API::render_tag( $value );
 						break;
 
 					// Default: run an action
@@ -811,6 +807,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					$field_args['type'] = 'multi_select';
 				}elseif ( 'multicheck' === $field['type'] ) {
 					$field_args['type'] = 'multi_checkbox';
+				} elseif ( 'give_docs_link' === $field['type'] ) {
+					$field_args['type'] = 'docs_link';
 				}
 
 				if ( ! empty( $field['attributes'] ) ) {
