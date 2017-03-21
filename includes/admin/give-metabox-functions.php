@@ -346,35 +346,43 @@ function give_textarea_input( $field ) {
 function give_wysiwyg( $field ) {
 	global $thepostid, $post;
 
-	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['value']         = give_get_field_value( $field, $thepostid );
-	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
-	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-
+	$thepostid                = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['value']           = give_get_field_value( $field, $thepostid );
 	$field['unique_field_id'] = give_get_field_name( $field );
-	$editor_attributes        = array(
-		'textarea_name' => isset( $field['repeatable_field_id'] ) ? $field['repeatable_field_id'] : $field['id'],
+	$field['wrapper_type']    = 'div';
+
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
+
+	$field['editor_attributes']        = array(
+		'textarea_name' => isset( $field['repeatable_field_id'] )
+			? $field['repeatable_field_id']
+			: $field['id'],
 		'textarea_rows' => '10',
-		'editor_css'    => esc_attr( $field['style'] ),
 		'editor_class'  => $field['attributes']['class'],
 	);
-	$data_wp_editor           = ' data-wp-editor="' . base64_encode( json_encode( array(
+
+	$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
 			$field['value'],
 			$field['unique_field_id'],
-			$editor_attributes,
+			$field['editor_attributes'],
 	) ) ) . '"';
-	$data_wp_editor           = isset( $field['repeatable_field_id'] ) ? $data_wp_editor : '';
 
-	echo '<div class="give-field-wrap ' . $field['unique_field_id'] . '_field ' . esc_attr( $field['wrapper_class'] ) . '"' . $data_wp_editor . '><label for="' . $field['unique_field_id'] . '">' . wp_kses_post( $field['name'] ) . '</label>';
+	// Set default class.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
+		? "{$field['wrapper_attributes']['class']} give-field-wrap"
+		: 'give-field-wrap';
 
-	wp_editor(
-		$field['value'],
-		$field['unique_field_id'],
-		$editor_attributes
-	);
+	// Set description.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['after_field'] = ! empty( $field['after_field'] )
+		? $field['after_field'] . give_get_field_description( $field )
+		: give_get_field_description( $field );
 
-	echo give_get_field_description( $field );
-	echo '</div>';
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
+
+	// @todo: label must be linked to wordpress editor.
 }
 
 /**
@@ -1412,6 +1420,8 @@ add_filter( 'give_get_field_name', 'give_repeater_field_set_editor_id', 10, 2 );
  * @return array
  */
 function give_backward_compatibility_metabox_setting_api_1_8( &$field ) {
+	$field_args = array();
+
 	if ( ! empty( $field['id'] ) ) {
 		$field_args = array(
 			'name'               => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),

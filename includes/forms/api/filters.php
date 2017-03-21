@@ -280,3 +280,31 @@ function give_render_docs_link_field( $field_html, $field ) {
 }
 
 add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_field', 10, 2 );
+
+/**
+ * Render wysiwyg field.
+ *
+ * @since 1.9
+ *
+ * @param string $field_html
+ * @param array  $field
+ *
+ * @return string
+ */
+function give_render_wysiwyg_field( $field_html, $field ) {
+	$field = Give_Fields_API::set_default_values( $field );
+
+	$field_wrapper = Give_Fields_API::get_instance()->render_field_wrapper( $field );
+
+	ob_start();
+
+	wp_editor(
+		$field['value'],
+		$field['unique_field_id'],
+		$field['editor_attributes']
+	);
+
+	return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+}
+
+add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 10, 2 );
