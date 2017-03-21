@@ -583,21 +583,25 @@ class Give_Fields_API {
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
 
+		echo '<ul>';
 		foreach ( $field['options'] as $key => $option ) :
 			?>
-			<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
-				<input
-						type="<?php echo $field['type']; ?>"
-						name="<?php echo $field['name']; ?>"
-						value="<?php echo $key; ?>"
-						id="<?php echo "{$id_base}-{$key}"; ?>"
-					<?php checked( $key, $field['value'] ) ?>
-					<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-					<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-				><?php echo $option; ?>
-			</label>
+			<li>
+				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
+					<input
+							type="<?php echo $field['type']; ?>"
+							name="<?php echo $field['name']; ?>"
+							value="<?php echo $key; ?>"
+							id="<?php echo "{$id_base}-{$key}"; ?>"
+						<?php checked( $key, $field['value'] ) ?>
+						<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+						<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
+					><?php echo $option; ?>
+				</label>
+			</li>
 			<?php
 		endforeach;
+		echo '</ul>';
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}

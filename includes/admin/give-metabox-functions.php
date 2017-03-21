@@ -147,6 +147,7 @@ function give_render_field( $field ) {
 				$field['wrapper_class'] = '';
 			}
 			$field['wrapper_class'] .= ' give-inline-radio-fields';
+			$field['type'] = 'radio';
 
 			break;
 
@@ -458,52 +459,41 @@ function give_select( $field ) {
  * Output a radio input box.
  *
  * @since  1.8
+ * @since  1.9 Render field with field api
  *
- * @param  array $field         {
- *                              Optional. Array of radio field arguments.
+ * @param array $field Field arguments
+ *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
+ * @param array $field
  *
- * @type string  $id            Field ID. Default ''.
- * @type string  $style         CSS style for input field. Default ''.
- * @type string  $wrapper_class CSS class to use for wrapper of input field. Default ''.
- * @type string  $value         Value of input field. Default ''.
- * @type string  $name          Name of input field. Default ''.
- * @type string  $description   Description of input field. Default ''.
- * @type array   $attributes    List of attributes of input field. Default array().
- *                                               for example: 'attributes' => array( 'placeholder' => '*****', 'class'
- *                                               => '****' )
- * @type array   $options       List of options. Default array().
- *                                               for example: 'options' => array( 'enable' => 'Enable', 'disable' =>
- *                                               'Disable' )
- * }
  * @return void
  */
 function give_radio( $field ) {
 	global $thepostid, $post;
 
-	$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
-	$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
-	$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
-	$field['value']         = give_get_field_value( $field, $thepostid );
-	$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
+	$thepostid             = empty( $thepostid ) ? $post->ID : $thepostid;
+	$field['value']        = give_get_field_value( $field, $thepostid );
+	$field['wrapper_type'] = 'fieldset';
 
-	echo '<fieldset class="give-field-wrap ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '"><span class="give-field-label">' . wp_kses_post( $field['name'] ) . '</span><legend class="screen-reader-text">' . wp_kses_post( $field['name'] ) . '</legend><ul class="give-radios">';
+	give_backward_compatibility_metabox_setting_api_1_8( $field );
 
-	foreach ( $field['options'] as $key => $value ) {
 
-		echo '<li><label><input
-				name="' . give_get_field_name( $field ) . '"
-				value="' . esc_attr( $key ) . '"
-				type="radio"
-				style="' . esc_attr( $field['style'] ) . '"
-				' . checked( esc_attr( $field['value'] ), esc_attr( $key ), false ) . ' '
-		     . give_get_custom_attributes( $field ) . '
-				/> ' . esc_html( $value ) . '</label>
-		</li>';
-	}
-	echo '</ul>';
+	// Set default class.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
+		? "{$field['wrapper_attributes']['class']} give-field-wrap"
+		: 'give-field-wrap';
 
-	echo give_get_field_description( $field );
-	echo '</fieldset>';
+	// Set description.
+	// Backward compatibility ( 1.8=<version>1.9).
+	$field['after_field'] = ! empty( $field['after_field'] )
+		? $field['after_field'] . give_get_field_description( $field )
+		: give_get_field_description( $field );
+
+	// Reset label for repeater field compatibility.
+	$field['name'] = give_get_field_name( $field );
+
+	// Render Field.
+	echo Give_Fields_API::render_tag( $field );
 }
 
 /**
