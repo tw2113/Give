@@ -188,6 +188,7 @@ function give_field_api_set_field_value( $field ) {
 		case 'number':
 		case 'email':
 		case 'hidden':
+		case 'file':
 			// Set default value.
 			$field['field_attributes']['value'] = $field['default'];
 
@@ -332,12 +333,13 @@ add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 
  * @return string
  */
 function give_render_file_field( $field_html, $field ) {
-	$field = Give_Fields_API::set_default_values( $field );
-
 	// Allow developer to save attachment ID or attachment url as metadata.
 	$field['fvalue'] = isset( $field['fvalue'] ) ? $field['fvalue'] : 'url';
 	$field['type']   = 'text';
-	$field['after_field'] = '<input class="give-media-upload button" type="button" value="' . __( 'Add or Upload File', 'give' ) . '">' . $field_html['after_field'];
+
+	$field['after_field'] = '<input class="give-media-upload button" type="button" value="' . __( 'Add or Upload File', 'give' ) . '">' . $field['after_field'];
+
+	error_log( print_r( $field, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
 
 	return Give_Fields_API::get_instance()->render_text_field( $field );
 }

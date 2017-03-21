@@ -985,7 +985,9 @@ jQuery.noConflict();
 
 			$('body').on( 'click', '.give-media-upload', function (e) {
 				e.preventDefault();
-				window.give_media_uploader_input_field = $(this);
+
+				// Cache active upload button selector.
+				var $active_upload_file_btn = $(this);
 
 				// If the uploader object has already been created, reopen the dialog
 				if (give_media_uploader) {
@@ -995,21 +997,55 @@ jQuery.noConflict();
 				// Extend the wp.media object
 				give_media_uploader = wp.media.frames.file_frame = wp.media({
 					title: give_vars.metabox_fields.media.button_title,
+					frame: 'post',
 					button: {
 						text: give_vars.metabox_fields.media.button_title
-					}, multiple: false
+					},
+					multiple: false
 				});
 
 				// When a file is selected, grab the URL and set it as the text field's value
-				give_media_uploader.on('select', function () {
+				give_media_uploader.on('insert', function () {
 					var attachment = give_media_uploader.state().get('selection').first().toJSON(),
-						$input_field = window.give_media_uploader_input_field.prev(),
-						fvalue= ( 'id' === $input_field.data('fvalue') ? attachment.id : attachment.url );
-					
-					console.log($input_field);
+						$input_field = $active_upload_file_btn.prev(),
+						$selected_image_size = $('.attachment-display-settings .size').val(),
+						fvalue= ( 'id' === $input_field.data('fvalue') ? attachment.id : attachment.sizes[ $selected_image_size ].url );
+						// $parent = $active_upload_file_btn.parents('.give-field-wrap'),
+						// $image_container = $('.give-image-thumb', $parent );
+
 
 					$input_field.val(fvalue);
+
+					// Show image.
+					// if ( $image_container.length ) {
+					// 	$image_container.find('img').attr( 'src', attachment.sizes[ $selected_image_size ].url );
+					// 	$image_container.removeClass( 'give-hidden' );
+					// }
 				});
+
+				// When an image is selected in the media $upload_image_frame...
+				give_media_uploader.on( 'open', function() {
+					$('a.media-menu-item').each(function(){
+						switch ( $(this).text().trim() ) {
+							case 'Create Gallery':
+							case 'Insert from URL':
+								$(this).hide();
+						}
+					});
+				});
+
+				// Hide necessary settings.
+				$('body').on( 'click', '.thumbnail', function(e){
+					var $attachment_display_setting = $('.attachment-display-settings');
+
+					if( $attachment_display_setting.length ) {
+						$( '.alignment', $attachment_display_setting ).closest('label').hide();
+						$( '.link-to', $attachment_display_setting ).closest('label').hide();
+						$( '.attachment-details label' ).hide();
+					}
+
+				});
+
 				// Open the uploader dialog
 				give_media_uploader.open();
 			})
