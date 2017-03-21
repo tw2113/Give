@@ -338,9 +338,7 @@ function give_render_file_field( $field_html, $field ) {
 	$field['type']   = 'text';
 
 	$field['after_field'] = '<input class="give-media-upload button" type="button" value="' . __( 'Add or Upload File', 'give' ) . '">' . $field['after_field'];
-
-	error_log( print_r( $field, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
-
+	
 	return Give_Fields_API::get_instance()->render_text_field( $field );
 }
 
