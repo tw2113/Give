@@ -203,12 +203,12 @@ class Give_Fields_API {
 
 			switch ( true ) {
 				// Block.
-				case ( array_key_exists( 'type', $field ) && 'block' === $field['type'] ):
+				case ( 'block' === self::get_field_type( $field ) ):
 					$fields_html .= self::$instance->render_block( $field, $form );
 					break;
 
 				// Section.
-				case array_key_exists( 'fields', $field ):
+				case ( 'section' === self::get_field_type( $field ) ):
 					$fields_html .= self::$instance->render_section( $field, $form );
 					break;
 
