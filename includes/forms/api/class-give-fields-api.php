@@ -979,7 +979,10 @@ class Give_Fields_API {
 		) {
 			$field_type = 'block';
 
-		} elseif ( array_key_exists( 'fields', $field ) ) {
+		} elseif (
+			array_key_exists( 'fields', $field )
+			&& 'section' === $field['type']
+		) {
 			$field_type = 'section';
 
 		}
