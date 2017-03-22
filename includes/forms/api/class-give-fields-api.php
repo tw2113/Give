@@ -622,30 +622,39 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_multi_checkbox_field( $field ) {
+		$field['wrapper_type'] = 'p' === $field['wrapper_type']
+			? 'fieldset'
+			: $field['wrapper_type'];
+
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
 
+		echo '<ul>';
 		foreach ( $field['options'] as $key => $option ) :
 			$checked = ! empty( $field['value'] ) && in_array( $key, $field['value'] )
 				? 'checked="checked"'
 				: '';
 			?>
-			<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
-				<input
-						type="checkbox"
-						name="<?php echo $field['name']; ?>[]"
-						value="<?php echo $key; ?>"
-						id="<?php echo "{$id_base}-{$key}"; ?>"
-					<?php echo $checked ?>
-					<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-					<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-				><?php echo $option; ?>
-			</label>
+			<li>
+				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
+					<input
+							type="checkbox"
+							name="<?php echo $field['name']; ?>[]"
+							value="<?php echo $key; ?>"
+							id="<?php echo "{$id_base}-{$key}"; ?>"
+						<?php echo $checked ?>
+						<?php echo( $field['required'] ? 'required=""' : '' ); ?>
+						<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
+					><?php echo $option; ?>
+				</label>
+			</li>
 			<?php
 		endforeach;
+		echo '</ul>';
+
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
