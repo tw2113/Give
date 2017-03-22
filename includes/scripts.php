@@ -129,31 +129,21 @@ function give_load_scripts() {
 
 	}
 
+	// CSS
+	if ( give_is_setting_enabled( give_get_option( 'css' ) ) ) {
+		wp_register_style( 'give-styles', give_get_stylesheet_uri(), array(), GIVE_VERSION, 'all' );
+		wp_enqueue_style( 'give-styles' );
+	}
+
+	/**
+	 * Fire the action after frontend scripts and styles load.
+	 *
+	 * @since 1.9
+	 */
+	do_action( 'give_wp_enqueue_scripts' );
 }
 
 add_action( 'wp_enqueue_scripts', 'give_load_scripts' );
-
-/**
- * Register styles.
- *
- * Checks the styles option and hooks the required filter.
- *
- * @since 1.0
- *
- * @return void
- */
-function give_register_styles() {
-
-	if ( ! give_is_setting_enabled( give_get_option( 'css' ) ) ) {
-		return;
-	}
-
-	wp_register_style( 'give-styles', give_get_stylesheet_uri(), array(), GIVE_VERSION, 'all' );
-	wp_enqueue_style( 'give-styles' );
-
-}
-
-add_action( 'wp_enqueue_scripts', 'give_register_styles' );
 
 
 /**
@@ -278,8 +268,6 @@ function give_load_admin_scripts( $hook ) {
 	wp_register_script( 'give-qtip', $js_plugins . 'jquery.qtip' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, false );
 	wp_enqueue_script( 'give-qtip' );
 
-	wp_register_script( 'give-repeatable-fields', $js_plugins . 'repeatable-fields' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, false );
-	wp_enqueue_script( 'give-repeatable-fields' );
 
 	// Forms CPT Script.
 	if ( $post_type === 'give_forms' ) {
@@ -320,8 +308,6 @@ function give_load_admin_scripts( $hook ) {
 		'batch_export_no_reqs'           => __( 'Required fields not completed.', 'give' ),
 		'reset_stats_warn'               => __( 'Are you sure you want to reset Give? This process is <strong><em>not reversible</em></strong> and will delete all data regardless of test or live mode. Please be sure you have a recent backup before proceeding.', 'give' ),
 		'price_format_guide'             => sprintf( __( 'Please enter amount in monetary decimal ( %1$s ) format without thousand separator ( %2$s ) .', 'give' ), $decimal_separator, $thousand_separator ),
-		/* translators : %s: Donation form options metabox */
-		'confirm_before_remove_row_text' => __( 'Do you want to delete this level?', 'give' ),
 		'matched_success_failure_page'   => __( 'You cannot set the success and failed pages to the same page', 'give' ),
 		'dismiss_notice_text'            => __( 'Dismiss this notice.', 'give' ),
 		'bulk_action' => array(
@@ -335,11 +321,6 @@ function give_load_admin_scripts( $hook ) {
 				'resend_receipt'          => __( 'Are you sure you want to resend the email receipt to this recipient?', 'give' ),
 				'resend_receipts'         => __( 'Are you sure you want to resend the emails receipt to {payment_count} recipients?', 'give' ),
 			),
-		),
-		'metabox_fields' => array(
-			'media' => array(
-				'button_title' => esc_html__( 'Choose Attachment', 'give' ),
-			)
 		)
 	) );
 
@@ -348,6 +329,12 @@ function give_load_admin_scripts( $hook ) {
 		wp_enqueue_media();
 	}
 
+	/**
+	 * Fire the action after admin scripts and styles load.
+	 *
+	 * @since 1.9
+	 */
+	do_action( 'give_admin_enqueue_scripts' );
 }
 
 add_action( 'admin_enqueue_scripts', 'give_load_admin_scripts', 100 );
