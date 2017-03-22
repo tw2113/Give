@@ -577,6 +577,11 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_radio_field( $field ) {
+		$field['wrapper_type'] = 'p' === $field['wrapper_type']
+			? 'fieldset'
+			: $field['wrapper_type'];
+
+
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 
