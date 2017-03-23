@@ -307,6 +307,11 @@ function give_render_wysiwyg_field( $field_html, $field ) {
 		'editor_class'  => $field['field_attributes']['class'],
 	);
 
+	// Do not wrap div tag with p tag.
+	$field['wrapper_type'] = 'p' === $field['wrapper_type']
+		? 'div'
+		: $field['wrapper_type'];
+
 	$field_wrapper = Give_Fields_API::get_instance()->render_field_wrapper( $field );
 
 	ob_start();
