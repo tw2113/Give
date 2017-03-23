@@ -110,7 +110,8 @@ class Give_Form_API {
 
 		// Add give_form_api shortcode.
 		add_shortcode( 'give_form_api', array( $this, 'render_shortcode' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
+		add_action( 'give_wp_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
+		add_action( 'give_admin_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
 	}
 
 
@@ -388,26 +389,49 @@ class Give_Form_API {
 	 */
 	public function register_form_api_scripts() {
 		$js_plugins     = GIVE_PLUGIN_URL . 'assets/js/plugins/';
-		$scripts_footer = ( give_is_setting_enabled( give_get_option( 'scripts_footer' ) ) ) ? true : false;
 
 		// Use minified libraries if SCRIPT_DEBUG is turned off.
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-		// Register form api script.
-		wp_register_script( 'give-form-api-js', $js_plugins . "give-form-api{$suffix}.js", array( 'jquery' ), GIVE_VERSION, $scripts_footer );
+		wp_register_script( 'give-repeatable-fields', $js_plugins . 'repeatable-fields' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, false );
+		wp_register_script( 'give-form-api-js', $js_plugins . "give-form-api{$suffix}.js", array( 'jquery', 'give-repeatable-fields', 'jquery-ui-sortable' ), GIVE_VERSION, false );
+
+		/**
+		 * Filter the js var.
+		 *
+		 * @since 1.9
+		 */
+		$give_form_api_var = apply_filters( 'give_form_api_js_vars', array(
+			'metabox_fields' => array(
+				'media' => array(
+					'button_title' => esc_html__( 'Choose Attachment', 'give' ),
+				)
+			),
+			/* translators : %s: Donation form options metabox */
+			'confirm_before_remove_row_text' => __( 'Do you want to delete this level?', 'give' ),
+		));
+
+
+		if ( is_admin() || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+			wp_localize_script( 'give-form-api-js', 'give_form_api_var', $give_form_api_var );
+		} else {
+			wp_localize_script( 'give', 'give_form_api_var', $give_form_api_var );
+		}
+
 	}
 
 	/**
-	 * Load Form API scripts.
+	 * Load Form API js var.
 	 *
 	 * @since  1.9
 	 * @access public
 	 */
-	private function enqueue_scripts() {
-		// DEBUG is On.
-		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+	public static function enqueue_scripts() {
+		wp_enqueue_script('jquery-ui-sortable');
 
-			wp_enqueue_script( 'give-form-api-js' );
+		if ( is_admin() || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+			wp_enqueue_script('give-repeatable-fields');
+			wp_enqueue_script('give-form-api-js');
 		}
 	}
 }
@@ -418,6 +442,3 @@ function give_init_forms_api() {
 }
 
 add_action( 'init', 'give_init_forms_api', 9999 );
-
-
-// @todo add js class.

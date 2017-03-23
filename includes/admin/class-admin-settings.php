@@ -534,6 +534,16 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						echo Give_Fields_API::render_tag( $value );
 						break;
 
+					case 'group':
+						// Set field value.
+						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
+
+						// Set layout.
+						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
+
+						echo Give_Fields_API::render_tag( $value );
+						break;
+
 					// Default: run an action
 					// You can add or handle your custom field action.
 					default:

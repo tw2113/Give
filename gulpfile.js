@@ -40,6 +40,7 @@ var source_paths = {
 		'./assets/js/plugins/jquery.magnific-popup.min.js',
 		'./assets/js/plugins/jquery.payment.min.js',
 		'./assets/js/plugins/jquery.qtip.min.js',
+		'./assets/js/plugins/repeatable-fields.min.js',
 		'./assets/js/plugins/give-form-api.min.js',
 		'./assets/js/frontend/*.min.js' //Frontend scripts need to be loaded last
 	]

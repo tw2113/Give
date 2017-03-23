@@ -12,10 +12,14 @@
 		width: 100%;
 	}
 
-	.give-label,
-	.give-sub-section-label {
-		display: block;
+	ul{
+		list-style: none;
 	}
+
+	//.give-label,
+	//.give-sub-section-label {
+	//	display: block;
+	//}
 }
 
 .mfp-wrap {
@@ -130,4 +134,158 @@
 	content: "";
 	clear: both;
 	height: 0;
+}
+
+
+// --------------------------
+// Repeater field
+// --------------------------
+.give-repeatable-field-section {
+	padding: 10px;
+	background: #f5f5f5;
+
+	.give-field-wrap{
+		margin: 8px 12px;
+	}
+
+	.give-repeatable-fields-section-wrapper {
+		width: 100%;
+		background-color: white;
+		border-collapse: collapse;
+	}
+
+	.give-row {
+		border-bottom: 15px solid #f5f5f5;
+		background-color: white;
+	}
+
+	.give-template {
+		display: none;
+	}
+
+	.give-row:last-child {
+		border-bottom: 10px solid #f5f5f5;
+	}
+
+	.give-column {
+		padding: 0;
+	}
+
+	.give-remove {
+		float: right;
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		display: block;
+		text-align: center;
+		line-height: 34px;
+		font-size: 21px;
+		font-weight: 300;
+		cursor: pointer;
+	}
+
+	.give-remove:hover {
+		background-color: red;
+		color: white;
+		width: 30px;
+		height: 30px;
+		border-radius: 30px;
+		margin-top: 3px;
+		line-height: 28px;
+	}
+
+	.give-row-head {
+		border-bottom: 1px solid #eee;
+		cursor: move;
+		h2 {
+			text-align: left !important;
+			font-size: 14px;
+			padding: 8px 12px;
+			margin: 0;
+			line-height: 1.4;
+			font-weight: 400;
+		}
+	}
+
+	.give-row.closed .toggle-indicator:before {
+		content: "\f140";
+	}
+
+	.give-add-repeater-field-section-row-wrap {
+		background-color: #f5f5f5;
+	}
+
+	.give-add-repeater-field-section-row {
+		margin: 5px 5px;
+	}
+
+	.give-field-wrap:last-child {
+		border-bottom: 1px solid #eee;
+	}
+
+	.give-ui-placeholder-state-highlight {
+		background-color: #68bb6c;
+	}
+
+	.give-repeater-field-name {
+		border: 0 !important;
+		padding: 0 !important;
+	}
+
+	.give-repeater-field-description {
+		color: #aaaaaa;
+		font-size: 12px;
+		line-height: 18px;
+		display: block;
+		padding-bottom: 10px;
+		font-style: italic;
+	}
+
+	// Sortable jquery css fix.
+	.ui-sortable-helper {
+		display: table !important;
+	}
+	.give-row.ui-sortable-helper {
+		border-bottom: 0;
+	}
+}
+
+
+
+/*-------------------------------------
+General
+-------------------------------------*/
+.give-toggle-btn {
+	float: right;
+	width: 36px;
+	height: 36px;
+	margin: 0;
+	padding: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: 0;
+	-webkit-border-radius: 0;
+	background: 0 0;
+	outline: 0;
+	cursor: pointer;
+	position: relative;
+
+	.give-toggle-indicator {
+		position: absolute;
+		top: 44%;
+		left: 40%;
+
+		border-left: 5px solid transparent;
+		border-right: 5px solid transparent;
+
+		border-bottom: 5px solid #72777c;
+	}
+}
+
+.closed .give-toggle-indicator{
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+
+	border-top: 5px solid #72777c;
+	border-bottom: 0;
 }
