@@ -705,6 +705,7 @@
 
 		if( $('.give-repeater-field-wrap').length ){
 			give_repeater_fields.init();
+			$('button.give-add-repeater-field-section-row').on( 'click', function(e){ e.preventDefault(); });
 		}
 	})
 }(jQuery));
