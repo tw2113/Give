@@ -122,78 +122,7 @@ function give_render_field( $field ) {
 		return false;
 	}
 
-	// CMB2 compatibility: Push all classes to attributes's class key
-	if ( empty( $field['class'] ) ) {
-		$field['class'] = '';
-	}
-
-	if ( empty( $field['attributes']['class'] ) ) {
-		$field['attributes']['class'] = '';
-	}
-
-	$field['attributes']['class'] = trim( "give-field {$field['attributes']['class']} give-{$field['type']} {$field['class']}" );
-	unset( $field['class'] );
-
-	// CMB2 compatibility: Set wrapper class if any.
-	if ( ! empty( $field['row_classes'] ) ) {
-		$field['wrapper_class'] = $field['row_classes'];
-		unset( $field['row_classes'] );
-	}
-
-	// Set field params on basis of cmb2 field name.
-	switch ( $field['type'] ) {
-		case 'radio_inline':
-			if ( empty( $field['wrapper_class'] ) ) {
-				$field['wrapper_class'] = '';
-			}
-			$field['wrapper_class'] .= ' give-inline-radio-fields';
-			$field['type'] = 'radio';
-
-			break;
-
-		case 'text':
-		case 'text-medium':
-		case 'text_medium':
-		case 'text-small' :
-		case 'text_small' :
-			// CMB2 compatibility: Set field type to text.
-			$field['type'] = isset( $field['attributes']['type'] ) ? $field['attributes']['type'] : 'text';
-
-			// CMB2 compatibility: Set data type to price.
-			if (
-				empty( $field['data_type'] )
-				&& ! empty( $field['attributes']['class'] )
-				&& (
-					false !== strpos( $field['attributes']['class'], 'money' )
-					|| false !== strpos( $field['attributes']['class'], 'amount' )
-				)
-			) {
-				$field['data_type'] = 'decimal';
-			}
-			break;
-
-		case 'levels_id':
-			$field['type'] = 'hidden';
-			break;
-
-		case 'colorpicker' :
-			$field['type']  = 'text';
-			$field['class'] = 'give-colorpicker';
-			break;
-
-		case 'give_default_radio_inline':
-			$field['type']    = 'radio';
-			$field['options'] = array(
-				'default' => __( 'Default' ),
-			);
-			break;
-	}
-
-	// CMB2 compatibility: Add support to define field description by desc & description param.
-	// We encourage you to use description param.
-	$field['description'] = ( ! empty( $field['description'] )
-		? $field['description']
-		: ( ! empty( $field['desc'] ) ? $field['desc'] : '' ) );
+	$field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Call render function.
 	if ( is_array( $func_name ) ) {
@@ -240,7 +169,7 @@ function give_text_input( $field ) {
 			break;
 	}
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -272,7 +201,7 @@ function give_hidden_input( $field ) {
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Reset label for repeater field compatibility.
 	$field['name'] = give_get_field_name( $field );
@@ -298,7 +227,7 @@ function give_textarea_input( $field ) {
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -341,7 +270,7 @@ function give_wysiwyg( $field ) {
 	$field['unique_field_id'] = give_get_field_name( $field );
 	$field['wrapper_type']    = 'div';
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
 			$field['value'],
@@ -379,7 +308,7 @@ function give_checkbox( $field ) {
 	$field['value']   = give_get_field_value( $field, $thepostid );
 	$field['cbvalue'] = isset( $field['cbvalue'] ) ? $field['cbvalue'] : 'on';
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -411,7 +340,7 @@ function give_select( $field ) {
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -445,7 +374,7 @@ function give_radio( $field ) {
 	$field['value']        = give_get_field_value( $field, $thepostid );
 	$field['wrapper_type'] = 'fieldset';
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -479,7 +408,7 @@ function give_colorpicker( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 	$field['type']  = 'text';
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -510,7 +439,7 @@ function give_colorpicker( $field ) {
 function give_media( $field ) {
 	global $thepostid, $post;
 
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
@@ -575,7 +504,7 @@ function give_default_gateway( $field ) {
  */
 
 function give_docs_link( $field ) {
-	$field = give_backward_compatibility_setting_api_1_8( $field );
+	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set default class.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -784,6 +713,8 @@ function _give_metabox_form_data_repeater_fields( $fields ) {
 	$fields            = give_backward_compatibility_setting_api_1_8( $fields );
 	$fields['value']   = get_post_meta( $thepostid, $fields['id'], true );
 	$fields['wrapper'] = false;
+
+	// error_log( print_r( $fields, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
 
 	echo Give_Fields_API::render_tag( $fields );
 }

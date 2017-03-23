@@ -535,6 +535,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						break;
 
 					case 'group':
+						$value = give_backward_compatibility_setting_api_1_8( $value );
+
 						// Set field value.
 						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
 

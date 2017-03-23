@@ -321,29 +321,29 @@ class Give_Fields_API {
 		$functions_name = "render_{$field['type']}_field";
 
 		if ( 'section' === self::$instance->get_field_type( $field ) ) {
-			echo self::$instance->render_section( $field, $form, array( 'set_default' => false ) );
+			$field_html = self::$instance->render_section( $field, $form, array( 'set_default' => false ) );
 
 		} elseif ( method_exists( self::$instance, $functions_name ) ) {
-			$field_html .= self::$instance->{$functions_name}( $field );
+			$field_html = self::$instance->{$functions_name}( $field );
 
-		} else {
-			/**
-			 * Filter the custom field type html.
-			 * Developer can use this hook to render custom field type.
-			 *
-			 * @since 1.9
-			 *
-			 * @param string $field_html
-			 * @param array  $field
-			 * @param array  $form
-			 */
-			$field_html .= apply_filters(
-				"give_field_api_render_{$field['type']}_field",
-				$field_html,
-				$field,
-				$form
-			);
 		}
+
+		/**
+		 * Filter the custom field type html.
+		 * Developer can use this hook to render custom field type.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $field_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$field_html = apply_filters(
+			"give_field_api_render_{$field['type']}_field",
+			$field_html,
+			$field,
+			$form
+		);
 
 		return $field_html;
 	}
@@ -674,8 +674,6 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_group_field( $fields ) {
-		global $thepostid, $post;
-
 		// Bailout.
 		if ( ! isset( $fields['fields'] ) || empty( $fields['fields'] ) ) {
 			return '';
@@ -743,7 +741,7 @@ class Give_Fields_API {
 										'',
 									), $field['repeatable_field_id'] );
 									?>
-									<?php give_render_field( $field ); ?>
+									<?php echo self::render_tag( $field ); ?>
 								<?php endforeach; ?>
 							</div>
 						</td>
@@ -778,7 +776,7 @@ class Give_Fields_API {
 												'',
 											), $field['repeatable_field_id'] );
 											?>
-											<?php give_render_field( $field ); ?>
+											<?php echo self::render_tag( $field ); ?>
 										<?php endforeach; ?>
 									</div>
 								</td>
@@ -814,7 +812,7 @@ class Give_Fields_API {
 											'_',
 											'',
 										), $field['repeatable_field_id'] );
-										give_render_field( $field );
+										echo self::render_tag( $field );
 									endforeach;
 									?>
 								</div>

@@ -831,9 +831,87 @@ function give_v18_renamed_core_settings() {
  * @return array
  */
 function give_backward_compatibility_setting_api_1_8( $field ) {
-	if ( empty( $field['name'] ) ) {
+	if (
+		( empty( $field['name'] ) && ! ( 'group' === $field['type'] ) )
+		|| ( empty( $field['fields'][0]['name'] ) && ( 'group' === $field['type'] ) )
+	) {
 		return $field;
 	}
+
+	// CMB2 compatibility: Push all classes to attributes's class key
+	if ( empty( $field['class'] ) ) {
+		$field['class'] = '';
+	}
+
+	if ( empty( $field['attributes']['class'] ) ) {
+		$field['attributes']['class'] = '';
+	}
+
+	$field['attributes']['class'] = trim( "give-field {$field['attributes']['class']} give-{$field['type']} {$field['class']}" );
+	unset( $field['class'] );
+
+	// CMB2 compatibility: Set wrapper class if any.
+	if ( ! empty( $field['row_classes'] ) ) {
+		$field['wrapper_class'] = $field['row_classes'];
+		unset( $field['row_classes'] );
+	}
+
+	// Set field params on basis of cmb2 field name.
+	switch ( $field['type'] ) {
+		case 'radio_inline':
+			if ( empty( $field['wrapper_class'] ) ) {
+				$field['wrapper_class'] = '';
+			}
+			$field['wrapper_class'] .= ' give-inline-radio-fields';
+			$field['type'] = 'radio';
+
+			break;
+
+		case 'text':
+		case 'text-medium':
+		case 'text_medium':
+		case 'text-small' :
+		case 'text_small' :
+			// CMB2 compatibility: Set field type to text.
+			$field['type'] = isset( $field['attributes']['type'] ) ? $field['attributes']['type'] : 'text';
+
+			// CMB2 compatibility: Set data type to price.
+			if (
+				empty( $field['data_type'] )
+				&& ! empty( $field['attributes']['class'] )
+				&& (
+					false !== strpos( $field['attributes']['class'], 'money' )
+					|| false !== strpos( $field['attributes']['class'], 'amount' )
+				)
+			) {
+				$field['data_type'] = 'decimal';
+			}
+			break;
+
+		case 'levels_id':
+			$field['type'] = 'hidden';
+			break;
+
+		case 'colorpicker' :
+			$field['type']  = 'text';
+			$field['class'] = 'give-colorpicker';
+			break;
+
+		case 'give_default_radio_inline':
+			$field['type']    = 'radio';
+			$field['options'] = array(
+				'default' => __( 'Default' ),
+			);
+			break;
+	}
+
+	// CMB2 compatibility: Add support to define field description by desc & description param.
+	// We encourage you to use description param.
+	$field['description'] = ( ! empty( $field['description'] )
+		? $field['description']
+		: ( ! empty( $field['desc'] ) ? $field['desc'] : '' ) );
+
+	// CMB2 compatibility end.
 
 	$field_args = array(
 		'label'              => ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['name'] ) ? $field['name'] : '' ),
@@ -866,6 +944,14 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 			: array();
 
 		$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
+	}
+
+	// Recursively set backward compatibility for old settings like repeater fields.
+	if( ( 'group' === $field['type'] ) && ! empty( $field['fields'] )  ) {
+		foreach ( $field['fields'] as $key => $single_field ) {
+			$field['fields'][$key] =  give_backward_compatibility_setting_api_1_8( $single_field );
+		}
+		// error_log( print_r( $field, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
 	}
 
 	return array_merge( $field, $field_args );
