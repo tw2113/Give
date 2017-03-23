@@ -27,7 +27,7 @@ class Give_Fields_API {
 	 */
 	static $field_defaults = array(
 		'type'                 => '',
-		'name'                 => '',
+		'id'                 => '',
 		'data_type'            => '',
 		'value'                => '',
 		'required'             => false,
@@ -84,7 +84,7 @@ class Give_Fields_API {
 	static $section_defaults = array(
 		'type'               => 'section',
 		'label'              => '',
-		'name'               => '',
+		'id'               => '',
 		'section_attributes' => array(),
 
 		// Manually render section.
@@ -100,7 +100,7 @@ class Give_Fields_API {
 	static $block_defaults = array(
 		'type'             => 'block',
 		'label'            => '',
-		'name'             => '',
+		'id'             => '',
 		'block_attributes' => array(),
 
 		// Manually render section.
@@ -194,7 +194,7 @@ class Give_Fields_API {
 		// Render fields.
 		foreach ( $form['fields'] as $key => $field ) {
 			// Set default value.
-			$field['name'] = empty( $field['name'] ) ? $key : $field['name'];
+			$field['id'] = empty( $field['id'] ) ? $key : $field['id'];
 
 			// Render custom form with callback.
 			if ( $field_html = self::$instance->render_custom_field( $field, $form ) ) {
@@ -365,7 +365,7 @@ class Give_Fields_API {
 		?>
 		<input
 				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['id']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -404,7 +404,7 @@ class Give_Fields_API {
 		?>
 		<input
 				type="checkbox"
-				name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['id']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -500,7 +500,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-				name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['id']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -543,7 +543,7 @@ class Give_Fields_API {
 		?>
 
 		<select
-				name="<?php echo $field['name']; ?>"
+				name="<?php echo $field['id']; ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $options_html; ?></select>
@@ -564,7 +564,7 @@ class Give_Fields_API {
 	 */
 	public static function render_multi_select_field( $field ) {
 		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple' ) );
-		$field['name']             = "{$field['name']}[]";
+		$field['id']             = "{$field['id']}[]";
 
 		return self::$instance->render_select_field( $field );
 	}
@@ -598,7 +598,7 @@ class Give_Fields_API {
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
 					<input
 							type="<?php echo $field['type']; ?>"
-							name="<?php echo $field['name']; ?>"
+							name="<?php echo $field['id']; ?>"
 							value="<?php echo $key; ?>"
 							id="<?php echo "{$id_base}-{$key}"; ?>"
 						<?php checked( $key, $field['value'] ) ?>
@@ -645,7 +645,7 @@ class Give_Fields_API {
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
 					<input
 							type="checkbox"
-							name="<?php echo $field['name']; ?>[]"
+							name="<?php echo $field['id']; ?>[]"
 							value="<?php echo $key; ?>"
 							id="<?php echo "{$id_base}-{$key}"; ?>"
 						<?php echo $checked ?>
@@ -705,8 +705,8 @@ class Give_Fields_API {
 		?>
 		<div class="give-repeatable-field-section" id="<?php echo "{$fields['id']}_field"; ?>"
 			 data-group-numbering="<?php echo $group_numbering; ?>" data-close-tabs="<?php echo $close_tabs; ?>">
-			<?php if ( ! empty( $fields['name'] ) ) : ?>
-				<p class="give-repeater-field-name"><?php echo $fields['name']; ?></p>
+			<?php if ( ! empty( $fields['label'] ) ) : ?>
+				<p class="give-repeater-field-name"><?php echo $fields['label']; ?></p>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $fields['description'] ) ) : ?>
@@ -975,12 +975,12 @@ class Give_Fields_API {
 
 				// Set wrapper class.
 				$field['block_attributes']['class'] = empty( $field['block_attributes']['class'] )
-					? "give-block-wrapper js-give-block-wrapper give-block-{$field['name']}"
-					: "give-block-wrapper js-give-block-wrapper give-block-{$field['name']} {$field['block_attributes']['class']}";
+					? "give-block-wrap js-give-block-wrapper give-block-{$field['id']}"
+					: "give-block-wrap js-give-block-wrapper give-block-{$field['id']} {$field['block_attributes']['class']}";
 
 				foreach ( $field['fields'] as $key => $single_field ) {
-					$single_field['name']    = ! empty( $single_field['name'] )
-						? $single_field['name']
+					$single_field['id']    = ! empty( $single_field['id'] )
+						? $single_field['id']
 						: $key;
 					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
 				}
@@ -993,12 +993,12 @@ class Give_Fields_API {
 
 				// Set wrapper class.
 				$field['section_attributes']['class'] = empty( $field['section_attributes']['class'] )
-					? 'give-section-wrapper'
-					: "give-section-wrapper {$field['section_attributes']['class']}";
+					? 'give-section-wrap'
+					: 'give-section-wrap ' . trim( $field['section_attributes']['class'] );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
-					$single_field['name']    = ! empty( $single_field['name'] )
-						? $single_field['name']
+					$single_field['id']    = ! empty( $single_field['id'] )
+						? $single_field['id']
 						: $key;
 					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
 				}
@@ -1011,18 +1011,18 @@ class Give_Fields_API {
 
 				// Set ID.
 				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
-					? "give-{$field['name']}-field"
+					? "give-{$field['id']}-field"
 					: $field['field_attributes']['id'];
 
 				// Set class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
 					? "give-field js-give-field give-field-type-{$field['type']}"
-					: "give-field js-give-field give-field-type-{$field['type']} {$field['field_attributes']['class']}";
+					: "give-field js-give-field give-field-type-{$field['type']}" . trim( $field['field_attributes']['class'] );
 
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
-					? 'give-field-wrapper'
-					: "give-field-wrapper {$field['wrapper_attributes']['class']}";
+					? 'give-field-wrap'
+					: 'give-field-wrap ' . trim( $field['wrapper_attributes']['class'] );
 
 				/**
 				 * Filter the field values.

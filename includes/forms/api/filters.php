@@ -194,14 +194,14 @@ function give_field_api_set_field_value( $field ) {
 
 			if ( ! empty( $field['value'] ) ) {
 				$field['field_attributes']['value'] = $field['value'];
-			} elseif ( isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['field_attributes']['value'] = $_REQUEST[ $field['name'] ];
+			} elseif ( isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['field_attributes']['value'] = $_REQUEST[ $field['id'] ];
 			}
 			break;
 
 		case 'textarea':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
 			break;
 
@@ -209,33 +209,33 @@ function give_field_api_set_field_value( $field ) {
 			$field['field_attributes']['value'] = ! empty( $field['cbvalue'] ) ? $field['cbvalue'] : 'on' ;
 			if (
 				( ! empty( $field['value'] ) && $field['cbvalue'] === $field['value'] )
-				|| isset( $_REQUEST[ $field['name'] ] )
+				|| isset( $_REQUEST[ $field['id'] ] )
 			) {
 				$field['field_attributes']['checked'] = 'checked';
 			}
 			break;
 
 		case 'radio':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
 			break;
 
 		case 'select':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
 			break;
 
 		case 'multi_select':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
 			break;
 
 		case 'multi_checkbox':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['name'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['name'] ] );
+			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
+				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
 			break;
 	}

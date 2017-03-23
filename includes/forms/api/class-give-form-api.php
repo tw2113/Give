@@ -35,7 +35,7 @@ class Give_Form_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'name'                  => '',
+		'id'                  => '',
 		'method'                => 'post',
 		'action'                => '',
 		'fields'                => array(),
@@ -242,7 +242,7 @@ class Give_Form_API {
 
 		// Set ID.
 		$form['form_attributes']['id'] = empty( $form['form_attributes']['id'] )
-			? $form['name']
+			? $form['id']
 			: $form['form_attributes']['id'];
 
 		/**
@@ -281,7 +281,7 @@ class Give_Form_API {
 		if ( ! empty( self::$forms ) ) {
 			foreach ( self::$forms as $index => $form_args ) {
 				if ( $form_slug === $index ) {
-					$form_args['name'] = empty( $form_args['name'] ) ? $form_slug : $form_args['name'];
+					$form_args['id'] = empty( $form_args['id'] ) ? $form_slug : $form_args['id'];
 					$form              = self::$instance->set_default_values( $form_args );
 					break;
 				}
