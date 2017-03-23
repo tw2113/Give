@@ -820,3 +820,53 @@ function give_v18_renamed_core_settings() {
 		'enable_tags'                 => 'tags',
 	);
 }
+
+/**
+ * Backward compatibility for setting api ( 1.8=<version>1.9).
+ *
+ * @since  1.9
+ *
+ * @param array $field
+ *
+ * @return array
+ */
+function give_backward_compatibility_setting_api_1_8( $field ) {
+	if ( empty( $field['name'] ) ) {
+		return $field;
+	}
+
+	$field_args = array(
+		'label'              => ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['name'] ) ? $field['name'] : '' ),
+		'field_attributes'   => array(
+			'class' => ( empty( $field['class'] ) ? '' : ' ' . esc_attr( $field['class'] ) ),
+			'style' => ( empty( $field['style'] ) ? '' : $field['style'] ),
+			'id'    => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
+
+		),
+		'wrapper_attributes' => array(
+			'class'  => ( ! empty( $field['wrapper_class'] ) ? $field['wrapper_class'] : '' ),
+		),
+	);
+
+	if( 'multiselect' === $field['type'] ) {
+		$field_args['type'] = 'multi_select';
+	}elseif ( 'multicheck' === $field['type'] ) {
+		$field_args['type'] = 'multi_checkbox';
+	} elseif ( 'give_docs_link' === $field['type'] ) {
+		$field_args['type'] = 'docs_link';
+	}
+
+	if ( 'docs_link' === $field['type'] && empty( $field_args['label'] ) ) {
+		$field_args['label'] = ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['label'] ) ? $field['label'] : '' );
+	}
+
+	if ( ! empty( $field['attributes'] ) ) {
+		$field_args['field_attributes'] = isset( $field_args['field_attributes'] )
+			? $field_args['field_attributes']
+			: array();
+
+		$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
+	}
+
+	return array_merge( $field, $field_args );
+}

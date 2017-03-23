@@ -384,7 +384,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'email':
 					case 'number':
 					case 'password' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -401,7 +401,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Textarea.
 					case 'textarea':
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
@@ -419,7 +419,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					// Select boxes.
 					case 'select' :
 					case 'multiselect' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
@@ -446,7 +446,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					// Radio inputs.
 					case 'radio_inline' :
 					case 'radio' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
@@ -472,7 +472,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Checkbox input.
 					case 'checkbox' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
@@ -485,7 +485,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Multi Checkbox input.
 					case 'multicheck' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
@@ -499,7 +499,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// File input field.
 					case 'file' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
@@ -512,7 +512,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// WordPress Editor.
 					case 'wysiwyg' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
 						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
@@ -525,7 +525,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 					// Custom: Give Docs Link field type.
 					case 'give_docs_link' :
-						self::backward_compatibility_1_8( $value );
+						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -757,51 +757,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 			);
 
 			return $field_args;
-		}
-
-
-		/**
-		 * Add backward compatibility.
-		 * Backward compatibility ( 1.8=<version>1.9).
-		 *
-		 * @since  1.9
-		 * @access private
-		 *
-		 * @param array $field
-		 *
-		 * @return array
-		 */
-		private function backward_compatibility_1_8( &$field ) {
-			if ( ! empty( $field['id'] ) ) {
-				$field_args = array(
-					'name'               => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
-					'label'              => self::get_field_title( $field ),
-					'field_attributes'   => array(
-						'class' => ( empty( $field['class'] ) ? '' : ' ' . esc_attr( $field['class'] ) ),
-						'style' => esc_attr( $field['css'] ),
-						'id'    => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
-
-					),
-					'wrapper_attributes' => array(
-						'class'  => ( ! empty( $field['wrapper_class'] ) ? $field['wrapper_class'] : '' ),
-						'valign' => 'top',
-					),
-				);
-
-				if( 'multiselect' === $field['type'] ) {
-					$field_args['type'] = 'multi_select';
-				}elseif ( 'multicheck' === $field['type'] ) {
-					$field_args['type'] = 'multi_checkbox';
-				} elseif ( 'give_docs_link' === $field['type'] ) {
-					$field_args['type'] = 'docs_link';
-				}
-
-				if ( ! empty( $field['attributes'] ) ) {
-					$field_args['field_attributes'] = array_merge( $field_args['field_attributes'], $field['attributes'] );
-				}
-
-				$field = array_merge( $field, $field_args );
-			}
 		}
 	}
 
