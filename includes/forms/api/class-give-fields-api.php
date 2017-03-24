@@ -736,7 +736,7 @@ class Give_Fields_API {
 
 
 									//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
-									$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 									echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 								endforeach;
 								?>
@@ -768,7 +768,7 @@ class Give_Fields_API {
 												: $field['default'];
 
 											//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
-											$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+											$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 										endforeach;
@@ -799,7 +799,7 @@ class Give_Fields_API {
 										$field['value'] = $field['field_attributes']['value'] = $field['default'];
 
 										//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
-										$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 										echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 									endforeach;
@@ -998,7 +998,7 @@ class Give_Fields_API {
 
 				// Set ID.
 				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
-					? 'give-' . self::get_field_id( $field ). '-field'
+					? "give-{$field['id']}-field"
 					: $field['field_attributes']['id'];
 
 				// Set class.
@@ -1182,20 +1182,5 @@ class Give_Fields_API {
 		$field_name = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_name'] );
 
 		return $field_name;
-	}
-
-	/**
-	 * Get field name.
-	 *
-	 * @since  1.9
-	 *
-	 * @param  array $field
-	 *
-	 * @return string
-	 */
-	public static function get_field_id( $field ) {
-		$field_id = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_id'] );
-
-		return $field_id;
 	}
 }
