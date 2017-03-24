@@ -169,8 +169,6 @@ function give_text_input( $field ) {
 			break;
 	}
 
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
-
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
 	$field['after_field'] = ! empty( $field['after_field'] )
@@ -201,8 +199,6 @@ function give_hidden_input( $field ) {
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
-
 	// Reset label for repeater field compatibility.
 	$field['name'] = give_get_field_name( $field );
 
@@ -226,8 +222,6 @@ function give_textarea_input( $field ) {
 
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
-
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -270,8 +264,6 @@ function give_wysiwyg( $field ) {
 	$field['unique_field_id'] = give_get_field_name( $field );
 	$field['wrapper_type']    = 'div';
 
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
-
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
 	$field['after_field'] = ! empty( $field['after_field'] )
@@ -299,8 +291,6 @@ function give_checkbox( $field ) {
 	$thepostid        = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value']   = give_get_field_value( $field, $thepostid );
 	$field['cbvalue'] = isset( $field['cbvalue'] ) ? $field['cbvalue'] : 'on';
-
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -331,8 +321,6 @@ function give_select( $field ) {
 
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
-
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
@@ -366,8 +354,6 @@ function give_radio( $field ) {
 	$field['value']        = give_get_field_value( $field, $thepostid );
 	$field['wrapper_type'] = 'fieldset';
 
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
-
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
 	$field['after_field'] = ! empty( $field['after_field'] )
@@ -400,8 +386,6 @@ function give_colorpicker( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 	$field['type']  = 'text';
 
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
-
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
 	$field['after_field'] = ! empty( $field['after_field'] )
@@ -430,8 +414,6 @@ function give_colorpicker( $field ) {
  */
 function give_media( $field ) {
 	global $thepostid, $post;
-
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	$thepostid      = empty( $thepostid ) ? $post->ID : $thepostid;
 	$field['value'] = give_get_field_value( $field, $thepostid );
@@ -496,7 +478,6 @@ function give_default_gateway( $field ) {
  */
 
 function give_docs_link( $field ) {
-	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
 	// Set default class.
 	// Backward compatibility ( 1.8=<version>1.9).
