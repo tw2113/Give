@@ -729,20 +729,18 @@ class Give_Fields_API {
 								</h2>
 							</div>
 							<div class="give-row-body">
-								<?php foreach ( $fields['fields'] as $field ) : ?>
-									<?php if ( ! give_is_field_callback_exist( $field ) ) {
-										continue;
-									} ?>
-									<?php
+								<?php
+								foreach ( $fields['fields'] as $field ) :
+
 									$field['repeat']              = true;
 									$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields );
 									$field['id']                  = str_replace( array( '[', ']' ), array(
 										'_',
 										'',
 									), $field['repeatable_field_id'] );
-									?>
-									<?php echo self::render_tag( $field ); ?>
-								<?php endforeach; ?>
+									echo self::render_tag( $field );
+								endforeach;
+								?>
 							</div>
 						</td>
 					</tr>
@@ -763,21 +761,16 @@ class Give_Fields_API {
 										</h2>
 									</div>
 									<div class="give-row-body">
-										<?php foreach ( $fields['fields'] as $field ) : ?>
-											<?php if ( ! give_is_field_callback_exist( $field ) ) {
-												continue;
-											} ?>
-											<?php
+										<?php
+										foreach ( $fields['fields'] as $field ) :
 											$field['repeat']              = true;
 											$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields, $index );
 											$field['attributes']['value'] = give_get_repeater_field_value( $field, $field_group, $fields );
-											$field['id']                  = str_replace( array( '[', ']' ), array(
-												'_',
-												'',
-											), $field['repeatable_field_id'] );
-											?>
-											<?php echo self::render_tag( $field ); ?>
-										<?php endforeach; ?>
+											$field['id']                  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeatable_field_id'] );
+
+											echo self::render_tag( $field );
+										endforeach;
+										?>
 									</div>
 								</td>
 							</tr>
@@ -801,10 +794,6 @@ class Give_Fields_API {
 								<div class="give-row-body">
 									<?php
 									foreach ( $fields['fields'] as $field ) :
-										if ( ! give_is_field_callback_exist( $field ) ) {
-											continue;
-										}
-
 										$field['repeat']              = true;
 										$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields, 0 );
 										$field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
@@ -812,6 +801,7 @@ class Give_Fields_API {
 											'_',
 											'',
 										), $field['repeatable_field_id'] );
+
 										echo self::render_tag( $field );
 									endforeach;
 									?>
