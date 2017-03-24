@@ -1022,6 +1022,15 @@ class Give_Fields_API {
 					? 'give-field-wrap'
 					: 'give-field-wrap ' . trim( $field['wrapper_attributes']['class'] );
 
+				if( ! empty( $field['fields'] ) ) {
+					foreach ( $field['fields'] as $key => $single_field ) {
+						$single_field['id']    = ! empty( $single_field['id'] )
+							? $single_field['id']
+							: $key;
+						$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+					}
+				}
+
 				/**
 				 * Filter the field values.
 				 *
