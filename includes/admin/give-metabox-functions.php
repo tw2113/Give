@@ -714,8 +714,6 @@ function _give_metabox_form_data_repeater_fields( $fields ) {
 	$fields['value']   = get_post_meta( $thepostid, $fields['id'], true );
 	$fields['wrapper'] = false;
 
-	// error_log( print_r( $fields, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
-
 	echo Give_Fields_API::render_tag( $fields );
 }
 
