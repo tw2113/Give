@@ -272,12 +272,6 @@ function give_wysiwyg( $field ) {
 
 	// $field = give_backward_compatibility_setting_api_1_8( $field );
 
-	$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
-			$field['value'],
-			$field['unique_field_id'],
-			//$field['editor_attributes'],
-		) ) ) . '"';
-
 	// Set description.
 	// Backward compatibility ( 1.8=<version>1.9).
 	$field['after_field'] = ! empty( $field['after_field'] )
@@ -286,8 +280,6 @@ function give_wysiwyg( $field ) {
 
 	// Render Field.
 	echo Give_Fields_API::render_tag( $field );
-
-	// @todo: label must be linked to wordpress editor.
 }
 
 /**

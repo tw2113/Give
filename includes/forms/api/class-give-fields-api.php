@@ -670,10 +670,11 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param array $fields
+	 * @param array $form
 	 *
 	 * @return string
 	 */
-	public static function render_group_field( $fields ) {
+	public static function render_group_field( $fields, $form = null ) {
 		// Bailout.
 		if ( ! isset( $fields['fields'] ) || empty( $fields['fields'] ) ) {
 			return '';
@@ -737,7 +738,7 @@ class Give_Fields_API {
 										'_',
 										'',
 									), $field['repeatable_field_id'] );
-									echo self::render_tag( $field );
+									echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 								endforeach;
 								?>
 							</div>
@@ -776,7 +777,7 @@ class Give_Fields_API {
 												$field['repeatable_field_id']
 											);
 
-											echo self::render_tag( $field );
+											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 										endforeach;
 										?>
 									</div>
@@ -810,7 +811,7 @@ class Give_Fields_API {
 											'',
 										), $field['repeatable_field_id'] );
 
-										echo self::render_tag( $field );
+										echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 									endforeach;
 									?>
 								</div>
@@ -972,7 +973,7 @@ class Give_Fields_API {
 				// Set wrapper class.
 				$field['block_attributes']['class'] = empty( $field['block_attributes']['class'] )
 					? "give-block-wrap js-give-block-wrapper give-block-{$field['id']}"
-					: "give-block-wrap js-give-block-wrapper give-block-{$field['id']} {$field['block_attributes']['class']}";
+					: trim( "give-block-wrap js-give-block-wrapper give-block-{$field['id']} {$field['block_attributes']['class']}" );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
 					$single_field['id']    = ! empty( $single_field['id'] )
@@ -990,7 +991,7 @@ class Give_Fields_API {
 				// Set wrapper class.
 				$field['section_attributes']['class'] = empty( $field['section_attributes']['class'] )
 					? 'give-section-wrap'
-					: 'give-section-wrap ' . trim( $field['section_attributes']['class'] );
+					: trim( "give-section-wrap {$field['section_attributes']['class']}" );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
 					$single_field['id']    = ! empty( $single_field['id'] )
@@ -1013,7 +1014,7 @@ class Give_Fields_API {
 				// Set class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
 					? "give-field js-give-field give-field-type-{$field['type']}"
-					: "give-field js-give-field give-field-type-{$field['type']}" . trim( $field['field_attributes']['class'] );
+					: trim( "give-field js-give-field give-field-type-{$field['type']} {$field['field_attributes']['class']}" );
 
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )

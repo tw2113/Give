@@ -847,7 +847,7 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 		$field['attributes']['class'] = '';
 	}
 
-	$field['attributes']['class'] = trim( "give-field {$field['attributes']['class']} give-{$field['type']} {$field['class']}" );
+	$field['attributes']['class'] = trim( "give-{$field['type']} {$field['attributes']['class']} {$field['class']}" );
 	unset( $field['class'] );
 
 	// CMB2 compatibility: Set wrapper class if any.
@@ -916,7 +916,6 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 	$field_args = array(
 		'label'              => ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['name'] ) ? $field['name'] : '' ),
 		'field_attributes'   => array(
-			'class' => ( empty( $field['class'] ) ? '' : ' ' . esc_attr( $field['class'] ) ),
 			'style' => ( empty( $field['style'] ) ? '' : $field['style'] ),
 			'id'    => ( ! empty( $field['id'] ) ? $field['id'] : $field['name'] ),
 
@@ -951,7 +950,6 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 		foreach ( $field['fields'] as $key => $single_field ) {
 			$field['fields'][$key] =  give_backward_compatibility_setting_api_1_8( $single_field );
 		}
-		// error_log( print_r( $field, true ) . "\n", 3, WP_CONTENT_DIR . '/debug_new.log' );
 	}
 
 	return array_merge( $field, $field_args );

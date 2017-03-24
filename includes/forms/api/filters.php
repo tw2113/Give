@@ -144,7 +144,7 @@ add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_st
  */
 function give_set_step_buttons_for_stepper_from( $field, $form ) {
 	// Bailout
-	if ( 'stepper' !== $form['display_style'] ) {
+	if ( is_null( $form ) ||  empty( $form['display_style'] ) | 'stepper' !== $form['display_style'] ) {
 		return $field;
 	}
 
@@ -257,8 +257,6 @@ add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value' );
  * @return string
  */
 function give_render_docs_link_field( $field_html, $field ) {
-	$field = Give_Fields_API::set_default_values( $field );
-
 	// Set default values.
 	$field['url'] = ! empty( $field['url'] ) ? $field['url'] : 'https://givewp.com/documentation';
 	$label        = ! empty( $field['label'] ) ? $field['label'] : __( 'Documentation', 'give' );
@@ -293,12 +291,6 @@ add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_fiel
  * @return string
  */
 function give_render_wysiwyg_field( $field_html, $field ) {
-	$field = Give_Fields_API::set_default_values( $field );
-
-	$field['unique_field_id'] = ! empty( $field['repeatable_field_id'] )
-		? '_give_repeater_' . uniqid() . '_wysiwyg'
-		: $field['id'];
-
 	$field['editor_attributes']        = array(
 		'textarea_name' => isset( $field['repeatable_field_id'] )
 			? $field['repeatable_field_id']
@@ -306,6 +298,17 @@ function give_render_wysiwyg_field( $field_html, $field ) {
 		'textarea_rows' => '10',
 		'editor_class'  => $field['field_attributes']['class'],
 	);
+
+	// Group field params.
+	$field['unique_field_id'] = $field['id'];
+	if( ! empty( $field['repeatable_field_id'] ) ) {
+		$field['unique_field_id'] = '_give_repeater_' . uniqid() . '_wysiwyg';
+		$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
+				$field['value'],
+				$field['unique_field_id'],
+				$field['editor_attributes'],
+			) ) );
+	}
 
 	// Do not wrap div tag with p tag.
 	$field['wrapper_type'] = 'p' === $field['wrapper_type']
