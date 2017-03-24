@@ -628,30 +628,20 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 
 			// Loop options and get values to save.
 			foreach ( $options as $option ) {
-				// Backward compatibility ( 1.8=<version>1.9)
-				$option['name'] = ! empty( $option['id'] ) ? $option['id'] : $option['name'];
-
-				if (
-					! isset( $option['name'] )
-					|| ! isset( $option['type'] )
-					|| empty( $option['name'] )
-				) {
+				if ( ! isset( $option['id'] ) || ! isset( $option['type'] ) ) {
 					continue;
 				}
 
-				// Backward compatibility: version >= 1.8, version < 1.9
-				$option['name'] = ! empty( $option['id'] ) ?  $option['id'] : $option['name'];
-
 				// Get posted value.
-				if ( strstr( $option['name'], '[' ) ) {
-					parse_str( $option['name'], $option_name_array );
+				if ( strstr( $option['id'], '[' ) ) {
+					parse_str( $option['id'], $option_name_array );
 					$field_option_name = current( array_keys( $option_name_array ) );
 					$setting_name      = key( $option_name_array[ $field_option_name ] );
 					$raw_value         = isset( $_POST[ $field_option_name ][ $setting_name ] ) ? wp_unslash( $_POST[ $field_option_name ][ $setting_name ] ) : null;
 				} else {
-					$field_option_name = $option['name'];
+					$field_option_name = $option['id'];
 					$setting_name      = '';
-					$raw_value         = isset( $_POST[ $option['name'] ] ) ? wp_unslash( $_POST[ $option['name'] ] ) : null;
+					$raw_value         = isset( $_POST[ $option['id'] ] ) ? wp_unslash( $_POST[ $option['id'] ] ) : null;
 				}
 
 				// Format the value based on option type.
