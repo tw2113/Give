@@ -764,9 +764,9 @@ class Give_Fields_API {
 										<?php
 										foreach ( $fields['fields'] as $field ) :
 											$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, $index );
-											$field['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
+											$field['value'] = $field['field_attributes']['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
 												? $repeater_field_values[ $index ][ $field['id'] ]
-												: '';
+												: $field['default'];
 
 											//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
 											$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
@@ -797,9 +797,9 @@ class Give_Fields_API {
 									<?php
 									foreach ( $fields['fields'] as $field ) :
 										$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, 0 );
-										// $field['value'] = ! empty( $repeater_field_values[  ][ $field['id'] ] )
-										// 	? $repeater_field_values[ $index ][ $field['id'] ]
-										// 	: '';
+										$field['value'] = $field['field_attributes']['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
+											? $repeater_field_values[ $index ][ $field['id'] ]
+											: $field['default'];
 
 										//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
 										$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
