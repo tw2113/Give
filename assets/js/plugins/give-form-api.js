@@ -457,19 +457,23 @@
 								wysiwyg_editor.remove();
 								wysiwyg_editor_label.after(res);
 
+								// Get default setting from already initialize editor.
+								var mceInit = tinyMCEPreInit.mceInit[Object.keys(tinyMCEPreInit.mceInit)[0]],
+									qtInit = tinyMCEPreInit.qtInit[Object.keys(tinyMCEPreInit.qtInit)[0]];
+
 								// Setup qt data for editor.
 								tinyMCEPreInit.qtInit[textarea.attr('id')] = $.extend(
 									true,
-									tinyMCEPreInit.qtInit['_give_agree_text'],
+									qtInit,
 									{id: textarea_id}
 								);
 
 								// Setup mce data for editor.
 								tinyMCEPreInit.mceInit[textarea_id] = $.extend(
 									true,
-									tinyMCEPreInit.mceInit['_give_agree_text'],
+									mceInit,
 									{
-										body_class: textarea_id + ' post-type-give_forms post-status-publish locale-' + tinyMCEPreInit.mceInit['_give_agree_text']['wp_lang_attr'].toLowerCase(),
+										body_class: textarea_id + ' locale-' + mceInit['wp_lang_attr'].toLowerCase(),
 										selector  : '#' + textarea_id
 									}
 								);
