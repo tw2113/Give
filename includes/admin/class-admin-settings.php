@@ -538,11 +538,11 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
-						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
+						$value['value'] = give_clean( self::get_option( $option_name, $value['id'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
-
+						
 						echo Give_Fields_API::render_tag( $value );
 						break;
 
