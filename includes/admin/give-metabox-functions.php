@@ -1101,23 +1101,3 @@ function _give_set_field_give_default_default_value( $field ) {
 }
 
 add_filter( 'give_default_field_group_field__give_default_value', '_give_set_field_give_default_default_value' );
-
-/**
- * Set repeater field editor id for field type wysiwyg.
- *
- * @since 1.8
- *
- * @param $field_name
- * @param $field
- *
- * @return string
- */
-function give_repeater_field_set_editor_id( $field_name, $field ) {
-	if ( isset( $field['repeatable_field_id'] ) && 'wysiwyg' == $field['type'] ) {
-		$field_name = '_give_repeater_' . uniqid() . '_wysiwyg';
-	}
-
-	return $field_name;
-}
-
-add_filter( 'give_get_field_name', 'give_repeater_field_set_editor_id', 10, 2 );

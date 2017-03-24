@@ -295,8 +295,8 @@ add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_fiel
 function give_render_wysiwyg_field( $field_html, $field ) {
 	$field = Give_Fields_API::set_default_values( $field );
 
-	$field['unique_field_id'] = ! empty( $field['unique_field_id'] )
-		? $field['unique_field_id']
+	$field['unique_field_id'] = ! empty( $field['repeatable_field_id'] )
+		? '_give_repeater_' . uniqid() . '_wysiwyg'
 		: $field['id'];
 
 	$field['editor_attributes']        = array(
