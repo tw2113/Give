@@ -365,7 +365,7 @@ class Give_Fields_API {
 		?>
 		<input
 				type="<?php echo $field['type']; ?>"
-				name="<?php echo $field['id']; ?>"
+				name="<?php echo self::get_field_name( $field ); ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -404,7 +404,7 @@ class Give_Fields_API {
 		?>
 		<input
 				type="checkbox"
-				name="<?php echo $field['id']; ?>"
+				name="<?php echo self::get_field_name( $field ); ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		>
@@ -500,7 +500,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<textarea
-				name="<?php echo $field['id']; ?>"
+				name="<?php echo self::get_field_name( $field ); ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $field ['value']; ?></textarea>
@@ -543,7 +543,7 @@ class Give_Fields_API {
 		?>
 
 		<select
-				name="<?php echo $field['id']; ?>"
+				name="<?php echo self::get_field_name( $field ); ?>"
 			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
 		><?php echo $options_html; ?></select>
@@ -598,7 +598,7 @@ class Give_Fields_API {
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
 					<input
 							type="<?php echo $field['type']; ?>"
-							name="<?php echo $field['id']; ?>"
+							name="<?php echo self::get_field_name( $field ); ?>"
 							value="<?php echo $key; ?>"
 							id="<?php echo "{$id_base}-{$key}"; ?>"
 						<?php checked( $key, $field['value'] ) ?>
@@ -645,7 +645,7 @@ class Give_Fields_API {
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
 					<input
 							type="checkbox"
-							name="<?php echo $field['id']; ?>[]"
+							name="<?php echo self::get_field_name( $field ); ?>[]"
 							value="<?php echo $key; ?>"
 							id="<?php echo "{$id_base}-{$key}"; ?>"
 						<?php echo $checked ?>
@@ -731,13 +731,13 @@ class Give_Fields_API {
 							<div class="give-row-body">
 								<?php
 								foreach ( $fields['fields'] as $field ) :
+									$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields );
+									// $field['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
+									// 	? $repeater_field_values[ $index ][ $field['id'] ]
+									// 	: '';
 
-									$field['repeat']              = true;
-									$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields );
-									$field['id']                  = str_replace( array( '[', ']' ), array(
-										'_',
-										'',
-									), $field['repeatable_field_id'] );
+									//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
+									$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 									echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 								endforeach;
 								?>
@@ -763,19 +763,13 @@ class Give_Fields_API {
 									<div class="give-row-body">
 										<?php
 										foreach ( $fields['fields'] as $field ) :
-											$field['repeat']                    = true;
-											$field['repeatable_field_id']       = give_get_repeater_field_id( $field, $fields, $index );
-											$field['field_attributes']['value'] = give_get_repeater_field_value( $field, $field_group, $fields );
-
+											$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, $index );
 											$field['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
 												? $repeater_field_values[ $index ][ $field['id'] ]
 												: '';
 
-											$field['id'] = str_replace(
-												array( '[', ']' ),
-												array( '_', '', ),
-												$field['repeatable_field_id']
-											);
+											//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
+											$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 										endforeach;
@@ -783,8 +777,7 @@ class Give_Fields_API {
 									</div>
 								</td>
 							</tr>
-						<?php endforeach;
-						; ?>
+						<?php endforeach; ?>
 
 					<?php elseif ( $add_default_donation_field ) : ?>
 						<!--Default repeater field group-->
@@ -803,13 +796,13 @@ class Give_Fields_API {
 								<div class="give-row-body">
 									<?php
 									foreach ( $fields['fields'] as $field ) :
-										$field['repeat']              = true;
-										$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields, 0 );
-										$field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
-										$field['id']                  = str_replace( array( '[', ']' ), array(
-											'_',
-											'',
-										), $field['repeatable_field_id'] );
+										$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, 0 );
+										// $field['value'] = ! empty( $repeater_field_values[  ][ $field['id'] ] )
+										// 	? $repeater_field_values[ $index ][ $field['id'] ]
+										// 	: '';
+
+										//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
+										$field['repeater_field_id']   = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 										echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 									endforeach;
@@ -1008,7 +1001,7 @@ class Give_Fields_API {
 
 				// Set ID.
 				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
-					? "give-{$field['id']}-field"
+					? 'give-' . self::get_field_id( $field ). '-field'
 					: $field['field_attributes']['id'];
 
 				// Set class.
@@ -1021,11 +1014,12 @@ class Give_Fields_API {
 					? 'give-field-wrap'
 					: 'give-field-wrap ' . trim( $field['wrapper_attributes']['class'] );
 
-				if( ! empty( $field['fields'] ) ) {
+				if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
 					foreach ( $field['fields'] as $key => $single_field ) {
 						$single_field['id']    = ! empty( $single_field['id'] )
 							? $single_field['id']
 							: $key;
+						$single_field['repeat'] = true;
 						$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
 					}
 				}
@@ -1179,16 +1173,32 @@ class Give_Fields_API {
 	}
 
 	/**
-	 * Is the element a button?
+	 * Get field name.
 	 *
 	 * @since  1.9
-	 * @access static
 	 *
-	 * @param array $element
+	 * @param  array $field
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	static function is_button( $element ) {
-		return preg_match( '/^button|submit$/', $element['#type'] );
+	public static function get_field_name( $field ) {
+		$field_name = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_name'] );
+
+		return $field_name;
+	}
+
+	/**
+	 * Get field name.
+	 *
+	 * @since  1.9
+	 *
+	 * @param  array $field
+	 *
+	 * @return string
+	 */
+	public static function get_field_id( $field ) {
+		$field_id = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_id'] );
+
+		return $field_id;
 	}
 }
