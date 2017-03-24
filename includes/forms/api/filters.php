@@ -214,6 +214,7 @@ function give_field_api_set_field_value( $field ) {
 		case 'select':
 		case 'multi_select':
 		case 'multi_checkbox':
+		case 'group':
 			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
 				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
 			}
