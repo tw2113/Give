@@ -199,12 +199,6 @@ function give_field_api_set_field_value( $field ) {
 			}
 			break;
 
-		case 'textarea':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
-			}
-			break;
-
 		case 'checkbox':
 			$field['field_attributes']['value'] = ! empty( $field['cbvalue'] ) ? $field['cbvalue'] : 'on' ;
 			if (
@@ -215,24 +209,10 @@ function give_field_api_set_field_value( $field ) {
 			}
 			break;
 
+		case 'textarea':
 		case 'radio':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
-			}
-			break;
-
 		case 'select':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
-			}
-			break;
-
 		case 'multi_select':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
-			}
-			break;
-
 		case 'multi_checkbox':
 			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
 				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
