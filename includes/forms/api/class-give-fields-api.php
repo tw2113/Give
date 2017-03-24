@@ -681,7 +681,6 @@ class Give_Fields_API {
 
 		$group_numbering       = isset( $fields['options']['group_numbering'] ) ? (int) $fields['options']['group_numbering'] : 0;
 		$close_tabs            = isset( $fields['options']['close_tabs'] ) ? (int) $fields['options']['close_tabs'] : 0;
-		$close_tabs = 0;
 		$repeater_field_values = $fields['value'];
 		$header_title          = isset( $fields['options']['header_title'] )
 			? $fields['options']['header_title']
@@ -763,10 +762,19 @@ class Give_Fields_API {
 									<div class="give-row-body">
 										<?php
 										foreach ( $fields['fields'] as $field ) :
-											$field['repeat']              = true;
-											$field['repeatable_field_id'] = give_get_repeater_field_id( $field, $fields, $index );
-											$field['attributes']['value'] = give_get_repeater_field_value( $field, $field_group, $fields );
-											$field['id']                  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeatable_field_id'] );
+											$field['repeat']                    = true;
+											$field['repeatable_field_id']       = give_get_repeater_field_id( $field, $fields, $index );
+											$field['field_attributes']['value'] = give_get_repeater_field_value( $field, $field_group, $fields );
+
+											$field['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
+												? $repeater_field_values[ $index ][ $field['id'] ]
+												: '';
+
+											$field['id'] = str_replace(
+												array( '[', ']' ),
+												array( '_', '', ),
+												$field['repeatable_field_id']
+											);
 
 											echo self::render_tag( $field );
 										endforeach;
