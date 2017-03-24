@@ -273,8 +273,8 @@ add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_fiel
  */
 function give_render_wysiwyg_field( $field_html, $field ) {
 	$field['editor_attributes']        = array(
-		'textarea_name' => isset( $field['repeatable_field_id'] )
-			? $field['repeatable_field_id']
+		'textarea_name' => isset( $field['repeater_field_name'] )
+			? $field['repeater_field_name']
 			: $field['id'],
 		'textarea_rows' => '10',
 		'editor_class'  => $field['field_attributes']['class'],
@@ -282,7 +282,7 @@ function give_render_wysiwyg_field( $field_html, $field ) {
 
 	// Group field params.
 	$field['unique_field_id'] = $field['id'];
-	if( ! empty( $field['repeatable_field_id'] ) ) {
+	if( ! empty( $field['repeater_field_name'] ) ) {
 		$field['unique_field_id'] = '_give_repeater_' . uniqid() . '_wysiwyg';
 		$field['wrapper_attributes']['data-wp-editor'] = base64_encode( json_encode( array(
 				$field['value'],
