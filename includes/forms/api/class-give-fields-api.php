@@ -1002,8 +1002,8 @@ class Give_Fields_API {
 
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
-					? 'give-field-wrap'
-					: 'give-field-wrap ' . trim( $field['wrapper_attributes']['class'] );
+					? "give-field-wrap {$field['id']}_field"
+					: "give-field-wrap {$field['id']}_field " . trim( $field['wrapper_attributes']['class'] );
 
 				if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
 					foreach ( $field['fields'] as $key => $single_field ) {
