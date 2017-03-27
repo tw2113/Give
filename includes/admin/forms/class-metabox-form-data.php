@@ -193,9 +193,10 @@ class Give_MetaBox_Form_Data {
 						// Prefix is not needed.
 						'fields'  => apply_filters( 'give_donation_levels_table_row', array(
 							array(
-								'name' => esc_html__( 'ID', 'give' ),
-								'id'   => $prefix . 'id',
-								'type' => 'levels_id',
+								'name'    => esc_html__( 'ID', 'give' ),
+								'id'      => $prefix . 'id',
+								'type'    => 'levels_id',
+								'default' => 0,
 							),
 							array(
 								'name'       => esc_html__( 'Amount', 'give' ),
