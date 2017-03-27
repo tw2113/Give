@@ -731,7 +731,7 @@ class Give_Fields_API {
 							<div class="give-row-body">
 								<?php
 								foreach ( $fields['fields'] as $field ) :
-									$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields );
+									$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields );
 									$field['value'] = $field['field_attributes']['value'] = $field['default'];
 									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
@@ -760,7 +760,7 @@ class Give_Fields_API {
 									<div class="give-row-body">
 										<?php
 										foreach ( $fields['fields'] as $field ) :
-											$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, $index );
+											$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, $index );
 											$field['value'] = $field['field_attributes']['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
 												? $repeater_field_values[ $index ][ $field['id'] ]
 												: $field['default'];
@@ -791,7 +791,7 @@ class Give_Fields_API {
 								<div class="give-row-body">
 									<?php
 									foreach ( $fields['fields'] as $field ) :
-										$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, 0 );
+										$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, 0 );
 										$field['value'] = $field['field_attributes']['value'] = $field['default'];
 										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
@@ -1176,5 +1176,43 @@ class Give_Fields_API {
 		$field_name = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_name'] );
 
 		return $field_name;
+	}
+
+	/**
+	 * Get repeater field id.
+	 *
+	 * @since  1.9
+	 *
+	 * @param array    $field
+	 * @param array    $fields
+	 * @param int|bool $default
+	 *
+	 * @return string
+	 */
+	public static function get_repeater_field_name( $field, $fields , $default = false ) {
+		$row_placeholder = false !== $default ? $default : '{{row-count-placeholder}}';
+
+		// Get field id.
+		$field_id = "{$fields['id']}[{$row_placeholder}][{$field['id']}]";
+
+		/**
+		 * Filter the specific repeater field id
+		 *
+		 * @since 1.8
+		 *
+		 * @param string $field_id
+		 */
+		$field_id = apply_filters( "give_get_repeater_field_{$field['id']}_name", $field_id, $field, $fields, $default );
+
+		/**
+		 * Filter the repeater field id
+		 *
+		 * @since 1.8
+		 *
+		 * @param string $field_id
+		 */
+		$field_id = apply_filters( 'give_get_repeater_field_name', $field_id, $field, $fields, $default );
+
+		return $field_id;
 	}
 }

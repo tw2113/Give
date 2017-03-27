@@ -620,30 +620,7 @@ function give_get_repeater_field_value( $field, $field_group, $fields ) {
  * @return string
  */
 function give_get_repeater_field_id( $field, $fields, $default = false ) {
-	$row_placeholder = false !== $default ? $default : '{{row-count-placeholder}}';
-
-	// Get field id.
-	$field_id = "{$fields['id']}[{$row_placeholder}][{$field['id']}]";
-
-	/**
-	 * Filter the specific repeater field id
-	 *
-	 * @since 1.8
-	 *
-	 * @param string $field_id
-	 */
-	$field_id = apply_filters( "give_get_repeater_field_{$field['id']}_id", $field_id, $field, $fields, $default );
-
-	/**
-	 * Filter the repeater field id
-	 *
-	 * @since 1.8
-	 *
-	 * @param string $field_id
-	 */
-	$field_id = apply_filters( 'give_get_repeater_field_id', $field_id, $field, $fields, $default );
-
-	return $field_id;
+	return Give_Fields_API::get_repeater_field_name( $field, $fields, $default );
 }
 
 
@@ -1021,7 +998,7 @@ function _give_set_multi_level_repeater_field_id( $field_id, $field, $fields, $d
 	return $field_id;
 }
 
-add_filter( 'give_get_repeater_field__give_id_id', '_give_set_multi_level_repeater_field_id', 10, 4 );
+add_filter( 'give_get_repeater_field__give_id_name', '_give_set_multi_level_repeater_field_id', 10, 4 );
 
 /**
  * Set repeater field value for multi donation form.
