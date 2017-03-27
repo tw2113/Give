@@ -862,7 +862,7 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 			if ( empty( $field['wrapper_class'] ) ) {
 				$field['wrapper_class'] = '';
 			}
-			$field['wrapper_class'] .= ' give-inline-radio-fields';
+			$field['wrapper_class'] .= ' give-radio-inline';
 			$field['type'] = 'radio';
 
 			break;

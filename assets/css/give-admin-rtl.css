@@ -1194,9 +1194,6 @@ ASIDE
     display: block; }
   #give-metabox-form-data .give_options_panel .give-field-wrap:last-child {
     border-bottom: 0; }
-  #give-metabox-form-data .give_options_panel .give-inline-radio-fields li {
-    display: inline-block;
-    margin-left: 15px; }
 
 #give-metabox-form-data .give-metabox-tabs {
   margin: 0;
