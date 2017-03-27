@@ -1173,6 +1173,15 @@ class Give_Fields_API {
 	public static function get_field_name( $field ) {
 		$field_name = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_name'] );
 
+		/**
+		 * Filter the field name.
+		 *
+		 * @since 1.8
+		 *
+		 * @param string $field_name
+		 */
+		$field_name = apply_filters( 'give_get_field_name', $field_name, $field );
+
 		return $field_name;
 	}
 
