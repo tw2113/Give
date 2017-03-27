@@ -428,6 +428,7 @@
 			// Setup colorpicker field when row added.
 			$repeater_fields.on('repeater_field_new_row_added', function (e, container, new_row) {
 				$('.give-colorpicker', $(this) ).give_colorpicker_fields();
+				$('.give-media-upload', $(this) ).give_media_fields();
 
 				// Load WordPress editor by ajax..
 				var wysiwyg_editor_container = $('div[data-wp-editor]', new_row);
