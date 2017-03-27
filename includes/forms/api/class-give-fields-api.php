@@ -730,12 +730,14 @@ class Give_Fields_API {
 							</div>
 							<div class="give-row-body">
 								<?php
-								foreach ( $fields['fields'] as $field ) :
+								foreach ( $fields['fields'] as $field_id => $field ) :
+									$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
+									$field['repeat'] = true;
+
 									$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields );
-									$field['value'] = $field['field_attributes']['value'] = $field['default'];
 									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
-									echo self::render_tag( $field, $form, array( 'set_default' => false ) );
+									echo self::render_tag( $field, $form );
 								endforeach;
 								?>
 							</div>
@@ -759,12 +761,15 @@ class Give_Fields_API {
 									</div>
 									<div class="give-row-body">
 										<?php
-										foreach ( $fields['fields'] as $field ) :
+										foreach ( $fields['fields'] as $field_id => $field ) :
+											$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
+											$field['repeat'] = true;
+
 											$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, $index );
-											$field['value'] = $field['field_attributes']['value'] = self::get_repeater_field_value( $field, $field_group, $fields );
+											$field['value'] = self::get_repeater_field_value( $field, $field_group, $fields );
 											$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
-											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
+											echo self::render_tag( $field, $form );
 										endforeach;
 										?>
 									</div>
@@ -788,12 +793,14 @@ class Give_Fields_API {
 								</div>
 								<div class="give-row-body">
 									<?php
-									foreach ( $fields['fields'] as $field ) :
+									foreach ( $fields['fields'] as $field_id => $field ) :
+										$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
+										$field['repeat'] = true;
+
 										$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, 0 );
-										$field['value'] = $field['field_attributes']['value'] = $field['default'];
 										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
-										echo self::render_tag( $field, $form, array( 'set_default' => false ) );
+										echo self::render_tag( $field, $form );
 									endforeach;
 									?>
 								</div>
@@ -1003,15 +1010,15 @@ class Give_Fields_API {
 					? "give-field-wrap {$field['id']}_field"
 					: "give-field-wrap {$field['id']}_field " . trim( $field['wrapper_attributes']['class'] );
 
-				if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
-					foreach ( $field['fields'] as $key => $single_field ) {
-						$single_field['id']    = ! empty( $single_field['id'] )
-							? $single_field['id']
-							: $key;
-						$single_field['repeat'] = true;
-						$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
-					}
-				}
+				// if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
+				// 	foreach ( $field['fields'] as $key => $single_field ) {
+				// 		$single_field['id']    = ! empty( $single_field['id'] )
+				// 			? $single_field['id']
+				// 			: $key;
+				// 		$single_field['repeat'] = true;
+				// 		$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+				// 	}
+				// }
 
 				/**
 				 * Filter the field values.
