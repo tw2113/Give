@@ -761,9 +761,7 @@ class Give_Fields_API {
 										<?php
 										foreach ( $fields['fields'] as $field ) :
 											$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, $index );
-											$field['value'] = $field['field_attributes']['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
-												? $repeater_field_values[ $index ][ $field['id'] ]
-												: $field['default'];
+											$field['value'] = $field['field_attributes']['value'] = self::get_repeater_field_value( $field, $field_group, $fields );
 											$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
@@ -1214,5 +1212,42 @@ class Give_Fields_API {
 		$field_id = apply_filters( 'give_get_repeater_field_name', $field_id, $field, $fields, $default );
 
 		return $field_id;
+	}
+
+
+	/**
+	 * Get repeater field value.
+	 *
+	 * @since 1.9
+	 * @access public
+	 *
+	 * @param array $field
+	 * @param array $field_value_group
+	 * @param array $fields
+	 *
+	 * @return mixed
+	 */
+	public static function get_repeater_field_value( $field, $field_value_group, $fields ) {
+		$field_value = ( isset( $field_value_group[ $field['id'] ] ) ? $field_value_group[ $field['id'] ] : '' );
+
+		/**
+		 * Filter the specific repeater field value
+		 *
+		 * @since 1.8
+		 *
+		 * @param string $field_id
+		 */
+		$field_value = apply_filters( "give_get_repeater_field_{$field['id']}_value", $field_value, $field, $field_value_group, $fields );
+
+		/**
+		 * Filter the repeater field value
+		 *
+		 * @since 1.8
+		 *
+		 * @param string $field_id
+		 */
+		$field_value = apply_filters( 'give_get_repeater_field_value', $field_value, $field, $field_value_group, $fields );
+
+		return $field_value;
 	}
 }

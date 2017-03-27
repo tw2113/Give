@@ -565,27 +565,7 @@ function give_get_custom_attributes( $field ) {
  * @return string
  */
 function give_get_repeater_field_value( $field, $field_group, $fields ) {
-	$field_value = ( isset( $field_group[ $field['id'] ] ) ? $field_group[ $field['id'] ] : '' );
-
-	/**
-	 * Filter the specific repeater field value
-	 *
-	 * @since 1.8
-	 *
-	 * @param string $field_id
-	 */
-	$field_value = apply_filters( "give_get_repeater_field_{$field['id']}_value", $field_value, $field, $field_group, $fields );
-
-	/**
-	 * Filter the repeater field value
-	 *
-	 * @since 1.8
-	 *
-	 * @param string $field_id
-	 */
-	$field_value = apply_filters( 'give_get_repeater_field_value', $field_value, $field, $field_group, $fields );
-
-	return $field_value;
+	return Give_Fields_API::get_repeater_field_value( $field, $field_group, $fields );
 }
 
 /**
@@ -995,9 +975,12 @@ add_filter( 'give_get_repeater_field__give_id_name', '_give_set_multi_level_repe
  * @return mixed
  */
 function _give_set_multi_level_repeater_field_value( $field_value, $field, $field_group, $fields ) {
-	$field_value = $field_group[ $field['id'] ]['level_id'];
+	// Bailout.
+	if( '_give_donation_levels' !==  $fields['id'] ) {
+		return $field_value;
+	}
 
-	return $field_value;
+	return $field_group[ $field['id'] ]['level_id'];
 }
 
 add_filter( 'give_get_repeater_field__give_id_value', '_give_set_multi_level_repeater_field_value', 10, 4 );
