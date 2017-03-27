@@ -502,8 +502,8 @@ function give_docs_link( $field ) {
  * @return mixed
  */
 function give_get_field_value( $field, $postid ) {
-	if ( isset( $field['attributes']['value'] ) ) {
-		return $field['attributes']['value'];
+	if ( isset( $field['field_attributes']['value'] ) ) {
+		return $field['field_attributes']['value'];
 	}
 
 	// Get value from db.
