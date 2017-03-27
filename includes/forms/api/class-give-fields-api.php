@@ -733,10 +733,8 @@ class Give_Fields_API {
 								foreach ( $fields['fields'] as $field ) :
 									$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields );
 									$field['value'] = $field['field_attributes']['value'] = $field['default'];
-
-
-									//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
 									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+
 									echo self::render_tag( $field, $form, array( 'set_default' => false ) );
 								endforeach;
 								?>
@@ -766,8 +764,6 @@ class Give_Fields_API {
 											$field['value'] = $field['field_attributes']['value'] = ! empty( $repeater_field_values[ $index ][ $field['id'] ] )
 												? $repeater_field_values[ $index ][ $field['id'] ]
 												: $field['default'];
-
-											//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
 											$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 											echo self::render_tag( $field, $form, array( 'set_default' => false ) );
@@ -797,8 +793,6 @@ class Give_Fields_API {
 									foreach ( $fields['fields'] as $field ) :
 										$field['repeater_field_name'] = give_get_repeater_field_id( $field, $fields, 0 );
 										$field['value'] = $field['field_attributes']['value'] = $field['default'];
-
-										//$single_field['attributes']['value'] = apply_filters( "give_default_field_group_field_{$field['id']}_value", ( ! empty( $field['default'] ) ? $field['default'] : '' ), $field );
 										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
 
 										echo self::render_tag( $field, $form, array( 'set_default' => false ) );
