@@ -253,9 +253,6 @@
 		init: function () {
 			this.setup_repeatable_fields();
 			this.handle_repeater_group_events();
-
-			// Multi level repeater field js.
-			this.handle_multi_levels_repeater_group_events();
 		},
 
 		/**
@@ -499,114 +496,6 @@
 
 			});
 
-		},
-
-		/**
-		 *  Handle events for multi level repeater group.
-		 */
-		handle_multi_levels_repeater_group_events: function () {
-			var $repeater_fields = $('#_give_donation_levels_field');
-
-			// Add level title as suffix to header title when admin add level title.
-			$('body').on('keyup', '.give-multilevel-text-field', function () {
-				var $parent                           = $(this).closest('tr'),
-					$header_title_container           = $('.give-row-head h2 span', $parent),
-					donation_level_header_text_prefix = $header_title_container.data('header-title');
-
-				// Donation level header already set.
-				if ($(this).val() && (  $(this).val() === $header_title_container.html() )) {
-					return false;
-				}
-
-				if ($(this).val()) {
-					// Change donaiton level header text.
-					$header_title_container.html(donation_level_header_text_prefix + ': ' + $(this).val());
-				} else {
-					// Reset donation level header heading text.
-					$header_title_container.html(donation_level_header_text_prefix)
-				}
-			});
-
-			//  Add level title as suffix to header title on document load.
-			$('.give-multilevel-text-field').each(function (index, item) {
-
-				// Skip first element.
-				if (!index) {
-					return;
-				}
-
-				// Check if item is jquery object or not.
-				var $item = $(item);
-
-				var $parent                           = $item.closest('tr'),
-					$header_title_container           = $('.give-row-head h2 span', $parent),
-					donation_level_header_text_prefix = $header_title_container.data('header-title');
-
-				// Donation level header already set.
-				if ($item.val() && (  $item.val() === $header_title_container.html() )) {
-					return false;
-				}
-
-				if ($item.val()) {
-					// Change donaiton level header text.
-					$header_title_container.html(donation_level_header_text_prefix + ': ' + $item.val());
-				} else {
-					// Reset donation level header heading text.
-					$header_title_container.html(donation_level_header_text_prefix)
-				}
-			});
-
-			// Handle row deleted event for levels repeater field.
-			$repeater_fields.on('repeater_field_row_deleted', function () {
-				var $this = $(this);
-
-				window.setTimeout(
-					function () {
-						var $parent          = $this,
-							$repeatable_rows = $('.give-row', $parent).not('.give-template'),
-							$default_radio   = $('.give-give_default_radio_inline', $repeatable_rows),
-							number_of_level  = $repeatable_rows.length;
-
-						if (number_of_level === 1) {
-							$default_radio.prop('checked', true);
-						}
-					},
-					200
-				);
-			});
-
-			// Handle row added event for levels repeater field.
-			$repeater_fields.on('repeater_field_new_row_added', function (e, container, new_row) {
-				var $this        = $(this),
-					max_level_id = 0;
-
-				// Auto set default level if no level set as default.
-				window.setTimeout(
-					function () {
-						// Set first row as default if selected default row deleted.
-						// When a row is removed containing the default selection then revert default to first repeatable row.
-						if ($('.give-give_default_radio_inline', $this).is(':checked') === false) {
-							$('.give-row', $this)
-								.not('.give-template')
-								.first()
-								.find('.give-give_default_radio_inline')
-								.prop('checked', true);
-						}
-					},
-					200
-				);
-
-				// Get max level id.
-				$('input[type="hidden"].give-levels_id', $this).each(function (index, item) {
-					var $item = $(item);
-					if (max_level_id < $item.val()) {
-						max_level_id = $item.val();
-					}
-				});
-
-				// Auto set level id for new setting level setting group.
-				$('input[type="hidden"].give-levels_id', new_row).val(++max_level_id);
-			});
 		}
 	};
 
