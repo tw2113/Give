@@ -1042,33 +1042,3 @@ function _give_set_multi_level_repeater_field_value( $field_value, $field, $fiel
 }
 
 add_filter( 'give_get_repeater_field__give_id_value', '_give_set_multi_level_repeater_field_value', 10, 4 );
-
-/**
- * Set default value for _give_id field.
- *
- * @since 1.8
- *
- * @param $field
- *
- * @return string
- */
-function _give_set_field_give_id_default_value( $field ) {
-	return 0;
-}
-
-add_filter( 'give_default_field_group_field__give_id_value', '_give_set_field_give_id_default_value' );
-
-/**
- * Set default value for _give_default field.
- *
- * @since 1.8
- *
- * @param $field
- *
- * @return string
- */
-function _give_set_field_give_default_default_value( $field ) {
-	return 'default';
-}
-
-add_filter( 'give_default_field_group_field__give_default_value', '_give_set_field_give_default_default_value' );
