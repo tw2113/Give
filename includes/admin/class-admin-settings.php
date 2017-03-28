@@ -632,6 +632,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					continue;
 				}
 
+
 				// Get posted value.
 				if ( strstr( $option['id'], '[' ) ) {
 					parse_str( $option['id'], $option_name_array );
@@ -653,8 +654,33 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'textarea' :
 						$value = wp_kses_post( trim( $raw_value ) );
 						break;
-					case 'multiselect' :
-						$value = array_filter( array_map( 'give_clean', (array) $raw_value ) );
+					case 'group' :
+						if( ! empty( $raw_value ) ) {
+							foreach ( $raw_value as $index => $single_value ) {
+								foreach ( $option['fields'] as $single_field ) {
+									if(
+										! isset( $single_field[ 'type' ] )
+										|| ! isset( $single_field[ 'id' ] )
+										|| ! isset( $single_value[$single_field['id']] )
+									) {
+										continue;
+									}
+
+									switch ( $single_field[ 'type' ] ) {
+										case 'checkbox' :
+											$value[$index][$single_field['id']] = is_null( $single_value[$single_field['id']] ) ? '' : 'on';
+											break;
+										case 'wysiwyg'  :
+										case 'textarea' :
+											$value[$index][$single_field['id']] = wp_kses_post( trim( $single_value[$single_field['id']] ) );
+											break;
+										default :
+											$value[$index][$single_field['id']] = give_clean( $single_value[$single_field['id']] );
+											break;
+									}
+								}
+							}
+						}
 						break;
 					default :
 						$value = give_clean( $raw_value );
