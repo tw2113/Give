@@ -733,6 +733,7 @@ class Give_Fields_API {
 								foreach ( $fields['fields'] as $field_id => $field ) :
 									$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
 									$field['repeat'] = true;
+									$field['repeater_template'] = true;
 
 									$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields );
 									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
