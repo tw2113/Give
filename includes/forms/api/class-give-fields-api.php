@@ -640,6 +640,11 @@ class Give_Fields_API {
 			$checked = ! empty( $field['value'] ) && in_array( $key, $field['value'] )
 				? 'checked="checked"'
 				: ( ( ! empty( $field['repeater_default_template'] ) || ! empty( $field['repeater_template'] ) ) && is_array( $option ) && ! empty( $option['checked'] ) ? 'checked="checked"'  : '' );
+
+			// Add extra attribute per checkbox.
+			$field['field_attributes'] = is_array( $option ) && ! empty( $option['field_attributes'] )
+				?  array_merge( $field['field_attributes'], $option['field_attributes'] )
+				: $field['field_attributes'];
 			?>
 			<li>
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
