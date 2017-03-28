@@ -639,7 +639,7 @@ class Give_Fields_API {
 		foreach ( $field['options'] as $key => $option ) :
 			$checked = ! empty( $field['value'] ) && in_array( $key, $field['value'] )
 				? 'checked="checked"'
-				: '';
+				: ( ( ! empty( $field['repeater_default_template'] ) || ! empty( $field['repeater_template'] ) ) && is_array( $option ) && ! empty( $option['checked'] ) ? 'checked="checked"'  : '' );
 			?>
 			<li>
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
@@ -651,7 +651,7 @@ class Give_Fields_API {
 						<?php echo $checked ?>
 						<?php echo( $field['required'] ? 'required=""' : '' ); ?>
 						<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-					><?php echo $option; ?>
+					><?php echo ( ! is_array( $option ) ? $option : ( isset( $option['label'] ) ? $option['label'] : '' ) ); ?>
 				</label>
 			</li>
 			<?php
@@ -797,6 +797,7 @@ class Give_Fields_API {
 									foreach ( $fields['fields'] as $field_id => $field ) :
 										$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
 										$field['repeat'] = true;
+										$field['repeater_default_template'] = true;
 
 										$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, 0 );
 										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
