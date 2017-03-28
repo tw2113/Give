@@ -582,7 +582,7 @@
 		}
 
 		if ($button_forms.length) {
-			$button_forms.give_modal_form();
+			$button_forms.give_button_form();
 		}
 
 		if ($stepper_forms.length) {
@@ -603,3 +603,5 @@
 		}
 	})
 }(jQuery));
+
+// @todo: open form modal if id present in current url
