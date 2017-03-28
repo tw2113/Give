@@ -632,6 +632,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					continue;
 				}
 
+				// Set default value.
+				$value = null;
 
 				// Get posted value.
 				if ( strstr( $option['id'], '[' ) ) {
@@ -658,30 +660,44 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						if( ! empty( $raw_value ) ) {
 							foreach ( $raw_value as $index => $single_value ) {
 								foreach ( $option['fields'] as $single_field ) {
-									if(
-										! isset( $single_field[ 'type' ] )
-										|| ! isset( $single_field[ 'id' ] )
-										|| ! isset( $single_value[$single_field['id']] )
-									) {
+									if( ! isset( $single_field[ 'type' ] ) || ! isset( $single_field[ 'id' ] ) ) {
 										continue;
 									}
 
-									switch ( $single_field[ 'type' ] ) {
+									$single_value[ $single_field['id'] ] = isset( $single_value[ $single_field['id'] ] )
+										? $single_value[ $single_field['id'] ]
+										: null;
+
+									switch ( $single_field['type'] ) {
 										case 'checkbox' :
-											$value[$index][$single_field['id']] = is_null( $single_value[$single_field['id']] ) ? '' : 'on';
+											$value[ $index ][ $single_field['id'] ] = is_null( $single_value[ $single_field['id'] ] )
+												? ''
+												: 'on';
 											break;
+
 										case 'wysiwyg'  :
 										case 'textarea' :
-											$value[$index][$single_field['id']] = wp_kses_post( trim( $single_value[$single_field['id']] ) );
+											$value[ $index ][ $single_field['id'] ] = wp_kses_post( trim( $single_value[ $single_field['id'] ] ) );
 											break;
+
+										case 'multi_select' :
+										case 'multi_checkbox' :
+											$value[ $index ][ $single_field['id'] ] = is_null( $single_value[ $single_field['id'] ] )
+												? array()
+												: give_clean( $single_value[ $single_field['id'] ] );
+											break;
+
 										default :
-											$value[$index][$single_field['id']] = give_clean( $single_value[$single_field['id']] );
+											$value[ $index ][ $single_field['id'] ] = give_clean( $single_value[ $single_field['id'] ] );
 											break;
 									}
 								}
 							}
 						}
 						break;
+					case 'multi_select' :
+					case 'multi_checkbox' :
+						$raw_value = is_null( $raw_value ) ? array() : $raw_value;
 					default :
 						$value = give_clean( $raw_value );
 						break;
