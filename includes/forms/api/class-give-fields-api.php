@@ -324,7 +324,7 @@ class Give_Fields_API {
 			$field_html = self::$instance->render_section( $field, $form, array( 'set_default' => false ) );
 
 		} elseif ( method_exists( self::$instance, $functions_name ) ) {
-			$field_html = self::$instance->{$functions_name}( $field );
+			$field_html = self::$instance->{$functions_name}( $field, $form, $args );
 
 		}
 
@@ -342,7 +342,8 @@ class Give_Fields_API {
 			"give_field_api_render_{$field['type']}_field",
 			$field_html,
 			$field,
-			$form
+			$form,
+			$args
 		);
 
 		return $field_html;
@@ -356,10 +357,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_text_field( $field ) {
+	public static function render_text_field( $field, $form = null, $args = array() ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 		?>
@@ -381,10 +384,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_submit_field( $field ) {
+	public static function render_submit_field( $field, $form = null, $args = array() ) {
 		return self::$instance->render_text_field( $field );
 	}
 
@@ -395,10 +400,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_checkbox_field( $field ) {
+	public static function render_checkbox_field( $field, $form = null, $args = array() ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 		?>
@@ -420,10 +427,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_email_field( $field ) {
+	public static function render_email_field( $field, $form = null, $args = array() ) {
 		return self::$instance->render_text_field( $field );
 	}
 
@@ -434,10 +443,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_number_field( $field ) {
+	public static function render_number_field( $field, $form = null, $args = array() ) {
 		return self::$instance->render_text_field( $field );
 	}
 
@@ -448,10 +459,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_password_field( $field ) {
+	public static function render_password_field( $field, $form = null, $args = array() ) {
 		return self::$instance->render_text_field( $field );
 	}
 
@@ -462,10 +475,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_button_field( $field ) {
+	public static function render_button_field( $field, $form = null, $args = array() ) {
 		return self::$instance->render_text_field( $field );
 	}
 
@@ -476,10 +491,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_hidden_field( $field ) {
+	public static function render_hidden_field( $field, $form = null, $args = array() ) {
 		$field['wrapper'] = false;
 
 		return self::$instance->render_text_field( $field );
@@ -492,10 +509,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_textarea_field( $field ) {
+	public static function render_textarea_field( $field, $form = null, $args = array() ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 		?>
@@ -518,10 +537,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_select_field( $field ) {
+	public static function render_select_field( $field, $form = null, $args = array() ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
 
@@ -559,10 +580,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_multi_select_field( $field ) {
+	public static function render_multi_select_field( $field, $form = null, $args = array() ) {
 		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple' ) );
 		$field['id']             = "{$field['id']}[]";
 
@@ -576,10 +599,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_radio_field( $field ) {
+	public static function render_radio_field( $field, $form = null, $args = array() ) {
 		$field['wrapper_type'] = 'p' === $field['wrapper_type']
 			? 'fieldset'
 			: $field['wrapper_type'];
@@ -621,10 +646,12 @@ class Give_Fields_API {
 	 * @access public
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_multi_checkbox_field( $field ) {
+	public static function render_multi_checkbox_field( $field, $form = null, $args = array() ) {
 		$field['wrapper_type'] = 'p' === $field['wrapper_type']
 			? 'fieldset'
 			: $field['wrapper_type'];
@@ -674,12 +701,13 @@ class Give_Fields_API {
 	 * @since 1.9
 	 * @access public
 	 *
-	 * @param array $fields
-	 * @param array $form
+	 * @param  array $fields
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_group_field( $fields, $form = null ) {
+	public static function render_group_field( $fields, $form = null, $args = array() ) {
 		// Bailout.
 		if ( ! isset( $fields['fields'] ) || empty( $fields['fields'] ) ) {
 			return '';
@@ -841,11 +869,13 @@ class Give_Fields_API {
 	 * @since  1.9
 	 * @access private
 	 *
-	 * @param $field
+	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function render_field_wrapper( $field ) {
+	public static function render_field_wrapper( $field, $form = null, $args = array() ) {
 		ob_start();
 
 		if ( $field['wrapper'] ) :
@@ -883,11 +913,13 @@ class Give_Fields_API {
 	 * @since  1.9
 	 * @access private
 	 *
-	 * @param $field
+	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	private function render_label( $field ) {
+	private function render_label( $field, $form = null, $args = array() ) {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
@@ -947,6 +979,8 @@ class Give_Fields_API {
 	 * @param bool  $fire_filter
 	 *
 	 * @return array
+	 *
+	 * @todo make third parameter of this function an array and update logic for $fire_filter
 	 */
 	public static function set_default_values( $field, $form = null, $fire_filter = true ) {
 		/**
@@ -1151,11 +1185,13 @@ class Give_Fields_API {
 	 * @since  1.9
 	 * @access private
 	 *
-	 * @param $field
+	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return bool
 	 */
-	public static function get_field_type( $field ) {
+	public static function get_field_type( $field, $form = null, $args = array() ) {
 		$field_type = 'field';
 
 		if (
@@ -1181,10 +1217,12 @@ class Give_Fields_API {
 	 * @since  1.9
 	 *
 	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
 	 *
 	 * @return string
 	 */
-	public static function get_field_name( $field ) {
+	public static function get_field_name( $field, $form = null, $args = array() ) {
 		$field_name = esc_attr( empty( $field['repeat'] ) ? $field['id'] : $field['repeater_field_name'] );
 
 		/**
