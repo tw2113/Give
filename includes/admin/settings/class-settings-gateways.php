@@ -291,17 +291,25 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 		 * @param $option_value
 		 */
 		public function render_enabled_gateways_field( $field, $option_value ) {
-			?>
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo Give_Admin_Settings::get_field_title( $field ); ?></label>
-				</th>
-				<td class="give-forminp">
-					<?php give_enabled_gateways_callback( $field, $option_value ); ?>
-					<?php echo Give_Admin_Settings::get_field_description( $field ); ?>
-				</td>
-			</tr>
-			<?php
+			$field = give_backward_compatibility_setting_api_1_8( $field );
+			$field = array_merge( $field, Give_Admin_Settings::get_field_wrapper( $field ) );
+
+			$gateways = give_get_ordered_payment_gateways( give_get_payment_gateways() );
+			foreach ( $gateways as $key => $gateway ) {
+				$field['options'][ $key ] = array(
+					'label'            => $gateway['admin_label'],
+					'field_attributes' => array(
+						'name'  => "gateways[{$key}]",
+						'value' => 1,
+					),
+				);
+			}
+
+			$field['value']    = array_keys( $option_value );
+			$field['type']     = 'multi_checkbox';
+			$field['sortable'] = true;
+
+			echo Give_Fields_API::render_tag( $field );
 		}
 	}
 
