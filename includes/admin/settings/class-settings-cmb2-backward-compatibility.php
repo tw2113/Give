@@ -342,7 +342,7 @@ if ( ! class_exists( 'Give_CMB2_Settings_Loader' ) ) :
 
 						case 'radio_inline' :
 							$field['type']  = 'radio';
-							$field['class'] = 'give-radio-inline';
+							$field['wrapper_class'] = 'give-radio-inline';
 							break;
 
 						case 'give_title' :
