@@ -54,6 +54,10 @@ class Give_Fields_API {
 		'sub_section_start'    => false,
 		'sub_section_end'      => false,
 
+		// Sortable.
+		'sortable'             => false,
+		'sortable-icon'        => true,
+
 		// Add custom attributes.
 		'field_attributes'     => array(),
 		'wrapper_attributes'   => array(),
@@ -652,9 +656,21 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_multi_checkbox_field( $field, $form = null, $args = array() ) {
+		// Field wrapper.
 		$field['wrapper_type'] = 'p' === $field['wrapper_type']
 			? 'fieldset'
 			: $field['wrapper_type'];
+
+		// Field value.
+		$field['value'] = is_array( $field['value'] )
+			? $field['value']
+			: array();
+
+		// Field type.
+		$field['field_attributes']['type'] = 'checkbox';
+
+		// Field name.
+		$field['field_attributes']['name'] = self::get_field_name( $field ) . '[]';
 
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
 		ob_start();
@@ -662,34 +678,46 @@ class Give_Fields_API {
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
 
-		echo '<ul>';
+		echo '<ul class="give-checklist-fields" data-give-sortable-list="' . ( (int) $field['sortable'] ) . '" data-give-sortable-icon="' . ( (int) $field['sortable-icon'] ) . '">';
+
 		foreach ( $field['options'] as $key => $option ) :
-			$checked = ! empty( $field['value'] ) && in_array( $key, $field['value'] )
-				? 'checked="checked"'
-				: ( ( ! empty( $field['repeater_default_template'] ) || ! empty( $field['repeater_template'] ) ) && is_array( $option ) && ! empty( $option['checked'] ) ? 'checked="checked"'  : '' );
+			// Set basic values for field.
+			$option = is_array( $option ) ? $option : array( 'label' => $option );
+			$option['field_attributes']['id'] = "give-{$id_base}-{$key}";
+			$option['field_attributes']['data-give-required'] = ( $field['required'] ? 1 : 0 );
+			$option['field_attributes']['value']         = empty( $option['field_attributes']['value'] )
+				? $key
+				: $option['field_attributes']['value'];
+
+			// Check if field checked or not.
+			if (
+				! empty( $field['value'] ) && in_array( $key, $field['value'] )
+				|| (
+					( ! empty( $field['repeater_default_template'] ) || ! empty( $field['repeater_template'] ) )
+					&& is_array( $option )
+					&& ! empty( $option['checked'] )
+				)
+			) {
+				$option['field_attributes']['checked'] = 'checked';
+			}
 
 			// Add extra attribute per checkbox.
-			$field['field_attributes'] = is_array( $option ) && ! empty( $option['field_attributes'] )
-				?  array_merge( $field['field_attributes'], $option['field_attributes'] )
+			$option['field_attributes'] = is_array( $option ) && ! empty( $option['field_attributes'] )
+				? array_merge( $field['field_attributes'], $option['field_attributes'] )
 				: $field['field_attributes'];
+
+			// Add field specific class.
+			$option['field_attributes']['class'] = trim( "{$option['field_attributes']['class']} give-{$key}" );
 			?>
 			<li>
 				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
-					<input
-							type="checkbox"
-							name="<?php echo self::get_field_name( $field ); ?>[]"
-							value="<?php echo $key; ?>"
-							id="<?php echo "{$id_base}-{$key}"; ?>"
-						<?php echo $checked ?>
-						<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-						<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-					><?php echo ( ! is_array( $option ) ? $option : ( isset( $option['label'] ) ? $option['label'] : '' ) ); ?>
+					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>><?php echo( ! is_array( $option ) ? $option : ( isset( $option['label'] ) ? $option['label'] : '' ) ); ?>
 				</label>
 			</li>
 			<?php
 		endforeach;
-		echo '</ul>';
 
+		echo '</ul>';
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
