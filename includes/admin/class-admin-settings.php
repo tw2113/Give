@@ -404,7 +404,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
-						$value['value'] = esc_textarea( self::get_option( $option_name, $value['name'], $value['default'] ) );
+						$value['value'] = esc_textarea( self::get_option( $option_name, $value['id'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -420,9 +420,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'select' :
 					case 'multiselect' :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
-
-						// Set field value.
-						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -448,9 +445,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'radio' :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
-						// Set field value.
-						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
-
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
@@ -474,9 +468,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'checkbox' :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
-						// Set field value.
-						$value['value'] = give_clean( self::get_option( $option_name, $value['name'], $value['default'] ) );
-
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
@@ -487,10 +478,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					case 'multicheck' :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
-						// Set field value.
-						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
-						$value['value'] = is_array( $value['value'] ) ? $value['value'] : array();
-
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
 
@@ -500,9 +487,6 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					// File input field.
 					case 'file' :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
-
-						// Set field value.
-						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -515,7 +499,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						$value = give_backward_compatibility_setting_api_1_8( $value );
 
 						// Set field value.
-						$value['value'] = self::get_option( $option_name, $value['id'], $value['default'] );
+						$value['value'] = wp_kses_post( self::get_option( $option_name, $value['id'], $value['default'] ) );
 
 						// Set layout.
 						$value = array_merge( $value, self::get_field_wrapper( $value, $option_name ) );
@@ -768,7 +752,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 			$field_args = array(
 				'before_label' => '<th scope="row" class="titledesc">',
 				'after_label'  => '</th>',
-				'value'        => ! empty( $field['value'] ) ? $field['value'] : give_clean( self::get_option( $option_name, $field['name'], $field['default'] ) ),
+				'value'        => ! empty( $field['value'] ) ? $field['value'] : give_clean( self::get_option( $option_name, $field['id'], $field['default'] ) ),
 				'wrapper_type' => 'tr',
 				'before_field' => '<td class="give-forminp give-forminp-' . sanitize_title( $field['type'] ) . '">',
 				'after_field'  => self::get_field_description( $field ) . '</td>',
