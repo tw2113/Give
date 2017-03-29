@@ -710,7 +710,7 @@ class Give_Fields_API {
 			$option['field_attributes']['class'] = trim( "{$option['field_attributes']['class']} give-{$key}" );
 			?>
 			<li>
-				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
+				<label class="give-label" for="<?php echo $option['field_attributes']['id']; ?>">
 					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>><?php echo( ! is_array( $option ) ? $option : ( isset( $option['label'] ) ? $option['label'] : '' ) ); ?>
 				</label>
 			</li>
