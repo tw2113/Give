@@ -11,21 +11,14 @@
 
 jQuery.noConflict();
 jQuery(document).ready(function ($) {
-
-	/**
-	 *  Sortable payment gateways.
-	 */
-	var $payment_gateways = jQuery( 'ul.give-payment-gatways-list' );
-	if( $payment_gateways.length ){
-		$payment_gateways.sortable();
-	}
-
 	/**
 	 * Set payment gateway list under default payment gaetway option
 	 */
-	var $payment_gateway_list_item = $('input', $payment_gateways),
+	var $payment_gateways = jQuery( 'ul.give-payment-gatways-list' ),
+		$payment_gateway_list_item = $('input', $payment_gateways),
 		$default_gateway           = $('#default_gateway');
-	$payment_gateway_list_item.on('click', function () {
+
+		$payment_gateway_list_item.on('click', function () {
 
 		// Bailout.
 		if( $(this)[0].hasAttribute( 'readonly' ) ) {

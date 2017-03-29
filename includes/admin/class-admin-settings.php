@@ -748,7 +748,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		 *
 		 * @return array
 		 */
-		private function get_field_wrapper( $field, $option_name ) {
+		public static function get_field_wrapper( $field, $option_name = '' ) {
 			$field_args = array(
 				'before_label' => '<th scope="row" class="titledesc">',
 				'after_label'  => '</th>',

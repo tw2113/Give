@@ -762,6 +762,13 @@ General
   border-top: 5px solid #72777c;
   border-bottom: 0; }
 
+ul[data-give-sortable-list] span.give-drag-handle {
+  padding: 3px 4px 0 0;
+  font-size: 15px;
+  font-weight: 400;
+  color: #bdbdbd;
+  cursor: move; }
+
 /**
  * Give Frontend Fonts SCSS
  *

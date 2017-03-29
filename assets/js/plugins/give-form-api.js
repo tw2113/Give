@@ -564,6 +564,24 @@
 	};
 
 
+	// Sortable List
+	$.fn.give_sortable_list = function () {
+		return this.each(function () {
+			var $ul_wrapper = $(this),
+				$li       = $('li', $ul_wrapper);
+
+			if( $li.length && parseInt( $ul_wrapper.data('give-sortable-list' ) ) ) {
+
+				if( parseInt( $ul_wrapper.data('give-sortable-icon' ) ) ) {
+					$li.each(function( index, $item ){
+						$( $item ).prepend( '<span class="give-drag-handle"><span class="dashicons dashicons-menu"></span></span>' );
+					});
+				}
+
+				$ul_wrapper.sortable();
+			}
+		});
+	};
 
 	$(document).ready(function () {
 		var $reveal_forms  = $('.give-display-style-reveal'),
@@ -571,7 +589,8 @@
 			$button_forms  = $('.give-display-style-button'),
 			$stepper_forms = $('.give-display-style-stepper'),
 			$media_upload_btn = $('.give-media-upload'),
-			$colorpicker_fields = $('.give-colorpicker');
+			$colorpicker_fields = $('.give-colorpicker'),
+			$ul_sortable = $('ul[data-give-sortable-list]');
 
 		if ($reveal_forms.length) {
 			$reveal_forms.give_reveal_form();
@@ -600,6 +619,10 @@
 		if( $('.give-repeater-field-wrap').length ){
 			give_repeater_fields.init();
 			$('button.give-add-repeater-field-section-row').on( 'click', function(e){ e.preventDefault(); });
+		}
+
+		if( $ul_sortable.length ) {
+			$ul_sortable.give_sortable_list();
 		}
 	})
 }(jQuery));
