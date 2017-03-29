@@ -832,7 +832,7 @@ function give_v18_renamed_core_settings() {
  */
 function give_backward_compatibility_setting_api_1_8( $field ) {
 	if (
-		( empty( $field['name'] ) && ! ( 'group' === $field['type'] ) )
+		( empty( $field['name'] ) && empty( $field['title'] ) && ! ( 'group' === $field['type'] ) )
 		|| ( empty( $field['fields'][0]['name'] ) && ( 'group' === $field['type'] ) )
 	) {
 		return $field;
