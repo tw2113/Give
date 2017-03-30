@@ -301,25 +301,9 @@ function give_get_ordered_payment_gateways( $gateways ) {
 
 	// Get gateways setting.
 	$gateways_setting = isset( $_POST['gateways'] ) ? $_POST['gateways'] : give_get_option( 'gateways' );
-
-	// Return from here if we do not have gateways setting.
-	if ( empty( $gateways_setting ) ) {
-		return $gateways;
-	}
-
-	// Reverse array to order payment gateways.
-	$gateways_setting = array_reverse( $gateways_setting );
-
-	// Reorder gateways array
-	foreach ( $gateways_setting as $gateway_key => $value ) {
-
-		$new_gateway_value = isset( $gateways[ $gateway_key ] ) ? $gateways[ $gateway_key ] : '';
-		unset( $gateways[ $gateway_key ] );
-
-		if ( ! empty( $new_gateway_value ) ) {
-			$gateways = array_merge( array( $gateway_key => $new_gateway_value ), $gateways );
-		}
-	}
+	
+	// Ordered gateways.
+	$gateways = give_reorder_array( $gateways, array_keys( $gateways_setting ) );
 
 	/**
 	 * Filter payment gateways order.
