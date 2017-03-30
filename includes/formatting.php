@@ -518,3 +518,35 @@ function give_check_variable( $variable, $conditional = '', $default = false ) {
 	return $variable;
 
 }
+
+
+/**
+ * Reorder array value on basis of ordered keys.
+ *
+ * @param array $data
+ * @param array $ordered_keys
+ *
+ * @return array
+ */
+function give_reorder_array( $data, $ordered_keys = array() ) {
+	// Bailout.
+	if ( empty( $data ) || empty( $ordered_keys ) ) {
+		return $data;
+	}
+
+	$existing_keys = array_keys( $data );
+
+	// Reorder gateways array
+	foreach ( $ordered_keys as $key ) {
+		if ( in_array( $key, $existing_keys ) && isset( $data[ $key ] ) ) {
+			$new_data[ $key ] = $data[ $key ];
+			unset( $data[ $key ] );
+		}
+	}
+
+	if ( ! empty( $new_data ) ) {
+		$data = array_merge( $new_data, $data );
+	}
+
+	return $data;
+}
