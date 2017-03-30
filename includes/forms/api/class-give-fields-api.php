@@ -1069,7 +1069,7 @@ class Give_Fields_API {
 				$field = wp_parse_args( $field, self::$field_defaults );
 
 				// Set ID.
-				$field['field_attributes']['id'] = empty( $field['field_attributes']['id'] )
+				$field['field_attributes']['id'] = ! isset( $field['field_attributes']['id'] )
 					? "give-{$field['id']}-field"
 					: $field['field_attributes']['id'];
 
@@ -1081,7 +1081,7 @@ class Give_Fields_API {
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
 					? "give-field-wrap {$field['id']}_field"
-					: "give-field-wrap {$field['id']}_field " . trim( $field['wrapper_attributes']['class'] );
+					: trim( "give-field-wrap {$field['id']}_field {$field['wrapper_attributes']['class']}"  );
 
 				// if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
 				// 	foreach ( $field['fields'] as $key => $single_field ) {
