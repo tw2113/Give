@@ -27,7 +27,7 @@ class Give_Fields_API {
 	 */
 	static $field_defaults = array(
 		'type'                 => '',
-		'id'                 => '',
+		'id'                   => '',
 		'data_type'            => '',
 		'value'                => '',
 		'required'             => false,
@@ -46,7 +46,7 @@ class Give_Fields_API {
 		// Add label, before and after field.
 		'label'                => '',
 		'label_position'       => 'before',
-		'label_tooltip'              => '',
+		'label_tooltip'        => '',
 
 		// Show multiple fields in same row with in sub section.
 		'sub_section_start'    => false,
@@ -57,6 +57,7 @@ class Give_Fields_API {
 		'sortable-icon'        => false,
 
 		// Add custom attributes.
+		'label_attributes'     => array(),
 		'field_attributes'     => array(),
 		'wrapper_attributes'   => array(),
 
@@ -960,7 +961,7 @@ class Give_Fields_API {
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
 			<?php echo $field['before_label']; ?>
-			<label class="give-label" for="<?php echo $field['field_attributes']['id']; ?>">
+			<label for="<?php echo $field['field_attributes']['id']; ?>" <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
 
 				<?php echo $field['label']; ?>
 
@@ -1072,12 +1073,17 @@ class Give_Fields_API {
 				// Set default values for field or section.
 				$field = wp_parse_args( $field, self::$field_defaults );
 
-				// Set ID.
+				// Set default class for label.
+				$field['label_attributes']['class'] = empty( $field['label_attributes']['class'] )
+					? 'give-label'
+					: trim( "give-label {$field['label_attributes']['class']}" );
+
+				// Set field id.
 				$field['field_attributes']['id'] = ! isset( $field['field_attributes']['id'] )
 					? "give-{$field['id']}-field"
 					: $field['field_attributes']['id'];
 
-				// Set class.
+				// Set field class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
 					? "give-field js-give-field"
 					: trim( "give-field js-give-field {$field['field_attributes']['class']}" );
