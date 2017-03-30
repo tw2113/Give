@@ -1,3 +1,6 @@
+// --------------------------
+// Form
+// --------------------------
 .give-form-wrap {
 	overflow: hidden;
 	width: 100%;
@@ -11,17 +14,26 @@
 		border-bottom: 1px solid rgba(0, 0, 0, .1);
 		width: 100%;
 	}
-
-	ul{
-		list-style: none;
-	}
-
 	//.give-label,
 	//.give-sub-section-label {
 	//	display: block;
 	//}
 }
 
+
+// --------------------------
+// Field
+// --------------------------
+.give-field-wrap {
+	ul{
+		list-style: none;
+	}
+}
+
+
+// --------------------------
+// Form Pop
+// --------------------------
 .mfp-wrap {
 	.give-form-modal {
 		position: relative;
@@ -108,7 +120,7 @@
 }
 
 // --------------------------
-// Responsive form css
+// Responsive Form
 // --------------------------
 .give-field-wrapper {
 	-webkit-box-sizing: border-box;
@@ -138,7 +150,7 @@
 
 
 // --------------------------
-// Repeater field
+// Repeater Field
 // --------------------------
 .give-repeatable-field-section {
 	padding: 10px;
@@ -252,9 +264,9 @@
 
 
 
-/*-------------------------------------
-General
--------------------------------------*/
+// --------------------------
+// General
+// --------------------------
 .give-toggle-btn {
 	float: right;
 	width: 36px;
@@ -290,6 +302,7 @@ General
 	border-bottom: 0;
 }
 
+// Sortable list icon css.
 ul[data-give-sortable-list] span.give-drag-handle {
 	padding: 3px 4px 0 0;
 	font-size: 15px;

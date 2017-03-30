@@ -2272,8 +2272,9 @@ body.give-twentysixteen fieldset#give_terms_agreement {
     padding: 0 0 5px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     width: 100%; }
-  .give-form-wrap ul {
-    list-style: none; }
+
+.give-field-wrap ul {
+  list-style: none; }
 
 .mfp-wrap .give-form-modal {
   position: relative;
@@ -2425,9 +2426,6 @@ body.give-twentysixteen fieldset#give_terms_agreement {
   .give-repeatable-field-section .give-row.ui-sortable-helper {
     border-bottom: 0; }
 
-/*-------------------------------------
-General
--------------------------------------*/
 .give-toggle-btn {
   float: left;
   width: 36px;
@@ -2455,3 +2453,10 @@ General
   border-left: 5px solid transparent;
   border-top: 5px solid #72777c;
   border-bottom: 0; }
+
+ul[data-give-sortable-list] span.give-drag-handle {
+  padding: 3px 0 0 4px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #bdbdbd;
+  cursor: move; }
