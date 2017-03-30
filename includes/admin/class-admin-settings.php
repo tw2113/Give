@@ -392,7 +392,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 						// Add input specific class.
 						$value['field_attributes']['class'] = empty( $value['field_attributes']['class'] )
 							? 'give-input-field'
-							: trim( $value['field_attributes']['class'] ) . ' give-input-class';
+							: trim( $value['field_attributes']['class'] ) . ' give-input-field';
 
 						// Render function.
 						echo Give_Fields_API::render_tag( $value );
