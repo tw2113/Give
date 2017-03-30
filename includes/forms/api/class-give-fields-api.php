@@ -1344,3 +1344,5 @@ class Give_Fields_API {
 		return $field_value;
 	}
 }
+
+// @todo implement required and aria-required for all form fields. required should be custom tag because we want custom validation for form instead html5 .
