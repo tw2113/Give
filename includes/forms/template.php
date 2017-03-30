@@ -720,77 +720,92 @@ function give_user_info_fields( $form_id ) {
 	?>
     <fieldset id="give_checkout_user_info">
         <legend><?php echo apply_filters( 'give_checkout_personal_info_text', esc_html__( 'Personal Info', 'give' ) ); ?></legend>
-        <p id="give-first-name-wrap" class="form-row form-row-first form-row-responsive">
-            <label class="give-label" for="give-first">
-				<?php esc_html_e( 'First Name', 'give' ); ?>
-				<?php if ( give_field_is_required( 'give_first', $form_id ) ) : ?>
-                    <span class="give-required-indicator">*</span>
-				<?php endif ?>
-                <span class="give-tooltip give-icon give-icon-question"
-                      data-tooltip="<?php esc_attr_e( 'We will use this to personalize your account experience.', 'give' ); ?>"></span>
-            </label>
-            <input
-                    class="give-input required"
-                    type="text"
-                    name="give_first"
-                    placeholder="<?php esc_attr_e( 'First Name', 'give' ); ?>"
-                    id="give-first"
-                    value="<?php echo isset( $give_user_info['give_first'] ) ? $give_user_info['give_first'] : ''; ?>"
-				<?php echo( give_field_is_required( 'give_first', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
-            />
-        </p>
-
-        <p id="give-last-name-wrap" class="form-row form-row-last form-row-responsive">
-            <label class="give-label" for="give-last">
-				<?php esc_html_e( 'Last Name', 'give' ); ?>
-				<?php if ( give_field_is_required( 'give_last', $form_id ) ) : ?>
-                    <span class="give-required-indicator">*</span>
-				<?php endif ?>
-                <span class="give-tooltip give-icon give-icon-question"
-                      data-tooltip="<?php esc_attr_e( 'We will use this as well to personalize your account experience.', 'give' ); ?>"></span>
-            </label>
-
-            <input
-                    class="give-input<?php echo( give_field_is_required( 'give_last', $form_id ) ? ' required' : '' ); ?>"
-                    type="text"
-                    name="give_last"
-                    id="give-last"
-                    placeholder="<?php esc_attr_e( 'Last Name', 'give' ); ?>"
-                    value="<?php echo isset( $give_user_info['give_last'] ) ? $give_user_info['give_last'] : ''; ?>"
-				<?php echo( give_field_is_required( 'give_last', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
-            />
-        </p>
-
 		<?php
+		// First name.
+		$is_first_name_required = give_field_is_required( 'give_first', $form_id );
+		echo Give_Fields_API::render_tag(
+			array(
+				'type'               => 'text',
+				'id'                 => 'give_first',
+				'value'              => isset( $give_user_info['give_first'] )
+					? $give_user_info['give_first']
+					: '',
+				'label'              => esc_html__( 'First Name', 'give' ),
+				'label_tooltip'      => esc_attr__( 'We will use this to personalize your account experience.', 'give' ),
+				'required'           => $is_first_name_required,
+				'field_attributes'   => array(
+					'id'          => 'give-first',
+					'class'       => $is_first_name_required
+						? 'give-input required'
+						: 'give-input',
+					'placeholder' => esc_attr__( 'First Name', 'give' ),
+				),
+				'wrapper_attributes' => array(
+					'id'    => 'give-first-name-wrap',
+					'class' => 'form-row form-row-first form-row-responsive',
+				),
+			)
+		);
+
+		// Last name.
+		$is_last_name_required = give_field_is_required( 'give_last', $form_id );
+		echo Give_Fields_API::render_tag(
+			array(
+				'type'               => 'text',
+				'id'                 => 'give_last',
+				'value'              => isset( $give_user_info['give_last'] )
+					? $give_user_info['give_last']
+					: '',
+				'label'              => esc_html__( 'Last Name', 'give' ),
+				'label_tooltip'      => esc_attr__( 'We will use this to personalize your account experience.', 'give' ),
+				'required'           => $is_last_name_required,
+				'field_attributes'   => array(
+					'id'          => 'give-last',
+					'class'       => $is_last_name_required
+						? 'give-input required'
+						: 'give-input',
+					'placeholder' => esc_attr__( 'Last Name', 'give' ),
+				),
+				'wrapper_attributes' => array(
+					'id'    => 'give-last-name-wrap',
+					'class' => 'form-row form-row-last form-row-responsive',
+				),
+			)
+		);
+
 		/**
 		 * Fire before user email field
 		 *
 		 * @since 1.7
 		 */
 		do_action( 'give_donation_form_before_email', $form_id );
-		?>
-        <p id="give-email-wrap" class="form-row form-row-wide">
-            <label class="give-label" for="give-email">
-				<?php esc_html_e( 'Email Address', 'give' ); ?>
-				<?php if ( give_field_is_required( 'give_email', $form_id ) ) { ?>
-                    <span class="give-required-indicator">*</span>
-				<?php } ?>
-                <span class="give-tooltip give-icon give-icon-question"
-                      data-tooltip="<?php esc_attr_e( 'We will send the donation receipt to this address.', 'give' ); ?>"></span>
-            </label>
 
-            <input
-                    class="give-input required"
-                    type="email"
-                    name="give_email"
-                    placeholder="<?php esc_attr_e( 'Email Address', 'give' ); ?>"
-                    id="give-email"
-                    value="<?php echo isset( $give_user_info['give_email'] ) ? $give_user_info['give_email'] : ''; ?>"
-				<?php echo( give_field_is_required( 'give_email', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
-            />
+		// Email address.
+		$is_email_name_required = give_field_is_required( 'give_email', $form_id );
+		echo Give_Fields_API::render_tag(
+			array(
+				'type'               => 'text',
+				'id'                 => 'give_email',
+				'value'              => isset( $give_user_info['give_email'] )
+					? $give_user_info['give_email']
+					: '',
+				'label'              => esc_html__( 'Email address', 'give' ),
+				'label_tooltip'      => esc_attr__( 'We will send the donation receipt to this address.', 'give' ),
+				'required'           => $is_email_name_required,
+				'field_attributes'   => array(
+					'id'          => 'give-email',
+					'class'       => $is_email_name_required
+						? 'give-input required'
+						: 'give-input',
+					'placeholder' => esc_attr__( 'Email Address', 'give' ),
+				),
+				'wrapper_attributes' => array(
+					'id'    => 'give-email-wrap',
+					'class' => 'form-row form-row-wide',
+				),
+			)
+		);
 
-        </p>
-		<?php
 		/**
 		 * Fire after user email field
 		 *
