@@ -1078,8 +1078,8 @@ class Give_Fields_API {
 
 				// Set class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
-					? "give-field js-give-field give-field-type-{$field['type']}"
-					: trim( "give-field js-give-field give-field-type-{$field['type']} {$field['field_attributes']['class']}" );
+					? "give-field js-give-field"
+					: trim( "give-field js-give-field {$field['field_attributes']['class']}" );
 
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
