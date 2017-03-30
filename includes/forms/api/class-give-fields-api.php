@@ -650,6 +650,9 @@ class Give_Fields_API {
 	/**
 	 * Render multi checkbox field.
 	 *
+	 * Note:
+	 * You can reorder checklist if sortable with help of give_reorder_array function.
+	 *
 	 * @since  1.9
 	 * @access public
 	 *
