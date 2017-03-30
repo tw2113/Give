@@ -488,40 +488,65 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 
 	//Set Price, No Custom Amount Allowed means hidden price field
 	if ( ! give_is_setting_enabled( $allow_custom_amount ) ) {
+		echo Give_Fields_API::render_tag(
+			array(
+				'type'  => 'hidden',
+				'id'    => 'give-amount',
+				'value' => $default_amount,
+				'label' => esc_html__( 'Donation Amount:', 'give' ),
+				'wrapper'          => false,
+				'required'         => true,
+				'label_attributes' => array(
+					'class' => 'give-hidden',
+				),
+				'field_attributes' => array(
+					'id'    => 'give-amount',
+					'class' => 'give-amount-hidden',
+				),
+			)
+		);
 		?>
-        <label class="give-hidden" for="give-amount-hidden"><?php esc_html_e( 'Donation Amount:', 'give' ); ?></label>
-        <input id="give-amount" class="give-amount-hidden" type="hidden" name="give-amount"
-               value="<?php echo $default_amount; ?>" required aria-required="true"/>
-        <div class="set-price give-donation-amount form-row-wide">
-			<?php if ( $currency_position == 'before' ) {
-				echo $currency_output;
-			} ?>
-            <span id="give-amount-text" class="give-text-input give-amount-top"><?php echo $default_amount; ?></span>
-			<?php if ( $currency_position == 'after' ) {
-				echo $currency_output;
-			} ?>
-        </div>
+		<div class="set-price give-donation-amount form-row-wide">
+			<?php
+			echo sprintf(
+				'%1$s<span id="give-amount-text" class="give-text-input give-amount-top">%2$s</span>%3$s',
+				( $currency_position == 'before' ? $currency_output : '' ),
+				$default_amount,
+				( $currency_position == 'after' ? $currency_output : '' )
+			);
+			?>
+		</div>
 		<?php
 	} else {
 		//Custom Amount Allowed.
-		?>
-        <div class="give-total-wrap">
-            <div class="give-donation-amount form-row-wide">
-				<?php if ( $currency_position == 'before' ) {
-					echo $currency_output;
-				} ?>
-                <label class="give-hidden" for="give-amount"><?php esc_html_e( 'Donation Amount:', 'give' ); ?></label>
-                <input class="give-text-input give-amount-top" id="give-amount" name="give-amount" type="tel"
-                       placeholder="" value="<?php echo $default_amount; ?>" autocomplete="off">
-				<?php if ( $currency_position == 'after' ) {
-					echo $currency_output;
-				} ?>
-            </div>
-        </div>
-	<?php }
+		echo Give_Fields_API::render_tag(
+			array(
+				'type'                 => 'text',
+				'id'                   => 'give-amount',
+				'value'                => $default_amount,
+				'label'                => esc_html__( 'Donation Amount:', 'give' ),
+				'required'             => true,
+				'wrapper_type'         => 'div',
+				'before_label'         => ( $currency_position == 'before' ? $currency_output : '' ),
+				'after_field'          => ( $currency_position == 'after' ? $currency_output : '' ),
+				'before_field_wrapper' => '<div class="give-total-wrap">',
+				'after_field_wrapper'  => '</div>',
+				'label_attributes'     => array(
+					'class' => 'give-hidden',
+				),
+				'field_attributes'     => array(
+					'id'    => 'give-amount',
+					'class' => 'give-text-input give-amount-top',
+				),
+				'wrapper_attributes'   => array(
+					'class' => 'give-donation-amount form-row-wide',
+				),
+			)
+		);
+	}
 
 	/**
-	 * Fires while displaying donation form, after donation amounf field(s).
+	 * Fires while displaying donation form, after donation amount field(s).
 	 *
 	 * @since 1.0
 	 *
