@@ -677,8 +677,8 @@ class Give_Fields_API {
 
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
-
-		echo '<ul class="give-checklist-fields" data-give-sortable-list="' . ( (int) $field['sortable'] ) . '" data-give-sortable-icon="' . ( (int) $field['sortable-icon'] ) . '">';
+		
+		echo '<ul class="give-checklist-fields" data-give-sortable-list="' . absint( $field['sortable'] ) . '" data-give-sortable-icon="' . absint( $field['sortable-icon'] ) . '">';
 
 		foreach ( $field['options'] as $key => $option ) :
 			// Set basic values for field.
