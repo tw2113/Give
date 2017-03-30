@@ -370,15 +370,17 @@ class Give_Fields_API {
 	 */
 	public static function render_text_field( $field, $form = null, $args = array() ) {
 		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		$field['field_attributes']['name'] = self::get_field_name( $field );
+		$field['field_attributes']['type'] = $field['type'];
+
+		if( ! empty( $field['required'] ) ) {
+			$field['field_attributes']['required'] = 'required';
+			$field['field_attributes']['aria-required'] = 'true';
+		}
+
 		ob_start();
-		?>
-		<input
-				type="<?php echo $field['type']; ?>"
-				name="<?php echo self::get_field_name( $field ); ?>"
-			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-		>
-		<?php
+
+		echo '<input ' . self::$instance->get_attributes( $field['field_attributes'] ) . '>';
 
 		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 	}
