@@ -56,7 +56,7 @@ class Give_Fields_API {
 
 		// Sortable.
 		'sortable'             => false,
-		'sortable-icon'        => true,
+		'sortable-icon'        => false,
 
 		// Add custom attributes.
 		'field_attributes'     => array(),

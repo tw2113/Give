@@ -305,9 +305,10 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 				);
 			}
 
-			$field['value']    = array_keys( $option_value );
-			$field['type']     = 'multi_checkbox';
-			$field['sortable'] = true;
+			$field['value']         = array_keys( $option_value );
+			$field['type']          = 'multi_checkbox';
+			$field['sortable']      = true;
+			$field['sortable-icon'] = true;
 
 			echo Give_Fields_API::render_tag( $field );
 		}
