@@ -81,9 +81,10 @@ function give_get_donation_form( $args = array() ) {
 	do_action( 'give_pre_form_output', $form->ID, $args );
 
 	?>
-    <div id="give-form-<?php echo $form->ID; ?>-wrap" class="<?php echo $form_wrap_classes; ?>">
+	<div id="give-form-<?php echo $form->ID; ?>-wrap" class="<?php echo $form_wrap_classes; ?>">
 
-		<?php if ( $form->is_close_donation_form() ) {
+		<?php
+		if ( $form->is_close_donation_form() ) {
 
 			// Get Goal thank you message.
 			$goal_achieved_message = get_post_meta( $form->ID, '_give_form_goal_achieved_message', true );
@@ -117,40 +118,121 @@ function give_get_donation_form( $args = array() ) {
 			do_action( 'give_pre_form', $form->ID, $args );
 			?>
 
-            <form id="give-form-<?php echo $form_id; ?>" class="<?php echo $form_classes; ?>"
-                  action="<?php echo esc_url_raw( $form_action ); ?>" method="post">
-                <input type="hidden" name="give-form-id" value="<?php echo $form->ID; ?>"/>
-                <input type="hidden" name="give-form-title" value="<?php echo htmlentities( $form->post_title ); ?>"/>
-                <input type="hidden" name="give-current-url"
-                       value="<?php echo htmlspecialchars( give_get_current_page_url() ); ?>"/>
-                <input type="hidden" name="give-form-url"
-                       value="<?php echo htmlspecialchars( give_get_current_page_url() ); ?>"/>
-                <input type="hidden" name="give-form-minimum"
-                       value="<?php echo give_format_amount( give_get_form_minimum_price( $form->ID ) ); ?>"/>
-
-                <!-- The following field is for robots only, invisible to humans: -->
-                <span class="give-hidden" style="display: none !important;">
-					<label for="give-form-honeypot-<?php echo $form_id; ?>"></label>
-					<input id="give-form-honeypot-<?php echo $form_id; ?>" type="text" name="give-honeypot"
-                           class="give-honeypot give-hidden"/>
-				</span>
-
+            <form
+				id="give-form-<?php echo $form_id; ?>"
+				class="<?php echo $form_classes; ?>"
+				action="<?php echo esc_url_raw( $form_action ); ?>"
+				method="post">
 				<?php
+				// Form id.
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-form-id',
+						'value'            => $form->ID,
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
+					)
+				);
+
+				// Form title.
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-form-title',
+						'value'            => htmlentities( $form->post_title ),
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
+					)
+				);
+
+				// Current url.
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-current-url',
+						'value'            => htmlspecialchars( give_get_current_page_url() ),
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
+					)
+				);
+
+				// Form url.
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-form-url',
+						'value'            => htmlspecialchars( give_get_current_page_url() ),
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
+					)
+				);
+
+				// Form minimum amount.
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-form-minimum',
+						'value'            => give_format_amount( give_get_form_minimum_price( $form->ID ) ),
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
+					)
+				);
+
+				// The following field is for robots only, invisible to humans:
+				echo Give_Fields_API::render_tag(
+					array(
+						'type'               => 'text',
+						'label'              => '',
+						'id'                 => 'give-honeypot',
+						'wrapper_type'       => 'span',
+						'field_attributes'   => array(
+							'id'    => "give-form-honeypot-{$form_id}",
+							'class' => 'give-honeypot give-hidden',
+						),
+						'wrapper_attributes' => array(
+							'class' => 'give-hidden',
+							'style' => 'display: none !important;',
+						),
+					)
+				);
 
 				// Price ID hidden field for variable (mult-level) donation forms.
 				if ( give_has_variable_prices( $form_id ) ) {
 					// Get default selected price ID.
 					$prices   = apply_filters( 'give_form_variable_prices', give_get_variable_prices( $form_id ), $form_id );
 					$price_id = 0;
+
 					//loop through prices.
 					foreach ( $prices as $price ) {
 						if ( isset( $price['_give_default'] ) && $price['_give_default'] === 'default' ) {
 							$price_id = $price['_give_id']['level_id'];
 						};
 					}
-					?>
-                    <input type="hidden" name="give-price-id" value="<?php echo $price_id; ?>"/>
-				<?php }
+
+					// Form default price id.
+					echo Give_Fields_API::render_tag(
+						array(
+							'type'             => 'hidden',
+							'id'               => 'give-price-id',
+							'value'            => $price_id,
+							'field_attributes' => array(
+								'id'    => '',
+								'class' => '',
+							),
+						)
+					);
+				}
 
 				/**
 				 * Fires while outputting donation form, before all other fields.
