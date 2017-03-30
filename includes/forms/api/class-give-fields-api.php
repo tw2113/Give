@@ -780,9 +780,6 @@ class Give_Fields_API {
 			<?php endif; ?>
 
 			<table class="give-repeatable-fields-section-wrapper" cellspacing="0">
-				<?php
-
-				?>
 				<tbody class="container"<?php echo " data-rf-row-count=\"{$fields_count}\""; ?>>
 					<!--Repeater field group template-->
 					<tr class="give-template give-row">
