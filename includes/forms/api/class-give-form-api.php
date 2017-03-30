@@ -427,8 +427,6 @@ class Give_Form_API {
 	 * @access public
 	 */
 	public static function enqueue_scripts() {
-		wp_enqueue_script('jquery-ui-sortable');
-
 		if ( is_admin() || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
 			wp_enqueue_script('give-repeatable-fields');
 			wp_enqueue_script('give-form-api-js');

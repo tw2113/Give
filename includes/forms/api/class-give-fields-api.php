@@ -316,6 +316,10 @@ class Give_Fields_API {
 		// Enqueue scripts.
 		Give_Form_API::enqueue_scripts();
 
+		if( ! empty( $field['sortable'] ) ) {
+			wp_enqueue_script('jquery-ui-sortable');
+		}
+
 		// Set default values if necessary.
 		if ( ! isset( $args['set_default'] ) || (bool) $args['set_default'] ) {
 			$field = self::$instance->set_default_values( $field, $form );
