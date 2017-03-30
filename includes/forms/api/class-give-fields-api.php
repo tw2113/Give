@@ -910,29 +910,33 @@ class Give_Fields_API {
 	public static function render_field_wrapper( $field, $form = null, $args = array() ) {
 		ob_start();
 
+		// Label: before field.
+		if ( 'before' === $field['label_position'] ) {
+			echo self::$instance->render_label( $field );
+		}
+
+		echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
+
+		// Label: before field.
+		if ( 'after' === $field['label_position'] ) {
+			echo self::$instance->render_label( $field );
+		}
+
+		$field_with_label = ob_get_clean();
+
+		ob_start();
+
 		if ( $field['wrapper'] ) :
 
 			echo $field['before_field_wrapper'];
-			?>
-			<<?php echo $field['wrapper_type']; ?> <?php echo self::$instance->get_attributes( $field['wrapper_attributes'] ); ?>>
-			<?php
-			// Label: before field.
-			if ( 'before' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
 
-			echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
+			echo '<' . $field['wrapper_type'] . ' ' . self::$instance->get_attributes( $field['wrapper_attributes'] ) . '>';
+				echo $field_with_label;
+			echo "</{$field['wrapper_type']}>";
 
-			// Label: before field.
-			if ( 'after' === $field['label_position'] ) {
-				echo self::$instance->render_label( $field );
-			}
-			?>
-			</<?php echo $field['wrapper_type']; ?>>
-			<?php
 			echo $field['after_field_wrapper'];
 		else :
-			echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
+			echo $field_with_label;
 		endif;
 
 		return ob_get_clean();
