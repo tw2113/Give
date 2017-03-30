@@ -1037,8 +1037,8 @@ class Give_Fields_API {
 
 				// Set wrapper class.
 				$field['block_attributes']['class'] = empty( $field['block_attributes']['class'] )
-					? "give-block-wrap js-give-block-wrapper give-block-{$field['id']}"
-					: trim( "give-block-wrap js-give-block-wrapper give-block-{$field['id']} {$field['block_attributes']['class']}" );
+					? "give-block-wrap js-give-block-wrap give-block-{$field['id']}"
+					: trim( "give-block-wrap js-give-block-wrap give-block-{$field['id']} {$field['block_attributes']['class']}" );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
 					$single_field['id']    = ! empty( $single_field['id'] )
