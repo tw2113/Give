@@ -46,9 +46,7 @@ class Give_Fields_API {
 		// Add label, before and after field.
 		'label'                => '',
 		'label_position'       => 'before',
-
-		// Add description to field as tooltip.
-		'tooltip'              => '',
+		'label_tooltip'              => '',
 
 		// Show multiple fields in same row with in sub section.
 		'sub_section_start'    => false,
@@ -964,8 +962,8 @@ class Give_Fields_API {
 					<span class="give-required-indicator">*</span>
 				<?php endif; ?>
 
-				<?php if ( $field['tooltip'] ) : ?>
-					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['tooltip'] ?>"></span>
+				<?php if ( $field['label_tooltip'] ) : ?>
+					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
 				<?php endif; ?>
 			</label>
 			<?php echo $field['after_label']; ?>
