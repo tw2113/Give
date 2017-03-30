@@ -533,6 +533,8 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 					// Default: run an action
 					// You can add or handle your custom field action.
 					default:
+						$value = give_backward_compatibility_setting_api_1_8( $value );
+
 						// Get option value.
 						$option_value = self::get_option( $option_name, $value['id'], $value['default'] );
 						do_action( 'give_admin_field_' . $value['type'], $value, $option_value );

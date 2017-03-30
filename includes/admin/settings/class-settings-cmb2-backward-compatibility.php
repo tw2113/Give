@@ -540,8 +540,7 @@ if ( ! class_exists( 'Give_CMB2_Settings_Loader' ) ) :
 					<tr valign="top">
 						<?php if ( ! empty( $field['name'] ) && ! in_array( $field['name'], array( '&nbsp;' ) ) ) : ?>
 							<th scope="row" class="titledesc">
-								<label
-										for="<?php echo esc_attr( $field['name'] ); ?>"><?php echo $field['title']; ?></label>
+								<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php echo $field['label']; ?></label>
 							</th>
 							<?php $colspan = ''; ?>
 						<?php endif; ?>
