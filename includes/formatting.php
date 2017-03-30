@@ -526,6 +526,8 @@ function give_check_variable( $variable, $conditional = '', $default = false ) {
  * @param array $data
  * @param array $ordered_keys
  *
+ * @todo Add phpunit test
+ *
  * @return array
  */
 function give_reorder_array( $data, $ordered_keys = array() ) {

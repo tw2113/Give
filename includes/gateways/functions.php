@@ -301,7 +301,7 @@ function give_get_ordered_payment_gateways( $gateways ) {
 
 	// Get gateways setting.
 	$gateways_setting = isset( $_POST['gateways'] ) ? $_POST['gateways'] : give_get_option( 'gateways' );
-	
+
 	// Ordered gateways.
 	$gateways = give_reorder_array( $gateways, array_keys( $gateways_setting ) );
 
