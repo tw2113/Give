@@ -170,19 +170,23 @@ class Give_Form_API {
 	static function render_form( $form_slug ) {
 		$form_html = '';
 
-		// Handle exception.
-		try {
-			if (
-				empty( $form_slug )
-				|| ! is_string( $form_slug )
-				|| ! ( $form = self::get_form( $form_slug ) )
-			) {
-				throw new Exception( __( 'Pass valid form slug to render form.', 'give' ) );
-			}
-		} catch ( Exception $e ) {
-			give_output_error( $e->getMessage(), true, 'error' );
+		if( is_array( $form_slug ) ) {
+			$form = self::set_default_values( $form_slug );
+		} else {
+			// Handle exception.
+			try {
+				if (
+					empty( $form_slug )
+					|| ! is_string( $form_slug )
+					|| ! ( $form = self::get_form( $form_slug ) )
+				) {
+					throw new Exception( __( 'Pass valid form slug to render form.', 'give' ) );
+				}
+			} catch ( Exception $e ) {
+				give_output_error( $e->getMessage(), true, 'error' );
 
-			return $form_html;
+				return $form_html;
+			}
 		}
 
 		// Enqueue Form API js.
