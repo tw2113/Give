@@ -116,16 +116,21 @@ function give_get_donation_form( $args = array() ) {
 			 * @param array $args    An array of form arguments.
 			 */
 			do_action( 'give_pre_form', $form->ID, $args );
-			?>
 
-            <form
-				id="give-form-<?php echo $form_id; ?>"
-				class="<?php echo $form_classes; ?>"
-				action="<?php echo esc_url_raw( $form_action ); ?>"
-				method="post">
-				<?php
-				// Form id.
-				echo Give_Fields_API::render_tag(
+			$form_args = array(
+				'id' => "give-form-{$form_id}",
+				'action' => esc_url_raw( $form_action ),
+				'method' => 'post',
+
+				// Custom arguments.
+				'donation_form_object' => $form,
+				'donation_form_arguments' => $args,
+
+				'form_attributes' => array(
+					'class' => trim( $form_classes ),
+				),
+				'fields' => array(
+					// Form id.
 					array(
 						'type'             => 'hidden',
 						'id'               => 'give-form-id',
@@ -134,11 +139,8 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
-					)
-				);
-
-				// Form title.
-				echo Give_Fields_API::render_tag(
+					),
+					// Form title.
 					array(
 						'type'             => 'hidden',
 						'id'               => 'give-form-title',
@@ -147,11 +149,8 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
-					)
-				);
-
-				// Current url.
-				echo Give_Fields_API::render_tag(
+					),
+					// Form current url.
 					array(
 						'type'             => 'hidden',
 						'id'               => 'give-current-url',
@@ -160,11 +159,8 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
-					)
-				);
-
-				// Form url.
-				echo Give_Fields_API::render_tag(
+					),
+					// Form url.
 					array(
 						'type'             => 'hidden',
 						'id'               => 'give-form-url',
@@ -173,11 +169,8 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
-					)
-				);
-
-				// Form minimum amount.
-				echo Give_Fields_API::render_tag(
+					),
+					// Donation minimum amount.
 					array(
 						'type'             => 'hidden',
 						'id'               => 'give-form-minimum',
@@ -186,11 +179,8 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
-					)
-				);
-
-				// The following field is for robots only, invisible to humans:
-				echo Give_Fields_API::render_tag(
+					),
+					// Security field.
 					array(
 						'type'               => 'text',
 						'label'              => '',
@@ -204,72 +194,36 @@ function give_get_donation_form( $args = array() ) {
 							'class' => 'give-hidden',
 							'style' => 'display: none !important;',
 						),
+					),
+					// Price id.
+					// This field will conditionally appear or disappear with help of filter.
+					// @see includes/forms/filters.php:54
+					array(
+						'type'             => 'hidden',
+						'id'               => 'give-price-id',
+						'field_attributes' => array(
+							'id'    => '',
+							'class' => '',
+						),
 					)
-				);
+				)
+			);
 
-				// Price ID hidden field for variable (mult-level) donation forms.
-				if ( give_has_variable_prices( $form_id ) ) {
-					// Get default selected price ID.
-					$prices   = apply_filters( 'give_form_variable_prices', give_get_variable_prices( $form_id ), $form_id );
-					$price_id = 0;
-
-					//loop through prices.
-					foreach ( $prices as $price ) {
-						if ( isset( $price['_give_default'] ) && $price['_give_default'] === 'default' ) {
-							$price_id = $price['_give_id']['level_id'];
-						};
-					}
-
-					// Form default price id.
-					echo Give_Fields_API::render_tag(
-						array(
-							'type'             => 'hidden',
-							'id'               => 'give-price-id',
-							'value'            => $price_id,
-							'field_attributes' => array(
-								'id'    => '',
-								'class' => '',
-							),
-						)
-					);
-				}
-
-				/**
-				 * Fires while outputting donation form, before all other fields.
-				 *
-				 * @since 1.0
-				 *
-				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
-				 */
-				do_action( 'give_checkout_form_top', $form->ID, $args );
-
-				/**
-				 * Fires while outputing donation form, for payment gatways fields.
-				 *
-				 * @since 1.7
-				 *
-				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
-				 */
-				do_action( 'give_payment_mode_select', $form->ID, $args );
-
-				/**
-				 * Fires while outputing donation form, after all other fields.
-				 *
-				 * @since 1.0
-				 *
-				 * @param int   $form_id The form ID.
-				 * @param array $args    An array of form arguments.
-				 */
-				do_action( 'give_checkout_form_bottom', $form->ID, $args );
-
-				?>
-            </form>
-
-			<?php
 			/**
-			 * Fires while outputing donation form, after the form.
+			 * Fire the filter when defining form arguments to render donation form.
+			 * Note: you can use this hook to edit form arguments like reordering form fields.
+			 *
+			 * @since 1.9
+			 *
+			 * @param array $form_args
+			 */
+			$form_args = apply_filters( 'give_form_args', $form_args );
+
+			echo Give_Form_API::render_form(  $form_args );
+
+
+			/**
+			 * Fires while outputting donation form, after the form.
 			 *
 			 * @since 1.0
 			 *
@@ -285,7 +239,7 @@ function give_get_donation_form( $args = array() ) {
 	<?php
 
 	/**
-	 * Fires while outputing donation form, after the form wapper div.
+	 * Fires while outputting donation form, after the form wapper div.
 	 *
 	 * @since 1.0
 	 *
