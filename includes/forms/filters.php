@@ -233,7 +233,7 @@ function give_form_edit_amount( $form_args ) {
 						'label'                => esc_html__( 'Donation Amount:', 'give' ),
 						'required'             => true,
 						'wrapper_type'         => 'div',
-						'before_label'         => ( $currency_position == 'before' ? $currency_output : '' ),
+						'before_field_label'   => ( $currency_position == 'before' ? $currency_output : '' ),
 						'after_field'          => ( $currency_position == 'after' ? $currency_output : '' ),
 						'before_field_wrapper' => '<div class="give-total-wrap">',
 						'after_field_wrapper'  => '</div>',

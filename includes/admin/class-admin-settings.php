@@ -752,12 +752,12 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		 */
 		public static function get_field_wrapper( $field, $option_name = '' ) {
 			$field_args = array(
-				'before_label' => '<th scope="row" class="titledesc">',
-				'after_label'  => '</th>',
-				'value'        => ! empty( $field['value'] ) ? $field['value'] : give_clean( self::get_option( $option_name, $field['id'], $field['default'] ) ),
-				'wrapper_type' => 'tr',
-				'before_field' => '<td class="give-forminp give-forminp-' . sanitize_title( $field['type'] ) . '">',
-				'after_field'  => self::get_field_description( $field ) . '</td>',
+				'before_field_label' => '<th scope="row" class="titledesc">',
+				'after_label'        => '</th>',
+				'value'              => ! empty( $field['value'] ) ? $field['value'] : give_clean( self::get_option( $option_name, $field['id'], $field['default'] ) ),
+				'wrapper_type'       => 'tr',
+				'before_field'       => '<td class="give-forminp give-forminp-' . sanitize_title( $field['type'] ) . '">',
+				'after_field'        => self::get_field_description( $field ) . '</td>',
 			);
 
 			return $field_args;

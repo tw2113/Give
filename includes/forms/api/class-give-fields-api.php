@@ -70,7 +70,7 @@ class Give_Fields_API {
 		'after_field'          => '',
 		'before_field_wrapper' => '',
 		'after_field_wrapper'  => '',
-		'before_label'         => '',
+		'before_field_label'   => '',
 		'after_label'          => '',
 
 		// Manually render field.
@@ -977,7 +977,7 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
-			<?php echo $field['before_label']; ?>
+			<?php echo $field['before_field_label']; ?>
 			<label for="<?php echo $field['field_attributes']['id']; ?>" <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
 
 				<?php echo $field['label']; ?>
