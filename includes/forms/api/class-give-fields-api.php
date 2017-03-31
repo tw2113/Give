@@ -71,7 +71,7 @@ class Give_Fields_API {
 		'before_field_wrapper' => '',
 		'after_field_wrapper'  => '',
 		'before_field_label'   => '',
-		'after_label'          => '',
+		'after_field_label'    => '',
 
 		// Manually render field.
 		'callback'             => '',
@@ -990,7 +990,7 @@ class Give_Fields_API {
 					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
 				<?php endif; ?>
 			</label>
-			<?php echo $field['after_label']; ?>
+			<?php echo $field['after_field_label']; ?>
 		<?php endif; ?>
 		<?php
 		return ob_get_clean();
