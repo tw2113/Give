@@ -1373,4 +1373,3 @@ class Give_Fields_API {
 }
 
 // @todo implement required and aria-required for all form fields. required should be custom tag because we want custom validation for form instead html5.
-// @todo update before_label to before_field_label and same fore after_label param.
