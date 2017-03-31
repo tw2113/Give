@@ -197,6 +197,9 @@ class Give_MetaBox_Form_Data {
 								'id'      => $prefix . 'id',
 								'type'    => 'levels_id',
 								'default' => 0,
+								'label_attributes' => array(
+									'class' => 'give-hidden'
+								)
 							),
 							array(
 								'name'       => esc_html__( 'Amount', 'give' ),
