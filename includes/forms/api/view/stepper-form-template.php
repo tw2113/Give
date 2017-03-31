@@ -11,7 +11,7 @@ ob_start(); ?>
 			<hr class="current_steps">
 		</div>
 	</div>
-	<form action="{{form_action}}" name="{{form_name}}" method="{{form_method}}" {{form_attributes}}>
+	<form action="{{form_action}}" method="{{form_method}}" {{form_attributes}}>
 		{{form_fields}}
 	</form>
 </div>
