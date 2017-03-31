@@ -353,6 +353,23 @@ class Give_Fields_API {
 			$args
 		);
 
+		/**
+		 * Filter the all field type html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $field_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$field_html = apply_filters(
+			"give_field_api_render_field",
+			$field_html,
+			$field,
+			$form,
+			$args
+		);
+
 		return $field_html;
 	}
 
