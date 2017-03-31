@@ -222,6 +222,15 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => 'give-amount',
 							'class' => 'give-amount-hidden',
 						),
+					),
+					// Donation levels.
+					// This field will conditionally appear or disappear with help of filter.
+					// @see includes/forms/filters.php:273
+					array(
+						'type'  => 'give_donation_levels',
+						'id'    => 'give-donation-levels',
+						'wrapper'          => false,
+						'required'         => true,
 					)
 				)
 			);
@@ -608,6 +617,7 @@ function give_output_levels( $form_id ) {
 			break;
 
 		case 'radios':
+			// @todo: render this with field api.
 
 			$output .= '<ul id="give-donation-level-radio-list" class="give-donation-levels-wrap">';
 
@@ -636,6 +646,7 @@ function give_output_levels( $form_id ) {
 			break;
 
 		case 'dropdown':
+			// @todo: render this with field api.
 
 			$output .= '<label for="give-donation-level" class="give-hidden">' . esc_html__( 'Choose Your Donation Amount', 'give' ) . ':</label>';
 			$output .= '<select id="give-donation-level-' . $form_id . '" class="give-select give-select-level give-donation-levels-wrap">';

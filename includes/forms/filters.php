@@ -134,20 +134,8 @@ function give_donation_form_amount_field_actions( $field_html, $field, $form ) {
 		<p class="give-custom-amount-text"><?php echo $custom_amount_text; ?></p>
 	<?php }
 
-	//Output Variable Pricing Levels.
-	if ( $variable_pricing ) {
-		give_output_levels( $form_id );
-	}
-
-	/**
-	 * Fires while displaying donation form, after donation level fields.
-	 *
-	 * @since 1.0
-	 *
-	 * @param int   $form_id The form ID.
-	 * @param array $args    An array of form arguments.
-	 */
-	do_action( 'give_after_donation_levels', $form_id, $form_args );
+	// Remaining donation levels field and action moved to other callback.
+	// @see includes/forms/filters.php:273
 
 	return ob_get_clean();
 }
@@ -272,3 +260,45 @@ function give_form_edit_amount( $form_args ) {
 }
 
 add_filter( 'give_form_args', 'give_form_edit_amount' );
+
+/**
+ * Render give_donation levels field.
+ *
+ * @since 1.9
+ *
+ * @param $field_html
+ * @param $field
+ * @param $form
+ *
+ * @return mixed
+ */
+function give_form_render_give_donation_levels_field( $field_html, $field, $form ) {
+	if ( 'give_donation_levels' !== $field['type'] || 'give-donation-levels' !== $field['id'] ) {
+		return $field_html;
+	}
+
+	$form_id          = $form['donation_form_object']->ID;
+	$form_args        = $form['donation_form_arguments'];
+	$variable_pricing = give_has_variable_prices( $form_id );
+
+	ob_start();
+
+	//Output Variable Pricing Levels.
+	if ( $variable_pricing ) {
+		give_output_levels( $form_id );
+	}
+
+	/**
+	 * Fires while displaying donation form, after donation level fields.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int   $form_id The form ID.
+	 * @param array $args    An array of form arguments.
+	 */
+	do_action( 'give_after_donation_levels', $form_id, $form_args );
+
+	return ob_get_clean();
+}
+
+add_filter( 'give_field_api_render_give_donation_levels_field', 'give_form_render_give_donation_levels_field', 10, 3 );
