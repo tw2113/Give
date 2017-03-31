@@ -29,7 +29,7 @@ class Give_Fields_API {
 		'type'                 => '',
 		'id'                   => '',
 		'data_type'            => '',
-		'value'                => '',
+		'value'                => null,
 		'required'             => false,
 		'options'              => array(),
 
