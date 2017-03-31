@@ -1030,13 +1030,11 @@ class Give_Fields_API {
 	 *
 	 * @param array $field
 	 * @param array $form
-	 * @param bool  $fire_filter
+	 * @param array $args
 	 *
 	 * @return array
-	 *
-	 * @todo make third parameter of this function an array and update logic for $fire_filter
 	 */
-	public static function set_default_values( $field, $form = null, $fire_filter = true ) {
+	public static function set_default_values( $field, $form = null, $args = array() ) {
 		/**
 		 * Filter the field before set default values.
 		 *
@@ -1045,7 +1043,7 @@ class Give_Fields_API {
 		 * @param array $field
 		 * @param array $form
 		 */
-		$field = $fire_filter
+		$field = ! empty( $args['fire_filter'] )
 			? apply_filters( 'give_field_api_pre_set_default_values', $field, $form )
 			: $field;
 
@@ -1063,7 +1061,7 @@ class Give_Fields_API {
 					$single_field['id']    = ! empty( $single_field['id'] )
 						? $single_field['id']
 						: $key;
-					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, array( 'fire_filter' => false ) );
 				}
 
 				break;
@@ -1081,7 +1079,7 @@ class Give_Fields_API {
 					$single_field['id']    = ! empty( $single_field['id'] )
 						? $single_field['id']
 						: $key;
-					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, false );
+					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, array( 'fire_filter' => false ) );
 				}
 
 				break;
@@ -1139,7 +1137,7 @@ class Give_Fields_API {
 		 * @param array $field
 		 * @param array $form
 		 */
-		$field = $fire_filter
+		$field = ! empty( $args['fire_filter'] )
 			? apply_filters( 'give_field_api_post_set_default_values', $field, $form )
 			: $field;
 
