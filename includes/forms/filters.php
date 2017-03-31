@@ -1,13 +1,42 @@
 <?php
 // Backward compatibility start.
+
 /**
+ * Remove old action which help to render donation form
+ * Note: from version 1.9, donation form will be render with form api.
+ *
+ * @see   inludes/forms/api/give-form-api.php
+ *
+ * @since 1.9
+ */
+function give_remove_donation_form_fields_render_action() {
+	$render_actions = array(
+		// Action name               Callback
+		'give_checkout_form_top' => 'give_output_donation_amount_top',
+	);
+
+	foreach ( $render_actions as $action_hook => $callback ) {
+		if ( $priority = has_action( $action_hook, $callback ) ) {
+			remove_action( $action_hook, $callback, $priority );
+		}
+	}
+}
+
+add_action( 'init', 'give_remove_donation_form_fields_render_action' );
+
+
+/**
+ * Fire the form releated action hooks.
+ *
+ * @since 1.9
+ *
  * @param $form_html
  * @param $form
  *
  * @return mixed
  */
 function give_donation_form_actions( $form_html, $form ) {
-	if( false === strpos( $form['id'], 'give-form-' ) ) {
+	if ( false === strpos( $form['id'], 'give-form-' ) ) {
 		return $form_html;
 	}
 

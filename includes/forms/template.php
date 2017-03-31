@@ -412,7 +412,9 @@ add_action( 'give_donation_form_register_login_fields', 'give_show_register_logi
  * Outputs the donation amount field that appears at the top of the donation forms. If the user has custom amount
  * enabled the field will output as a customizable input.
  *
- * @since  1.0
+ * @since      1.0
+ *
+ * @deprecated 1.9 donation amount field will be render with form api.
  *
  * @param  int   $form_id The form ID.
  * @param  array $args    An array of form arguments.
@@ -530,6 +532,8 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 	do_action( 'give_after_donation_levels', $form_id, $args );
 }
 
+// This hook has been removed, because after version 1.9 field will be render with form api.
+// @see includes/forms/filters.php:12
 add_action( 'give_checkout_form_top', 'give_output_donation_amount_top', 10, 2 );
 
 /**
