@@ -205,6 +205,23 @@ function give_get_donation_form( $args = array() ) {
 							'id'    => '',
 							'class' => '',
 						),
+					),
+					// Amount.
+					// This field will conditionally appear or disappear with help of filter.
+					// @see includes/forms/filters.php:54
+					array(
+						'type'  => 'hidden',
+						'id'    => 'give-amount',
+						'label' => esc_html__( 'Donation Amount:', 'give' ),
+						'wrapper'          => false,
+						'required'         => true,
+						'label_attributes' => array(
+							'class' => 'give-hidden',
+						),
+						'field_attributes' => array(
+							'id'    => 'give-amount',
+							'class' => 'give-amount-hidden',
+						),
 					)
 				)
 			);
