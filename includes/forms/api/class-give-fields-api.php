@@ -994,6 +994,7 @@ class Give_Fields_API {
 	private function render_label( $field, $form = null, $args = array() ) {
 		ob_start();
 		$label_type = ( 'fieldset' === $field['wrapper_type'] ? 'legend' : 'label' );
+		$field['label_attributes']['for'] = $field['field_attributes']['id'];
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
 			<?php
@@ -1003,7 +1004,7 @@ class Give_Fields_API {
 				: $field['before_field_label'];
 			echo $field['before_field_label'];
 			?>
-			<<?php echo $label_type; ?> for="<?php echo $field['field_attributes']['id']; ?>" <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
+			<<?php echo $label_type; ?> <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
 
 				<?php echo $field['label']; ?>
 
