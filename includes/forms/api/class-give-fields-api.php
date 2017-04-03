@@ -87,13 +87,20 @@ class Give_Fields_API {
 	 * @access static
 	 */
 	static $section_defaults = array(
-		'type'               => 'section',
-		'label'              => '',
-		'id'               => '',
-		'section_attributes' => array(),
+		'type'                 => 'section',
+		'label'                => '',
+		'id'                   => '',
+		'section_attributes'   => array(),
 
 		// Manually render section.
-		'callback'           => '',
+		'callback'             => '',
+
+		// Params to edit field html.
+		// They accept callback or string input.
+		'before_field_wrapper' => '',
+		'after_field_wrapper'  => '',
+		'before_field_label'   => '',
+		'after_field_label'    => '',
 	);
 
 	/**
@@ -283,14 +290,14 @@ class Give_Fields_API {
 			: $section['after_field_wrapper'];
 
 		// Set before section legend html.
-		$section['before_field_lebel'] = self::is_callback( $section['before_field_lebel'] )
-			? self::render_callback( $section['before_field_lebel'] )
-			: $section['before_field_lebel'];
+		$section['before_field_label'] = self::is_callback( $section['before_field_label'] )
+			? self::render_callback( $section['before_field_label'] )
+			: $section['before_field_label'];
 
 		// Set after section legend html.
-		$section['after_field_legend'] = self::is_callback( $section['after_field_legend'] )
-			? self::render_callback( $section['after_field_legend'] )
-			: $section['after_field_legend'];
+		$section['after_field_label'] = self::is_callback( $section['after_field_label'] )
+			? self::render_callback( $section['after_field_label'] )
+			: $section['after_field_label'];
 
 		echo $section['before_field_wrapper'];
 		?>
@@ -313,23 +320,6 @@ class Give_Fields_API {
 		echo $section['after_field_wrapper'];
 
 		$section_html = ob_get_clean();
-
-		/**
-		 * Filter the specific section html.
-		 *
-		 * @since 1.9
-		 *
-		 * @param string $section_html
-		 * @param array  $field
-		 * @param array  $form
-		 */
-		$section_html = apply_filters(
-			"give_field_api_render_{$section['type']}_section",
-			$section_html,
-			$section,
-			$form,
-			$args
-		);
 
 		/**
 		 * Filter the section html.
@@ -383,23 +373,6 @@ class Give_Fields_API {
 		</div>
 		<?php
 		$block_html = ob_get_clean();
-
-		/**
-		 * Filter the specific block html.
-		 *
-		 * @since 1.9
-		 *
-		 * @param string $block_html
-		 * @param array  $field
-		 * @param array  $form
-		 */
-		$block_html = apply_filters(
-			"give_field_api_render_{$block['type']}_block",
-			$block_html,
-			$block,
-			$form,
-			$args
-		);
 
 		/**
 		 * Filter the block html.
