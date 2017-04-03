@@ -34,7 +34,7 @@ class Give_Fields_API {
 		'options'              => array(),
 
 		// Set default value to field.
-		'default'              => '',
+		'default'              => null,
 
 		// Set checkbox value.
 		'cbvalue'              => 'on',
