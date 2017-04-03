@@ -227,18 +227,18 @@ function give_get_donation_form( $args = array() ) {
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:340
 					'give-payment-modes'   => array(
-						'type'               => 'section',
-						'label'              => apply_filters(
-							                        'give_checkout_payment_method_text',
-							                        esc_html__( 'Select Payment Method', 'give' )
-						                        ) . '<span class="give-loading-text"><span class="give-loading-animation"></span></span>',
-						'label_attributes'   => array(
+						'type'                  => 'section',
+						'label'                 => apply_filters(
+														'give_checkout_payment_method_text',
+														esc_html__( 'Select Payment Method', 'give' )
+						 							) . '<span class="give-loading-text"><span class="give-loading-animation"></span></span>',
+						'label_attributes'      => array(
 							'class' => 'give-payment-mode-label',
 						),
-						'section_attributes' => array(
+						'section_attributes'    => array(
 							'id' => 'give-payment-mode-select',
 						),
-						'fields'             => array(
+						'fields'                => array(
 							'payment-mode' => array(
 								'type'          => 'radio',
 								'value'         => give_get_chosen_gateway( $form_id ),

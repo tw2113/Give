@@ -343,7 +343,79 @@ function give_form_render_payment_mode_field( $field_html, $field, $form ) {
 		return $field;
 	}
 
-	$form_id = $form['donation_form_object']->ID;
+	ob_start();
+
+	echo '<div id="give-payment-mode-wrap">';
+		/**
+		 * Fires while selecting payment gateways, befire the gateways list.
+		 *
+		 * @since 1.7
+		 */
+		do_action( 'give_payment_mode_before_gateways' );
+
+		echo $field_html;
+
+		/**
+		 * Fires while selecting payment gateways, before the gateways list.
+		 *
+		 * @since 1.7
+		 */
+		do_action( 'give_payment_mode_after_gateways' );
+
+	echo '</div>';
+
+	return ob_get_clean();
+}
+
+add_filter( 'give_field_api_render_radio_field', 'give_form_render_payment_mode_field', 0, 3 );
+
+
+/**
+ * Render give_payment_modes section
+ *
+ * @since 1.9
+ *
+ * @param string $field_html
+ * @param array  $field
+ * @param array  $form
+ *
+ * @return string
+ */
+function give_form_render_give_payment_modes_section( $field_html, $field, $form ) {
+	// Bailout.
+	if ( 'give-payment-modes' !== $field['id'] ) {
+		return $field_html;
+	}
+
+	$form_id = $form_id = $form['donation_form_object']->ID;
+
+	ob_start();
+
+	/**
+	 * Fires while selecting payment gateways, after the wrap div.
+	 *
+	 * @since 1.7
+	 *
+	 * @param int $form_id The form ID.
+	 */
+	do_action( 'give_payment_mode_before_gateways_wrap' );
+
+	$before_wrap_div = ob_get_clean();
+
+
+	ob_start();
+
+	/**
+	 * Fires while selecting payment gateways, after the wrap div.
+	 *
+	 * @since 1.7
+	 *
+	 * @param int $form_id The form ID.
+	 */
+	do_action( 'give_payment_mode_after_gateways_wrap' );
+
+	$after_wrap_div = ob_get_clean();
+
 	ob_start();
 
 	/**
@@ -355,16 +427,13 @@ function give_form_render_payment_mode_field( $field_html, $field, $form ) {
 	 */
 	do_action( 'give_payment_mode_top', $form_id );
 
-	echo $field_html;
 
-	/**
-	 * Fires while selecting payment gateways, after the wrap div.
-	 *
-	 * @since 1.7
-	 *
-	 * @param int $form_id The form ID.
-	 */
-	do_action( 'give_payment_mode_after_gateways_wrap' );
+	// add before and after wrap hook output to section.
+	echo str_replace(
+		array( '<legend', '</fieldset' ),
+		array( "{$before_wrap_div}<legend", "{$after_wrap_div}</fieldset" ),
+		$field_html
+	);
 
 	/**
 	 * Fires while selecting payment gateways, after the fields.
@@ -395,4 +464,4 @@ function give_form_render_payment_mode_field( $field_html, $field, $form ) {
 	return ob_get_clean();
 }
 
-add_filter( 'give_field_api_render_radio_field', 'give_form_render_payment_mode_field', 0, 3 );
+add_filter( 'give_field_api_render_section', 'give_form_render_give_payment_modes_section', 0, 3 );
