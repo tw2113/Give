@@ -148,14 +148,14 @@ class Give_Fields_API {
 	 * @param array $field
 	 * @param array $form
 	 *
-	 * @return bool
+	 * @return string
 	 */
 	private function render_custom_field( $field, $form = null ) {
-		$field = self::$instance->set_default_values( $field, $form );
-
 		$field_html = '';
 
-		if ( empty( $field['callback'] ) ) {
+		if ( ! empty( $field['callback'] ) ) {
+			$field = self::$instance->set_default_values( $field, $form );
+			
 			$callback = $field['callback'];
 
 			// Process callback to get field html.
