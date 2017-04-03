@@ -299,7 +299,7 @@ class Give_Fields_API {
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
 				echo $section['before_field_label'];
-					echo "<legend>{$section['label']}</legend>";
+					echo "<legend ". self::get_attributes( $section['label_attributes'] ).">{$section['label']}</legend>";
 				echo $section['after_field_label'];
 			};
 
