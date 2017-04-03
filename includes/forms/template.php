@@ -131,9 +131,8 @@ function give_get_donation_form( $args = array() ) {
 				),
 				'fields' => array(
 					// Form id.
-					array(
+					'give-form-id' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-form-id',
 						'value'            => $form->ID,
 						'field_attributes' => array(
 							'id'    => '',
@@ -141,9 +140,8 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form title.
-					array(
+					'give-form-title' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-form-title',
 						'value'            => htmlentities( $form->post_title ),
 						'field_attributes' => array(
 							'id'    => '',
@@ -151,9 +149,8 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form current url.
-					array(
+					'give-current-url' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-current-url',
 						'value'            => htmlspecialchars( give_get_current_page_url() ),
 						'field_attributes' => array(
 							'id'    => '',
@@ -161,9 +158,8 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form url.
-					array(
+					'give-form-url' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-form-url',
 						'value'            => htmlspecialchars( give_get_current_page_url() ),
 						'field_attributes' => array(
 							'id'    => '',
@@ -171,9 +167,8 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Donation minimum amount.
-					array(
+					'give-form-minimum' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-form-minimum',
 						'value'            => give_format_amount( give_get_form_minimum_price( $form->ID ) ),
 						'field_attributes' => array(
 							'id'    => '',
@@ -181,10 +176,9 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Security field.
-					array(
+					'give-honeypot' => array(
 						'type'               => 'text',
 						'label'              => '',
-						'id'                 => 'give-honeypot',
 						'wrapper_type'       => 'span',
 						'field_attributes'   => array(
 							'id'    => "give-form-honeypot-{$form_id}",
@@ -198,9 +192,8 @@ function give_get_donation_form( $args = array() ) {
 					// Price id.
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:54
-					array(
+					'give-price-id' => array(
 						'type'             => 'hidden',
-						'id'               => 'give-price-id',
 						'field_attributes' => array(
 							'id'    => '',
 							'class' => '',
@@ -209,9 +202,8 @@ function give_get_donation_form( $args = array() ) {
 					// Amount.
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:54
-					array(
+					'give-amount' => array(
 						'type'  => 'hidden',
-						'id'    => 'give-amount',
 						'label' => esc_html__( 'Donation Amount:', 'give' ),
 						'wrapper'          => false,
 						'required'         => true,
@@ -226,9 +218,8 @@ function give_get_donation_form( $args = array() ) {
 					// Donation levels.
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:273
-					array(
+					'give-donation-levels' => array(
 						'type'  => 'give_donation_levels',
-						'id'    => 'give-donation-levels',
 						'wrapper'          => false,
 						'required'         => true,
 					)
