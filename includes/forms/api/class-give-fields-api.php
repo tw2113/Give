@@ -66,6 +66,7 @@ class Give_Fields_API {
 		'show_within_modal'    => true,
 
 		// Params to edit field html.
+		// They accept callback or string input.
 		'before_field'         => '',
 		'after_field'          => '',
 		'before_field_wrapper' => '',
@@ -140,6 +141,35 @@ class Give_Fields_API {
 
 
 	/**
+	 * Render callback.
+	 *
+	 * @since 1.9
+	 * @access public
+	 * @param       $callback
+	 * @param array $field
+	 * @param null  $form
+	 *
+	 * @return string
+	 */
+	public static function render_callback( $callback, $field = array(), $form = null  ){
+		$field_html = '';
+
+		if( empty( $callback ) || ! self::is_callback( $callback ) ) {
+			return $field_html;
+		}
+
+		// Process callback to get field html.
+		if ( is_string( $callback ) && function_exists( "$callback" ) ) {
+			$field_html = $callback( $field );
+		} elseif ( is_array( $callback ) && method_exists( $callback[0], "$callback[1]" ) ) {
+			$field_html = $callback[0]->$callback[1]( $field );
+		}
+
+		return $field_html;
+	}
+
+
+	/**
 	 * Render custom field.
 	 *
 	 * @since  1.0
@@ -157,13 +187,7 @@ class Give_Fields_API {
 			$field = self::$instance->set_default_values( $field, $form );
 			
 			$callback = $field['callback'];
-
-			// Process callback to get field html.
-			if ( is_string( $callback ) && function_exists( "$callback" ) ) {
-				$field_html = $callback( $field );
-			} elseif ( is_array( $callback ) && method_exists( $callback[0], "$callback[1]" ) ) {
-				$field_html = $callback[0]->$callback[1]( $field );
-			}
+			$field_html = self::render_callback( $callback, $field, $form );
 		}
 
 		return $field_html;
@@ -907,6 +931,16 @@ class Give_Fields_API {
 			echo self::$instance->render_label( $field );
 		}
 
+		// Set before field html.
+		$field['before_field'] = self::is_callback( $field['before_field'] )
+			? self::render_callback( $field['before_field'] )
+			: $field['before_field'];
+
+		// Set after field html.
+		$field['after_field'] = self::is_callback( $field['after_field'] )
+			? self::render_callback( $field['after_field'] )
+			: $field['after_field'];
+
 		echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
 
 		// Label: before field.
@@ -920,11 +954,21 @@ class Give_Fields_API {
 
 		if ( $field['wrapper'] ) :
 
+			// Set before wrapper html.
+			$field['before_field_wrapper'] = self::is_callback( $field['before_field_wrapper'] )
+				? self::render_callback( $field['before_field_wrapper'] )
+				: $field['before_field_wrapper'];
+
 			echo $field['before_field_wrapper'];
 
 			echo '<' . $field['wrapper_type'] . ' ' . self::$instance->get_attributes( $field['wrapper_attributes'] ) . '>';
 				echo $field_with_label;
 			echo "</{$field['wrapper_type']}>";
+
+			// Set after wrapper html.
+			$field['after_field_wrapper'] = self::is_callback( $field['after_field_wrapper'] )
+				? self::render_callback( $field['after_field_wrapper'] )
+				: $field['after_field_wrapper'];
 
 			echo $field['after_field_wrapper'];
 		else :
@@ -951,7 +995,13 @@ class Give_Fields_API {
 		ob_start();
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
-			<?php echo $field['before_field_label']; ?>
+			<?php
+			// Set before label html.
+			$field['before_field_label'] = self::is_callback( $field['before_field_label'] )
+				? self::render_callback( $field['before_field_label'] )
+				: $field['before_field_label'];
+			echo $field['before_field_label'];
+			?>
 			<label for="<?php echo $field['field_attributes']['id']; ?>" <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
 
 				<?php echo $field['label']; ?>
@@ -964,7 +1014,13 @@ class Give_Fields_API {
 					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
 				<?php endif; ?>
 			</label>
-			<?php echo $field['after_field_label']; ?>
+			<?php
+			// Set after label html.
+			$field['after_field_label'] = self::is_callback( $field['after_field_label'] )
+				? self::render_callback( $field['after_field_label'] )
+				: $field['after_field_label'];
+			echo $field['after_field_label'];
+			?>
 		<?php endif; ?>
 		<?php
 		return ob_get_clean();
@@ -1341,6 +1397,30 @@ class Give_Fields_API {
 		$field_value = apply_filters( 'give_get_repeater_field_value', $field_value, $field, $field_value_group, $fields );
 
 		return $field_value;
+	}
+
+
+	/**
+	 * Check if string or array is callback or not.
+	 *
+	 * @since  1.9
+	 * @access public
+	 *
+	 * @param $callback
+	 *
+	 * @return bool
+	 */
+	public static function is_callback( $callback ) {
+		$is_callback = false;
+
+		// Process callback to get field html.
+		if ( is_string( $callback ) && function_exists( "$callback" ) ) {
+			$is_callback = true;
+		} elseif ( is_array( $callback ) && method_exists( $callback[0], "$callback[1]" ) ) {
+			$is_callback = true;
+		}
+
+		return $is_callback;
 	}
 }
 
