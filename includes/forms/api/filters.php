@@ -23,7 +23,7 @@ function give_render_form_attributes_tag( $form_html, $form ) {
 	return $form_html;
 }
 
-add_filter( 'give_form_api_render_form_tags', 'give_render_form_attributes_tag', 10, 2 );
+add_filter( 'give_form_api_render_form_tags', 'give_render_form_attributes_tag', 0, 2 );
 
 /**
  * Skip `{{continue_button}}` tag fro render process.
@@ -43,7 +43,7 @@ function give_do_not_process_continue_button_tag( $form_tags, $form ) {
 	return $form_tags;
 }
 
-add_filter( 'give_form_api_manually_render_form_tags', 'give_do_not_process_continue_button_tag', 10, 2 );
+add_filter( 'give_form_api_manually_render_form_tags', 'give_do_not_process_continue_button_tag', 0, 2 );
 
 /**
  * Render `{{continue_button}}` tag.
@@ -69,7 +69,7 @@ function give_render_form_continue_button_tag( $form_html, $form ) {
 	return $form_html;
 }
 
-add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_tag', 10, 2 );
+add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_tag', 0, 2 );
 
 
 /**
@@ -93,7 +93,7 @@ function give_set_form_display_style_class( $form ) {
 	return $form;
 }
 
-add_filter( 'give_form_api_post_set_default_values', 'give_set_form_display_style_class' );
+add_filter( 'give_form_api_post_set_default_values', 'give_set_form_display_style_class', 0 );
 
 /**
  * Set modal related classes in field.
@@ -129,7 +129,7 @@ function give_set_field_display_style_class( $field, $form ) {
 	return $field;
 }
 
-add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_style_class', 10, 2 );
+add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_style_class', 0, 2 );
 
 
 /**
@@ -169,7 +169,7 @@ function give_set_step_buttons_for_stepper_from( $field, $form ) {
 	return $field;
 }
 
-add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_stepper_from', 10, 2 );
+add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_stepper_from', 0, 2 );
 
 
 /**
@@ -298,7 +298,7 @@ function give_field_api_set_field_value( $field ) {
 	return $field;
 }
 
-add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value' );
+add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value', 0 );
 
 
 /**
@@ -333,7 +333,7 @@ function give_render_docs_link_field( $field_html, $field ) {
 	return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 }
 
-add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_field', 10, 2 );
+add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_field', 0, 2 );
 
 /**
  * Render wysiwyg field.
@@ -383,7 +383,7 @@ function give_render_wysiwyg_field( $field_html, $field ) {
 	return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
 }
 
-add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 10, 2 );
+add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 0, 2 );
 
 /**
  * Render file field.
@@ -405,4 +405,4 @@ function give_render_file_field( $field_html, $field ) {
 	return Give_Fields_API::get_instance()->render_text_field( $field );
 }
 
-add_filter( 'give_field_api_render_file_field', 'give_render_file_field', 10, 2 );
+add_filter( 'give_field_api_render_file_field', 'give_render_file_field', 0, 2 );
