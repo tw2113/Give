@@ -298,3 +298,101 @@ function give_form_render_give_donation_levels_field( $field_html, $field, $form
 }
 
 add_filter( 'give_field_api_render_give_donation_levels_field', 'give_form_render_give_donation_levels_field', 10, 3 );
+
+
+/**
+ * Set default values for give-payment-modes field
+ *
+ * @since 1.9
+ *
+ * @param array $field
+ *
+ * @return array
+ */
+function give_form_set_values_payment_modes_field( $field ) {
+	// Bailout.
+	if ( 'payment-mode' !== $field['id'] ) {
+		return $field;
+	}
+
+	foreach ( $field['options'] as $key => $option) {
+		$field['options'][ $key ]['label'] = $option['checkout_label'];
+		$field['options'][ $key ]['field_attributes']['class'] = 'give-gateway';
+		$field['options'][ $key ]['label_attributes']['class'] = 'give-gateway-option';
+	}
+
+	return $field;
+}
+
+add_filter( 'give_field_api_set_values', 'give_form_set_values_payment_modes_field' );
+
+/**
+ * Render give_donation levels field.
+ *
+ * @since 1.9
+ *
+ * @param string $field_html
+ * @param array  $field
+ * @param array  $form
+ *
+ * @return mixed
+ */
+function give_form_render_payment_mode_field( $field_html, $field, $form ) {
+	// Bailout.
+	if ( 'payment-mode' !== $field['id'] ) {
+		return $field;
+	}
+
+	$form_id = $form['donation_form_object']->ID;
+	ob_start();
+
+	/**
+	 * Fires while selecting payment gateways, before the fields.
+	 *
+	 * @since 1.7
+	 *
+	 * @param int $form_id The form ID.
+	 */
+	do_action( 'give_payment_mode_top', $form_id );
+
+	echo $field_html;
+
+	/**
+	 * Fires while selecting payment gateways, after the wrap div.
+	 *
+	 * @since 1.7
+	 *
+	 * @param int $form_id The form ID.
+	 */
+	do_action( 'give_payment_mode_after_gateways_wrap' );
+
+	/**
+	 * Fires while selecting payment gateways, after the fields.
+	 *
+	 * @since 1.7
+	 *
+	 * @param int $form_id The form ID.
+	 */
+	do_action( 'give_payment_mode_bottom', $form_id );
+
+	echo '<div id="give_purchase_form_wrap">';
+	/**
+	 * Fire after payment field render.
+	 *
+	 * @since 1.7
+	 */
+	do_action( 'give_donation_form', $form_id );
+	echo '</div>';
+
+
+	/**
+	 * Fire after donation form render.
+	 *
+	 * @since 1.7
+	 */
+	do_action( 'give_donation_form_wrap_bottom', $form_id );
+
+	return ob_get_clean();
+}
+
+add_filter( 'give_field_api_render_radio_field', 'give_form_render_payment_mode_field', 0, 3 );

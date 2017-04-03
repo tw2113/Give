@@ -118,20 +118,20 @@ function give_get_donation_form( $args = array() ) {
 			do_action( 'give_pre_form', $form->ID, $args );
 
 			$form_args = array(
-				'id' => "give-form-{$form_id}",
-				'action' => esc_url_raw( $form_action ),
-				'method' => 'post',
+				'id'                      => "give-form-{$form_id}",
+				'action'                  => esc_url_raw( $form_action ),
+				'method'                  => 'post',
 
 				// Custom arguments.
-				'donation_form_object' => $form,
+				'donation_form_object'    => $form,
 				'donation_form_arguments' => $args,
 
 				'form_attributes' => array(
 					'class' => trim( $form_classes ),
 				),
-				'fields' => array(
+				'fields'          => array(
 					// Form id.
-					'give-form-id' => array(
+					'give-form-id'         => array(
 						'type'             => 'hidden',
 						'value'            => $form->ID,
 						'field_attributes' => array(
@@ -140,7 +140,7 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form title.
-					'give-form-title' => array(
+					'give-form-title'      => array(
 						'type'             => 'hidden',
 						'value'            => htmlentities( $form->post_title ),
 						'field_attributes' => array(
@@ -149,7 +149,7 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form current url.
-					'give-current-url' => array(
+					'give-current-url'     => array(
 						'type'             => 'hidden',
 						'value'            => htmlspecialchars( give_get_current_page_url() ),
 						'field_attributes' => array(
@@ -158,7 +158,7 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Form url.
-					'give-form-url' => array(
+					'give-form-url'        => array(
 						'type'             => 'hidden',
 						'value'            => htmlspecialchars( give_get_current_page_url() ),
 						'field_attributes' => array(
@@ -167,7 +167,7 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Donation minimum amount.
-					'give-form-minimum' => array(
+					'give-form-minimum'    => array(
 						'type'             => 'hidden',
 						'value'            => give_format_amount( give_get_form_minimum_price( $form->ID ) ),
 						'field_attributes' => array(
@@ -176,7 +176,7 @@ function give_get_donation_form( $args = array() ) {
 						),
 					),
 					// Security field.
-					'give-honeypot' => array(
+					'give-honeypot'        => array(
 						'type'               => 'text',
 						'label'              => '',
 						'wrapper_type'       => 'span',
@@ -192,7 +192,7 @@ function give_get_donation_form( $args = array() ) {
 					// Price id.
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:54
-					'give-price-id' => array(
+					'give-price-id'        => array(
 						'type'             => 'hidden',
 						'field_attributes' => array(
 							'id'    => '',
@@ -202,9 +202,9 @@ function give_get_donation_form( $args = array() ) {
 					// Amount.
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:54
-					'give-amount' => array(
-						'type'  => 'hidden',
-						'label' => esc_html__( 'Donation Amount:', 'give' ),
+					'give-amount'          => array(
+						'type'             => 'hidden',
+						'label'            => esc_html__( 'Donation Amount:', 'give' ),
 						'wrapper'          => false,
 						'required'         => true,
 						'label_attributes' => array(
@@ -219,11 +219,38 @@ function give_get_donation_form( $args = array() ) {
 					// This field will conditionally appear or disappear with help of filter.
 					// @see includes/forms/filters.php:273
 					'give-donation-levels' => array(
-						'type'  => 'give_donation_levels',
-						'wrapper'          => false,
-						'required'         => true,
-					)
-				)
+						'type'     => 'give_donation_levels',
+						'wrapper'  => false,
+						'required' => true,
+					),
+					// Donation payment modes.
+					// This field will conditionally appear or disappear with help of filter.
+					// @see includes/forms/filters.php:340
+					'give-payment-modes'   => array(
+						'type'               => 'section',
+						'label'              => apply_filters(
+							                        'give_checkout_payment_method_text',
+							                        esc_html__( 'Select Payment Method', 'give' )
+						                        ) . '<span class="give-loading-text"><span class="give-loading-animation"></span></span>',
+						'label_attributes'   => array(
+							'class' => 'give-payment-mode-label',
+						),
+						'section_attributes' => array(
+							'id' => 'give-payment-mode-select',
+						),
+						'fields'             => array(
+							'payment-mode' => array(
+								'type'          => 'radio',
+								'value'         => give_get_chosen_gateway( $form_id ),
+								'options'       => give_get_enabled_payment_gateways( $form_id ),
+								'wrapper'       => false,
+								'ul_attributes' => array(
+									'id' => 'give-gateway-radio-list',
+								),
+							),
+						),
+					),
+				),
 			);
 
 			/**
@@ -1436,6 +1463,7 @@ add_action( 'give_donation_form_login_fields', 'give_get_login_fields', 10, 1 );
  * automatically selected.
  *
  * @since  1.0
+ * @deprecated 1.9 donation payment mode field will be render with form api.
  *
  * @param  int $form_id The form ID.
  *
@@ -1561,7 +1589,9 @@ function give_payment_mode_select( $form_id ) {
 	do_action( 'give_donation_form_wrap_bottom', $form_id );
 }
 
-add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
+// This hook has been removed, because after version 1.9 field will be render with form api.
+// @see includes/forms/filters.php:340
+// add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
 
 /**
  * Renders the Checkout Agree to Terms, this displays a checkbox for users to
