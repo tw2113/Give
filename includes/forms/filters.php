@@ -273,10 +273,6 @@ add_filter( 'give_form_args', 'give_form_edit_amount' );
  * @return mixed
  */
 function give_form_render_give_donation_levels_field( $field_html, $field, $form ) {
-	if ( 'give_donation_levels' !== $field['type'] || 'give-donation-levels' !== $field['id'] ) {
-		return $field_html;
-	}
-
 	$form_id          = $form['donation_form_object']->ID;
 	$form_args        = $form['donation_form_arguments'];
 	$variable_pricing = give_has_variable_prices( $form_id );
