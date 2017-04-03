@@ -654,11 +654,15 @@ class Give_Fields_API {
 			$option['field_attributes']['type'] = $field['type'];
 			$option['field_attributes']['name'] = self::get_field_name( $field );
 			$option['field_attributes']['id'] = "{$id_base}-{$key}";
+
+			$option['label_attributes']['class'] = empty( $option['label_attributes']['class'] )
+				? 'give-label'
+				: "give-label {$option['label_attributes']['class']}";
+			$option['label_attributes']['for'] = $option['field_attributes']['id'];
 			?>
 			<li>
-				<label class="give-label" for="<?php echo $option['field_attributes']['id']; ?>">
-					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>
-					><?php echo $option['label']; ?>
+				<label <?php echo self::get_attributes( $option['label_attributes'] ); ?>>
+					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>><?php echo $option['label']; ?>
 				</label>
 			</li>
 			<?php
