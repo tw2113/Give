@@ -184,7 +184,7 @@ add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_
 function give_field_api_set_field_value( $field ) {
 	switch ( $field['type'] ) {
 		case 'text':
-			$data_type      = empty( $field['data_type'] ) ? '' : $field['data_type'];
+			$data_type = empty( $field['data_type'] ) ? '' : $field['data_type'];
 
 			switch ( $data_type ) {
 				case 'price' :
@@ -200,7 +200,7 @@ function give_field_api_set_field_value( $field ) {
 
 				case 'decimal' :
 					$field['field_attributes']['class'] .= ' give_input_decimal';
-					$field['value'] = ( ! empty( $field['value'] ) ? give_format_decimal( $field['value'] ) : $field['value'] );
+					$field['value']                     = ( ! empty( $field['value'] ) ? give_format_decimal( $field['value'] ) : $field['value'] );
 					break;
 
 				default :
@@ -212,34 +212,85 @@ function give_field_api_set_field_value( $field ) {
 		case 'email':
 		case 'hidden':
 		case 'file':
-			// Set default value.
-			$field['field_attributes']['value'] = $field['default'];
-
-			if ( ! empty( $field['value'] ) ) {
-				$field['field_attributes']['value'] = $field['value'];
-			} elseif ( isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['field_attributes']['value'] = $_REQUEST[ $field['id'] ];
-			}
-			break;
-
-		case 'checkbox':
-			$field['field_attributes']['value'] = ! empty( $field['cbvalue'] ) ? $field['cbvalue'] : 'on' ;
-			if (
-				( ! empty( $field['value'] ) && $field['cbvalue'] === $field['value'] )
-				|| isset( $_REQUEST[ $field['id'] ] )
-			) {
-				$field['field_attributes']['checked'] = 'checked';
-			}
+			$field['value'] = ! is_null( $field['value'] ) ? $field['value'] : $field['default'];
+			$field['field_attributes']['value'] = $field['value'];
 			break;
 
 		case 'textarea':
+			$field['value'] = ! is_null( $field['value'] ) ? $field['value'] : $field['default'];
+			break;
+
+		case 'multi_checkbox':
+		case 'multi_select':
+			if ( ! empty( $field['options'] ) ) {
+				// Set default value
+				$field['default'] = is_array( $field['default'] )
+					? $field['default']
+					: ( is_string( $field['default'] ) ? array( $field['default'] ) : array() );
+
+				// Set value
+				$field['value'] = ! is_null( $field['value'] ) ? $field['value'] : $field['default'];
+
+
+				foreach ( $field['options'] as $id => $option ) {
+					// Set label
+					$field['options'][ $id ] = is_array( $field['options'][ $id ] )
+						? $field['options'][ $id ]
+						: array( 'label' => $option );
+
+					// Set value.
+					$field['options'][ $id ]['field_attributes']['value'] = ! isset( $field['options'][ $id ]['field_attributes']['value'] )
+						? $id
+						: $field['options'][ $id ]['field_attributes']['value'];
+
+					// Set attributes.
+					if ( ! is_null( $field['value'] ) && in_array( $id, $field['value'] ) ) {
+						if( 'checkbox' === $field['type'] ) {
+							$field['options'][ $id ]['field_attributes']['checked'] = 'checked';
+						} else if( 'multi_select' === $field['type'] ) {
+							$field['options'][ $id ]['field_attributes']['selected'] = 'selected';
+						}
+					}
+				}
+			}
+
+			break;
+
 		case 'radio':
 		case 'select':
-		case 'multi_select':
-		case 'multi_checkbox':
-		case 'group':
-			if ( empty( $field['value'] ) && isset( $_REQUEST[ $field['id'] ] ) ) {
-				$field['value'] = give_clean( $_REQUEST[ $field['id'] ] );
+			if ( ! empty( $field['options'] ) ) {
+				$field['value'] = ! is_null( $field['value'] ) ? $field['value'] : $field['default'];
+
+				foreach ( $field['options'] as $id => $option ) {
+					// Set label
+					$field['options'][ $id ] = is_array( $field['options'][ $id ] )
+						? $field['options'][ $id ]
+						: array( 'label' => $option );
+
+					// Set value.
+					$field['options'][ $id ]['field_attributes']['value'] = ! isset( $field['options'][ $id ]['field_attributes']['value'] )
+						? $id
+						: $field['options'][ $id ]['field_attributes']['value'];
+
+					// Set attributes.
+					if ( ! is_null( $field['value'] ) && ( $id === $field['value'] ) ) {
+						if( 'radio' === $field['type'] ) {
+							$field['options'][ $id ]['field_attributes']['checked'] = 'checked';
+						} else if( 'select' === $field['type'] ) {
+							$field['options'][ $id ]['field_attributes']['selected'] = 'selected';
+						}
+					}
+				}
+			}
+
+			break;
+
+		case 'checkbox':
+			$field['value'] = ! is_null( $field['value'] ) ? $field['value'] : $field['default'];
+			$field['field_attributes']['value'] = ! empty( $field['cbvalue'] ) ? $field['cbvalue'] : 'on';
+
+			if ( ! is_null( $field['value'] ) && ( $field['cbvalue'] === $field['value'] ) ) {
+				$field['field_attributes']['checked'] = 'checked';
 			}
 			break;
 	}
