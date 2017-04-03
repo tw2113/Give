@@ -574,18 +574,7 @@ class Give_Fields_API {
 
 		$options_html = '';
 		foreach ( $field['options'] as $key => $option ) {
-			$selected = '';
-
-			if ( is_array( $field['value'] ) ) {
-				$selected = in_array( $key, $field['value'] )
-					? 'selected="selected"'
-					: '';
-
-			} else {
-				$selected = selected( $key, $field['value'], false );
-			}
-
-			$options_html .= '<option value="' . $key . '" ' . $selected . '>' . $option . '</option>';
+			$options_html .= '<option '. self::get_attributes( $option['field_attributes'] ). '>' . $option['label'] . '</option>';
 		}
 		?>
 
@@ -644,18 +633,14 @@ class Give_Fields_API {
 
 		echo '<ul>';
 		foreach ( $field['options'] as $key => $option ) :
+			$option['field_attributes']['type'] = $field['type'];
+			$option['field_attributes']['name'] = self::get_field_name( $field );
+			$option['field_attributes']['id'] = "{$id_base}-{$key}";
 			?>
 			<li>
-				<label class="give-label" for="<?php echo "{$id_base}-{$key}" ?>">
-					<input
-							type="<?php echo $field['type']; ?>"
-							name="<?php echo self::get_field_name( $field ); ?>"
-							value="<?php echo $key; ?>"
-							id="<?php echo "{$id_base}-{$key}"; ?>"
-						<?php checked( $key, $field['value'] ) ?>
-						<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-						<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-					><?php echo $option; ?>
+				<label class="give-label" for="<?php echo $option['field_attributes']['id']; ?>">
+					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>
+					><?php echo $option['label']; ?>
 				</label>
 			</li>
 			<?php
