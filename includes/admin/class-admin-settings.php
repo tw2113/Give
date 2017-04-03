@@ -634,7 +634,9 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 				// Format the value based on option type.
 				switch ( $option['type'] ) {
 					case 'checkbox' :
-						$value = is_null( $raw_value ) ? '' : 'on';
+						$value = is_null( $raw_value )
+							? ''
+							: ( ! empty( $option['cbvalue'] ) ? $option['cbvalue'] : 'on' );
 						break;
 					case 'wysiwyg'  :
 					case 'textarea' :
