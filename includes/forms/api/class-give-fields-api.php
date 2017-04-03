@@ -271,12 +271,36 @@ class Give_Fields_API {
 		}
 
 		ob_start();
+
+		// Set before section html.
+		$section['before_field_wrapper'] = self::is_callback( $section['before_field_wrapper'] )
+			? self::render_callback( $section['before_field_wrapper'] )
+			: $section['before_field_wrapper'];
+
+		// Set after section html.
+		$section['after_field_wrapper'] = self::is_callback( $section['after_field_wrapper'] )
+			? self::render_callback( $section['after_field_wrapper'] )
+			: $section['after_field_wrapper'];
+
+		// Set before section legend html.
+		$section['before_field_lebel'] = self::is_callback( $section['before_field_lebel'] )
+			? self::render_callback( $section['before_field_lebel'] )
+			: $section['before_field_lebel'];
+
+		// Set after section legend html.
+		$section['after_field_legend'] = self::is_callback( $section['after_field_legend'] )
+			? self::render_callback( $section['after_field_legend'] )
+			: $section['after_field_legend'];
+
+		echo $section['before_field_wrapper'];
 		?>
 		<fieldset <?php echo self::$instance->get_attributes( $section['section_attributes'] ); ?>>
 			<?php
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
-				echo "<legend>{$section['label']}</legend>";
+				echo $section['before_field_label'];
+					echo "<legend>{$section['label']}</legend>";
+				echo $section['after_field_label'];
 			};
 
 			// Fields.
@@ -286,6 +310,8 @@ class Give_Fields_API {
 			?>
 		</fieldset>
 		<?php
+		echo $section['after_field_wrapper'];
+
 		$section_html = ob_get_clean();
 
 		/**
