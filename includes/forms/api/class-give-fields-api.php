@@ -286,7 +286,42 @@ class Give_Fields_API {
 			?>
 		</fieldset>
 		<?php
-		return ob_get_clean();
+		$section_html = ob_get_clean();
+
+		/**
+		 * Filter the specific section html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $section_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$section_html = apply_filters(
+			"give_field_api_render_{$section['type']}_section",
+			$section_html,
+			$section,
+			$form,
+			$args
+		);
+
+		/**
+		 * Filter the section html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $section_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$section_html = apply_filters(
+			"give_field_api_render_section",
+			$section_html,
+			$section,
+			$form,
+			$args
+		);
+		return $section_html;
 	}
 
 
@@ -321,7 +356,43 @@ class Give_Fields_API {
 			?>
 		</div>
 		<?php
-		return ob_get_clean();
+		$block_html = ob_get_clean();
+
+		/**
+		 * Filter the specific block html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $block_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$block_html = apply_filters(
+			"give_field_api_render_{$block['type']}_block",
+			$block_html,
+			$block,
+			$form,
+			$args
+		);
+
+		/**
+		 * Filter the block html.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $block_html
+		 * @param array  $field
+		 * @param array  $form
+		 */
+		$block_html = apply_filters(
+			"give_field_api_render_block",
+			$block_html,
+			$block,
+			$form,
+			$args
+		);
+
+		return $block_html;
 	}
 
 	/**
