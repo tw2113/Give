@@ -432,18 +432,7 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_checkbox_field( $field, $form = null, $args = array() ) {
-		$field_wrapper = self::$instance->render_field_wrapper( $field );
-		ob_start();
-		?>
-		<input
-				type="checkbox"
-				name="<?php echo self::get_field_name( $field ); ?>"
-			<?php echo( $field['required'] ? 'required=""' : '' ); ?>
-			<?php echo self::$instance->get_attributes( $field['field_attributes'] ); ?>
-		>
-		<?php
-
-		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+		return self::$instance->render_text_field( $field );
 	}
 
 	/**
