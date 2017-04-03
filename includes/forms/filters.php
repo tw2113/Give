@@ -157,7 +157,7 @@ add_filter( 'give_field_api_render_field', 'give_donation_form_amount_field_acti
 function give_form_edit_price_id( $form_args ) {
 	if ( ! empty( $form_args['fields'] ) ) {
 		foreach ( $form_args['fields'] as $index => $field ) {
-			if ( 'hidden' === $field['type'] && 'give-price-id' === $field['id'] ) {
+			if ( array_key_exists( 'give-price-id', array_keys( $form_args['fields'] ) ) ) {
 				// Set form id.
 				$form_id = $form_args['donation_form_object']->ID;
 
@@ -202,7 +202,7 @@ add_filter( 'give_form_args', 'give_form_edit_price_id' );
 function give_form_edit_amount( $form_args ) {
 	if ( ! empty( $form_args['fields'] ) ) {
 		foreach ( $form_args['fields'] as $index => $field ) {
-			if ( 'hidden' === $field['type'] && 'give-amount' === $field['id'] ) {
+			if ( array_key_exists( 'give-amount', array_keys( $form_args['fields'] ) ) ) {
 				// Set form id.
 				$form_id             = $form_args['donation_form_object']->ID;
 				$give_options        = give_get_settings();
