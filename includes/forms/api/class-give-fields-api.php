@@ -60,6 +60,7 @@ class Give_Fields_API {
 		'label_attributes'     => array(),
 		'field_attributes'     => array(),
 		'wrapper_attributes'   => array(),
+		'ul_attributes'        => array(),
 
 		// Show/Hide field in before/after modal view.
 		'show_without_modal'   => false,
@@ -644,7 +645,11 @@ class Give_Fields_API {
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
 
-		echo '<ul>';
+		$field['ul_attributes']['class'] = empty( $field['ul_attributes']['class'] )
+			? 'give-radio-fields'
+			: "give-radio-fields {$field['ul_attributes']['class']}";
+
+		echo '<ul '. self::get_attributes( $field['ul_attributes'] ) .'>';
 		foreach ( $field['options'] as $key => $option ) :
 			$option['field_attributes']['type'] = $field['type'];
 			$option['field_attributes']['name'] = self::get_field_name( $field );
@@ -700,8 +705,15 @@ class Give_Fields_API {
 
 		$id_base = $field['field_attributes']['id'];
 		unset( $field['field_attributes']['id'] );
-		
-		echo '<ul class="give-checklist-fields" data-give-sortable-list="' . absint( $field['sortable'] ) . '" data-give-sortable-icon="' . absint( $field['sortable-icon'] ) . '">';
+
+		// Set ul attributes.
+		$field['ul_attributes']['class'] = empty( $field['ul_attributes']['class'] )
+			? 'give-checklist-fields'
+			: "give-checklist-fields {$field['ul_attributes']['class']}";
+		$field['ul_attributes']['data-give-sortable-list'] =absint( $field['sortable'] );
+		$field['ul_attributes']['data-give-sortable-icon'] =absint( $field['sortable-icon'] );
+
+		echo '<ul ' . self::get_attributes( $field['ul_attributes'] ) . '>';
 
 		foreach ( $field['options'] as $key => $option ) :
 			// Set basic values for field.
