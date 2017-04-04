@@ -937,6 +937,13 @@ function give_backward_compatibility_setting_api_1_8( $field ) {
 		$field_args['label'] = ! empty( $field['title'] ) ? $field['title'] : ( ! empty( $field['label'] ) ? $field['label'] : '' );
 	}
 
+	if( 'radio' === $field['type'] ) {
+		$field['before_field_label'] = "<span class=\"give-field-label\">{$field_args['label']}</span>";
+		$field['label_attributes'] = array(
+			'class' => 'screen-reader-text'
+		);
+	}
+
 	if ( ! empty( $field['attributes'] ) ) {
 		$field_args['field_attributes'] = isset( $field_args['field_attributes'] )
 			? $field_args['field_attributes']
