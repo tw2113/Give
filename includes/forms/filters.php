@@ -340,7 +340,7 @@ add_filter( 'give_field_api_set_values', 'give_form_set_values_payment_modes_fie
 function give_form_render_payment_mode_field( $field_html, $field, $form ) {
 	// Bailout.
 	if ( 'payment-mode' !== $field['id'] ) {
-		return $field;
+		return $field_html;
 	}
 
 	ob_start();
