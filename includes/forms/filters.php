@@ -445,12 +445,12 @@ function give_form_render_give_payment_modes_section( $field_html, $field, $form
 	do_action( 'give_payment_mode_bottom', $form_id );
 
 	echo '<div id="give_purchase_form_wrap">';
-	/**
-	 * Fire after payment field render.
-	 *
-	 * @since 1.7
-	 */
-	do_action( 'give_donation_form', $form_id );
+		/**
+		 * Fire after payment field render.
+		 *
+		 * @since 1.7
+		 */
+		do_action( 'give_donation_form', $form_id );
 	echo '</div>';
 
 
