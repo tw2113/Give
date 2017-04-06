@@ -1124,7 +1124,7 @@ class Give_Fields_API {
 	 *
 	 * @return array|string
 	 */
-	private function get_attributes( $attributes ) {
+	private static function get_attributes( $attributes ) {
 		$field_attributes_val = '';
 
 		if ( ! empty( $attributes ) ) {
