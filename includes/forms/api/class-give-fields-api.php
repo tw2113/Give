@@ -728,8 +728,14 @@ class Give_Fields_API {
 
 			$option['field_attributes']['type'] = $field['type'];
 			$option['field_attributes']['name'] = self::get_field_name( $field );
-			$option['field_attributes']['id']   = "{$id_base}-{$key}";
-			$option['label_attributes']['for']  = $option['field_attributes']['id'];
+
+			$option['field_attributes']['id']   = ! empty( $option['field_attributes']['id'] )
+				? $option['field_attributes']['id']
+				: "{$id_base}-{$key}-" . uniqid();
+
+			$option['label_attributes']['for']  = ! empty( $option['label_attributes']['for'] )
+				? $option['label_attributes']['for']
+				: $option['field_attributes']['id'];
 
 
 			$option['label_attributes']['class'] = empty( $option['label_attributes']['class'] )
