@@ -1014,7 +1014,7 @@ class Give_Fields_API {
 
 		// Label: before field.
 		if ( 'before' === $field['label_position'] ) {
-			echo self::$instance->render_label( $field );
+			echo self::$instance->render_field_label( $field );
 		}
 
 		// Set before field html.
@@ -1031,7 +1031,7 @@ class Give_Fields_API {
 
 		// Label: before field.
 		if ( 'after' === $field['label_position'] ) {
-			echo self::$instance->render_label( $field );
+			echo self::$instance->render_field_label( $field );
 		}
 
 		$field_with_label = ob_get_clean();
@@ -1077,7 +1077,7 @@ class Give_Fields_API {
 	 *
 	 * @return string
 	 */
-	private function render_label( $field, $form = null, $args = array() ) {
+	public function render_field_label( $field, $form = null, $args = array() ) {
 		ob_start();
 		$label_type = ( 'fieldset' === $field['wrapper_type'] ? 'legend' : 'label' );
 		$field['label_attributes']['for'] = $field['field_attributes']['id'];
