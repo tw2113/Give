@@ -232,21 +232,16 @@ function give_get_donation_form( $args = array() ) {
 														'give_checkout_payment_method_text',
 														esc_html__( 'Select Payment Method', 'give' )
 						 							) . '<span class="give-loading-text"><span class="give-loading-animation"></span></span>',
-						'label_attributes'      => array(
-							'class' => 'give-payment-mode-label',
-						),
-						'section_attributes'    => array(
-							'id' => 'give-payment-mode-select',
-						),
+						'label_attributes'      => array( 'class' => 'give-payment-mode-label', ),
+						'section_attributes'    => array( 'id' => 'give-payment-mode-select', ),
 						'fields'                => array(
 							'payment-mode' => array(
 								'type'          => 'radio',
+								'label_position' => 'after',
 								'value'         => give_get_chosen_gateway( $form_id ),
 								'options'       => give_get_enabled_payment_gateways( $form_id ),
 								'wrapper'       => false,
-								'ul_attributes' => array(
-									'id' => 'give-gateway-radio-list',
-								),
+								'ul_attributes' => array( 'id' => 'give-gateway-radio-list', ),
 							),
 						),
 					),
