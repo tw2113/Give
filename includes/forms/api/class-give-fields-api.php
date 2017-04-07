@@ -709,7 +709,8 @@ class Give_Fields_API {
 			: $field['wrapper_type'];
 
 
-		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		$field_wrapper = self::$instance->render_field_wrapper( $field, $form, $args );
+
 		ob_start();
 
 		$id_base = $field['field_attributes']['id'];
@@ -719,21 +720,31 @@ class Give_Fields_API {
 			? 'give-radio-fields'
 			: "give-radio-fields {$field['ul_attributes']['class']}";
 
-		echo '<ul '. self::get_attributes( $field['ul_attributes'] ) .'>';
+		echo '<ul ' . self::get_attributes( $field['ul_attributes'] ) . '>';
 		foreach ( $field['options'] as $key => $option ) :
+			$option['label_position'] = ! empty( $option['label_position'] ) ? $option['label_position'] : $field['label_position'];
+
+			$option = wp_parse_args( $option, self::$field_defaults );
+
 			$option['field_attributes']['type'] = $field['type'];
 			$option['field_attributes']['name'] = self::get_field_name( $field );
-			$option['field_attributes']['id'] = "{$id_base}-{$key}";
+			$option['field_attributes']['id']   = "{$id_base}-{$key}";
+			$option['label_attributes']['for']  = $option['field_attributes']['id'];
+
 
 			$option['label_attributes']['class'] = empty( $option['label_attributes']['class'] )
 				? 'give-label'
 				: "give-label {$option['label_attributes']['class']}";
-			$option['label_attributes']['for'] = $option['field_attributes']['id'];
+
 			?>
 			<li>
-				<label <?php echo self::get_attributes( $option['label_attributes'] ); ?>>
-					<input <?php echo self::$instance->get_attributes( $option['field_attributes'] ); ?>><?php echo $option['label']; ?>
-				</label>
+				<?php
+				echo str_replace(
+					'{{form_field}}',
+					'<input ' . self::$instance->get_attributes( $option['field_attributes'] ) . '>',
+					self::get_field_template( $option, $form, $args )
+				);
+				?>
 			</li>
 			<?php
 		endforeach;
@@ -998,6 +1009,65 @@ class Give_Fields_API {
 
 
 	/**
+	 * Render field
+	 *
+	 * @since  1.9
+	 * @access private
+	 *
+	 * @param  array $field
+	 * @param  array $form
+	 * @param  array $args
+	 *
+	 * @return string
+	 */
+	public static function get_field_template( $field, $form = null, $args = array() ) {
+		/**
+		 * Field Html template.
+		 */
+		// Set before field html.
+		$field['before_field'] = self::is_callback( $field['before_field'] )
+			? self::render_callback( $field['before_field'] )
+			: $field['before_field'];
+
+		// Set after field html.
+		$field['after_field'] = self::is_callback( $field['after_field'] )
+			? self::render_callback( $field['after_field'] )
+			: $field['after_field'];
+
+		$field_html = "{$field['before_field']}{{form_field}}{$field['after_field']}";
+
+
+		/**
+		 * Field html with label.
+		 */
+		switch ( $field['label_position'] ) {
+			case 'after':
+				$field['before_field_label'] = empty( $field['before_field_label'] )
+					? $field_html
+					: $field_html . $field['before_field_label'];
+				break;
+
+			case 'inside':
+				$field['label'] = empty( $field['label'] )
+					? $field_html
+					: $field_html . $field['label'];
+				break;
+
+			//case 'before':
+			default:
+				$field['after_field_label'] = empty( $field['after_field_label'] )
+					? $field_html
+					: $field['after_field_label'] . $field_html;
+		}
+
+
+		$field_html = trim( self::$instance->render_field_label( $field ) );
+
+		return $field_html;
+	}
+
+
+	/**
 	 * Render wrapper
 	 *
 	 * @since  1.9
@@ -1010,58 +1080,44 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_field_wrapper( $field, $form = null, $args = array() ) {
+		/**
+		 * Get field template.
+		 */
+		$field_html = self::get_field_template( $field, $form, $args );
+
+		/**
+		 * Field with label html with wrapper.
+		 */
 		ob_start();
 
-		// Label: before field.
-		if ( 'before' === $field['label_position'] ) {
-			echo self::$instance->render_field_label( $field );
-		}
+		// Set before wrapper html.
+		$field['before_field_wrapper'] = self::is_callback( $field['before_field_wrapper'] )
+			? self::render_callback( $field['before_field_wrapper'] )
+			: $field['before_field_wrapper'];
 
-		// Set before field html.
-		$field['before_field'] = self::is_callback( $field['before_field'] )
-			? self::render_callback( $field['before_field'] )
-			: $field['before_field'];
-
-		// Set after field html.
-		$field['after_field'] = self::is_callback( $field['after_field'] )
-			? self::render_callback( $field['after_field'] )
-			: $field['after_field'];
-
-		echo "{$field['before_field']}{{form_field}}{$field['after_field']}";
-
-		// Label: before field.
-		if ( 'after' === $field['label_position'] ) {
-			echo self::$instance->render_field_label( $field );
-		}
-
-		$field_with_label = ob_get_clean();
-
-		ob_start();
+		echo $field['before_field_wrapper'];
 
 		if ( $field['wrapper'] ) :
 
-			// Set before wrapper html.
-			$field['before_field_wrapper'] = self::is_callback( $field['before_field_wrapper'] )
-				? self::render_callback( $field['before_field_wrapper'] )
-				: $field['before_field_wrapper'];
-
-			echo $field['before_field_wrapper'];
 
 			echo '<' . $field['wrapper_type'] . ' ' . self::$instance->get_attributes( $field['wrapper_attributes'] ) . '>';
-				echo $field_with_label;
+			echo $field_html;
 			echo "</{$field['wrapper_type']}>";
 
-			// Set after wrapper html.
-			$field['after_field_wrapper'] = self::is_callback( $field['after_field_wrapper'] )
-				? self::render_callback( $field['after_field_wrapper'] )
-				: $field['after_field_wrapper'];
-
-			echo $field['after_field_wrapper'];
 		else :
-			echo $field_with_label;
+			echo $field_html;
 		endif;
 
-		return ob_get_clean();
+		// Set after wrapper html.
+		$field['after_field_wrapper'] = self::is_callback( $field['after_field_wrapper'] )
+			? self::render_callback( $field['after_field_wrapper'] )
+			: $field['after_field_wrapper'];
+
+		echo $field['after_field_wrapper'];
+
+		$field_html = ob_get_clean();
+
+		return $field_html;
 	}
 
 
@@ -1080,37 +1136,38 @@ class Give_Fields_API {
 	public function render_field_label( $field, $form = null, $args = array() ) {
 		ob_start();
 		$label_type = ( 'fieldset' === $field['wrapper_type'] ? 'legend' : 'label' );
+
 		$field['label_attributes']['for'] = $field['field_attributes']['id'];
+
+		// Set before label html.
+		$field['before_field_label'] = self::is_callback( $field['before_field_label'] )
+			? self::render_callback( $field['before_field_label'] )
+			: $field['before_field_label'];
+		echo $field['before_field_label'];
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
-			<?php
-			// Set before label html.
-			$field['before_field_label'] = self::is_callback( $field['before_field_label'] )
-				? self::render_callback( $field['before_field_label'] )
-				: $field['before_field_label'];
-			echo $field['before_field_label'];
-			?>
+
 			<<?php echo $label_type; ?> <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
 
-				<?php echo $field['label']; ?>
+			<?php echo $field['label']; ?>
 
-				<?php if ( $field['required'] ) : ?>
-					<span class="give-required-indicator">*</span>
-				<?php endif; ?>
+			<?php if ( $field['required'] ) : ?>
+				<span class="give-required-indicator">*</span>
+			<?php endif; ?>
 
-				<?php if ( $field['label_tooltip'] ) : ?>
-					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
-				<?php endif; ?>
+			<?php if ( $field['label_tooltip'] ) : ?>
+				<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
+			<?php endif; ?>
 			</<?php echo $label_type; ?>>
-			<?php
-			// Set after label html.
-			$field['after_field_label'] = self::is_callback( $field['after_field_label'] )
-				? self::render_callback( $field['after_field_label'] )
-				: $field['after_field_label'];
-			echo $field['after_field_label'];
-			?>
+
 		<?php endif; ?>
 		<?php
+		// Set after label html.
+		$field['after_field_label'] = self::is_callback( $field['after_field_label'] )
+			? self::render_callback( $field['after_field_label'] )
+			: $field['after_field_label'];
+		echo $field['after_field_label'];
+
 		return ob_get_clean();
 	}
 
