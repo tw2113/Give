@@ -1310,8 +1310,9 @@ class Give_Fields_API {
 				 *
 				 * @param array $field
 				 * @param array $form
+				 * @param array $args
 				 */
-				$field = apply_filters( 'give_field_api_set_values', $field, $form );
+				$field = apply_filters( 'give_field_api_set_values', $field, $form, $args );
 		}
 
 		/**
