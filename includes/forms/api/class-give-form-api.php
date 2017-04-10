@@ -50,8 +50,6 @@ class Give_Form_API {
 
 		// Manually render form.
 		'callback'              => '',
-
-		// @todo: Add html edit params.
 	);
 
 	/**
