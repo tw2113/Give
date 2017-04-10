@@ -306,25 +306,30 @@ add_filter( 'give_field_api_render_give_donation_levels_field', 'give_form_rende
  * @since 1.9
  *
  * @param array $field
+ * @param array $form
  *
  * @return array
  */
-function give_form_set_values_payment_modes_field( $field ) {
+function give_form_set_values_payment_modes_field( $field, $form ) {
 	// Bailout.
 	if ( 'payment-mode' !== $field['id'] ) {
 		return $field;
 	}
 
+	$donation_form = $form['donation_form_object'];
+
 	foreach ( $field['options'] as $key => $option) {
 		$field['options'][ $key ]['label'] = $option['checkout_label'];
 		$field['options'][ $key ]['field_attributes']['class'] = 'give-gateway';
 		$field['options'][ $key ]['label_attributes']['class'] = 'give-gateway-option';
+
+		$field['options'][ $key ]['for'] = $field['options'][ $key ]['field_attributes']['id'] = "give-gateway-{$key}-{$donation_form->ID}";
 	}
 
 	return $field;
 }
 
-add_filter( 'give_field_api_set_values', 'give_form_set_values_payment_modes_field' );
+add_filter( 'give_field_api_set_values', 'give_form_set_values_payment_modes_field', 0, 2 );
 
 /**
  * Render give_donation levels field.
