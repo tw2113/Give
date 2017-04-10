@@ -1154,16 +1154,15 @@ class Give_Fields_API {
 		<?php if ( ! empty( $field['label'] ) ) : ?>
 
 			<<?php echo $label_type; ?> <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
+				<?php echo $field['label']; ?>
 
-			<?php echo $field['label']; ?>
+				<?php if ( $field['required'] ) : ?>
+					<span class="give-required-indicator">*</span>
+				<?php endif; ?>
 
-			<?php if ( $field['required'] ) : ?>
-				<span class="give-required-indicator">*</span>
-			<?php endif; ?>
-
-			<?php if ( $field['label_tooltip'] ) : ?>
-				<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
-			<?php endif; ?>
+				<?php if ( $field['label_tooltip'] ) : ?>
+					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
+				<?php endif; ?>
 			</<?php echo $label_type; ?>>
 
 		<?php endif; ?>
