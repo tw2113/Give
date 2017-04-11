@@ -578,8 +578,9 @@ x:-o-prefocus, .qtip .qtip-tip {
     padding: 0 0 5px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     width: 100%; }
-  .give-form-wrap ul {
-    list-style: none; }
+
+.give-field-wrap ul {
+  list-style: none; }
 
 .mfp-wrap .give-form-modal {
   position: relative;
@@ -731,9 +732,6 @@ x:-o-prefocus, .qtip .qtip-tip {
   .give-repeatable-field-section .give-row.ui-sortable-helper {
     border-bottom: 0; }
 
-/*-------------------------------------
-General
--------------------------------------*/
 .give-toggle-btn {
   float: left;
   width: 36px;
@@ -1998,12 +1996,29 @@ h2.give-nav-tab-wrapper {
   height: 35px; }
 
 @media screen and (max-width: 600px) {
-  h2.give-nav-tab-wrapper {
-    height: 50px; } }
-
-@media screen and (max-width: 414px) {
-  .give-nav-tab-wrapper > a {
-    width: 75%; } }
+  .give-nav-tab-wrapper {
+    position: relative;
+    padding-top: 0 !important; }
+    .give-nav-tab-wrapper > a {
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0; }
+      .give-nav-tab-wrapper > a:hover {
+        border-bottom: 1px solid #ccc; }
+    .give-nav-tab-wrapper div.give-sub-nav-tab-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0; }
+      .give-nav-tab-wrapper div.give-sub-nav-tab-wrapper #give-show-sub-nav {
+        height: 28px;
+        width: 30px;
+        border-radius: 0;
+        margin: 0; }
+        .give-nav-tab-wrapper div.give-sub-nav-tab-wrapper #give-show-sub-nav > span.dashicons {
+          margin: 6px auto 0;
+          display: block; }
+      .give-nav-tab-wrapper div.give-sub-nav-tab-wrapper nav.give-sub-nav-tab {
+        top: 35px; } }
 
 .give-sub-nav-tab-wrapper {
   position: relative;
