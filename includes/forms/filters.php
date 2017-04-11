@@ -3,11 +3,11 @@
 
 /**
  * Remove old action which help to render donation form
- * Note: from version 1.9, donation form will be render with form api.
+ * Note: from version 2.0, donation form will be render with form api.
  *
  * @see   inludes/forms/api/give-form-api.php
  *
- * @since 1.9
+ * @since 2.0
  */
 function give_remove_donation_form_fields_render_action() {
 	$render_actions = array(
@@ -28,7 +28,7 @@ add_action( 'init', 'give_remove_donation_form_fields_render_action' );
 /**
  * Fire the form releated action hooks.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $form_html
  * @param $form
@@ -83,7 +83,7 @@ add_filter( 'give_form_api_render_form', 'give_donation_form_actions', 10, 2 );
 /**
  * Fire the amount field related actions.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $field_html
  * @param $field
@@ -148,7 +148,7 @@ add_filter( 'give_field_api_render_field', 'give_donation_form_amount_field_acti
 /**
  * Edit give-price-id hidden field in donation form.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $form_args
  *
@@ -193,7 +193,7 @@ add_filter( 'give_form_args', 'give_form_edit_price_id' );
 /**
  * Edit give-amount hidden field in donation form.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $form_args
  *
@@ -264,7 +264,7 @@ add_filter( 'give_form_args', 'give_form_edit_amount' );
 /**
  * Render give_donation levels field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $field_html
  * @param $field
@@ -303,7 +303,7 @@ add_filter( 'give_field_api_render_give_donation_levels_field', 'give_form_rende
 /**
  * Set default values for give-payment-modes field
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param array $field
  * @param array $form
@@ -334,7 +334,7 @@ add_filter( 'give_field_api_set_values', 'give_form_set_values_payment_modes_fie
 /**
  * Render give_donation levels field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param string $field_html
  * @param array  $field
@@ -378,7 +378,7 @@ add_filter( 'give_field_api_render_radio_field', 'give_form_render_payment_mode_
 /**
  * Render give_payment_modes section
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param string $field_html
  * @param array  $field

@@ -231,7 +231,7 @@ if ( ! class_exists( 'Give_Settings_Email' ) ) :
 		/**
 		 * Render email preview buttons field.
 		 *
-		 * @since  1.9
+		 * @since  2.0
 		 * @access public
 		 *
 		 * @param $field

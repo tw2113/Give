@@ -7,13 +7,13 @@
  * @subpackage  Classes/Give_Form_API
  * @copyright   Copyright (c) 2016, WordImpress
  * @license     https://opensource.org/licenses/gpl-license GNU Public License
- * @since       1.9
+ * @since       2.0
  */
 class Give_Form_API {
 	/**
 	 * Instance.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 * @var Give_Form_API
 	 */
@@ -22,7 +22,7 @@ class Give_Form_API {
 	/**
 	 * Array of forms.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 * @var array
 	 */
@@ -31,7 +31,7 @@ class Give_Form_API {
 	/**
 	 * The defaults for all elements
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	static $field_defaults = array(
@@ -55,7 +55,7 @@ class Give_Form_API {
 	/**
 	 * Display styles.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 * @var array
 	 */
@@ -88,7 +88,7 @@ class Give_Form_API {
 	/**
 	 * Initialize this module
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	public function init() {
@@ -116,7 +116,7 @@ class Give_Form_API {
 	/**
 	 * Render form by shortcode.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param array $attrs
@@ -158,7 +158,7 @@ class Give_Form_API {
 	/**
 	 * Render forms.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 *
 	 * @param string $form_slug Form name.
@@ -206,7 +206,7 @@ class Give_Form_API {
 		/**
 		 * Filter the form html.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $form_html
 		 * @param array  $form
@@ -218,7 +218,7 @@ class Give_Form_API {
 	/**
 	 * Set default values form form.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param $form
@@ -229,7 +229,7 @@ class Give_Form_API {
 		/**
 		 * Filter the form values before set default values.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param array  $form
 		 */
@@ -250,7 +250,7 @@ class Give_Form_API {
 		/**
 		 * Filter the default values after set form default values.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param array  $form
 		 */
@@ -261,7 +261,7 @@ class Give_Form_API {
 	/**
 	 * Process a form, filling in $values with what's been posted
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	static function process_form() {
@@ -270,7 +270,7 @@ class Give_Form_API {
 	/**
 	 * Recursively process a meta form element, filling in $values accordingly
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 *
 	 * @param string $form_slug
@@ -293,7 +293,7 @@ class Give_Form_API {
 		/**
 		 * Filter the result form.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param array  $form
 		 * @param string $form_slug
@@ -332,7 +332,7 @@ class Give_Form_API {
 		/**
 		 *  Filter the for tags which you want to handle manually.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param       array
 		 * @param array $form
@@ -367,7 +367,7 @@ class Give_Form_API {
 		/**
 		 *  Filters the form tags.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $form_html
 		 * @param array  $form
@@ -386,7 +386,7 @@ class Give_Form_API {
 	/**
 	 * Enqueue form api scripts.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 */
 	public function register_form_api_scripts() {
@@ -401,7 +401,7 @@ class Give_Form_API {
 		/**
 		 * Filter the js var.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 */
 		$give_form_api_var = apply_filters( 'give_form_api_js_vars', array(
 			'metabox_fields' => array(
@@ -425,7 +425,7 @@ class Give_Form_API {
 	/**
 	 * Load Form API js var.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 */
 	public static function enqueue_scripts() {

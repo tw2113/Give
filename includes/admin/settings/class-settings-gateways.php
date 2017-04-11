@@ -260,7 +260,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 		/**
 		 * Render default gateway field.
 		 *
-		 * @since  1.9
+		 * @since  2.0
 		 * @access public
 		 *
 		 * @param $field
@@ -284,7 +284,7 @@ if ( ! class_exists( 'Give_Settings_Gateways' ) ) :
 		/**
 		 * Render enabled gateways field.
 		 *
-		 * @since  1.9
+		 * @since  2.0
 		 * @access public
 		 *
 		 * @param $field

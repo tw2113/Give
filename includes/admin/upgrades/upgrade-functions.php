@@ -822,9 +822,9 @@ function give_v18_renamed_core_settings() {
 }
 
 /**
- * Backward compatibility for setting api ( 1.8=<version>1.9).
+ * Backward compatibility for setting api ( 1.8=<version>2.0).
  *
- * @since  1.9
+ * @since  2.0
  *
  * @param array $field
  *

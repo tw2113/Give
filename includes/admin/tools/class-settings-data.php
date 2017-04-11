@@ -128,7 +128,7 @@ if ( ! class_exists( 'Give_Settings_Data' ) ) :
 		/**
 		 * Render data field.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 * @access public
 		 * @param $field
 		 */

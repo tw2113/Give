@@ -7,13 +7,13 @@
  * @subpackage  Classes/Give_Fields_API
  * @copyright   Copyright (c) 2016, WordImpress
  * @license     https://opensource.org/licenses/gpl-license GNU Public License
- * @since       1.9
+ * @since       2.0
  */
 class Give_Fields_API {
 	/**
 	 * Instance.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 * @var Give_Fields_API
 	 */
@@ -22,7 +22,7 @@ class Give_Fields_API {
 	/**
 	 * The defaults for all elements
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	static $field_defaults = array(
@@ -83,7 +83,7 @@ class Give_Fields_API {
 	/**
 	 * The defaults for all sections.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	static $section_defaults = array(
@@ -106,7 +106,7 @@ class Give_Fields_API {
 	/**
 	 * The defaults for all blocks.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	static $block_defaults = array(
@@ -140,7 +140,7 @@ class Give_Fields_API {
 	/**
 	 * Initialize this module
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access static
 	 */
 	public function init() {
@@ -151,7 +151,7 @@ class Give_Fields_API {
 	/**
 	 * Render callback.
 	 *
-	 * @since 1.9
+	 * @since 2.0
 	 * @access public
 	 * @param       $callback
 	 * @param array $field
@@ -205,7 +205,7 @@ class Give_Fields_API {
 	/**
 	 * Render `{{form_fields}}` tag.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param  string $form_html
@@ -262,7 +262,7 @@ class Give_Fields_API {
 	/**
 	 * Render section.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param array $section
@@ -324,7 +324,7 @@ class Give_Fields_API {
 		/**
 		 * Filter the section html.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $section_html
 		 * @param array  $field
@@ -344,7 +344,7 @@ class Give_Fields_API {
 	/**
 	 * Render block.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param array $block
@@ -377,7 +377,7 @@ class Give_Fields_API {
 		/**
 		 * Filter the block html.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $block_html
 		 * @param array  $field
@@ -397,7 +397,7 @@ class Give_Fields_API {
 	/**
 	 * Render tag
 	 *
-	 * @since   1.9
+	 * @since   2.0
 	 * @access  public
 	 *
 	 * @param array $field
@@ -434,7 +434,7 @@ class Give_Fields_API {
 		 * Filter the custom field type html.
 		 * Developer can use this hook to render custom field type.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $field_html
 		 * @param array  $field
@@ -451,7 +451,7 @@ class Give_Fields_API {
 		/**
 		 * Filter the all field type html.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param string $field_html
 		 * @param array  $field
@@ -472,7 +472,7 @@ class Give_Fields_API {
 	/**
 	 * Render text field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -501,7 +501,7 @@ class Give_Fields_API {
 	/**
 	 * Render submit field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -517,7 +517,7 @@ class Give_Fields_API {
 	/**
 	 * Render checkbox field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -533,7 +533,7 @@ class Give_Fields_API {
 	/**
 	 * Render email field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -549,7 +549,7 @@ class Give_Fields_API {
 	/**
 	 * Render number field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -565,7 +565,7 @@ class Give_Fields_API {
 	/**
 	 * Render password field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -581,7 +581,7 @@ class Give_Fields_API {
 	/**
 	 * Render button field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -597,7 +597,7 @@ class Give_Fields_API {
 	/**
 	 * Render hidden field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -615,7 +615,7 @@ class Give_Fields_API {
 	/**
 	 * Render textarea field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -643,7 +643,7 @@ class Give_Fields_API {
 	/**
 	 * Render select field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -675,7 +675,7 @@ class Give_Fields_API {
 	/**
 	 * Render multi select field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -694,7 +694,7 @@ class Give_Fields_API {
 	/**
 	 * Render radio field.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -765,7 +765,7 @@ class Give_Fields_API {
 	 * Note:
 	 * You can reorder checklist if sortable with help of give_reorder_array function.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $field
@@ -852,7 +852,7 @@ class Give_Fields_API {
 	/**
 	 * Render group field
 	 *
-	 * @since 1.9
+	 * @since 2.0
 	 * @access public
 	 *
 	 * @param  array $fields
@@ -1017,7 +1017,7 @@ class Give_Fields_API {
 	/**
 	 * Render field
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param  array $field
@@ -1076,7 +1076,7 @@ class Give_Fields_API {
 	/**
 	 * Render wrapper
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param  array $field
@@ -1130,7 +1130,7 @@ class Give_Fields_API {
 	/**
 	 * Render label
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param  array $field
@@ -1179,7 +1179,7 @@ class Give_Fields_API {
 	/**
 	 * Get field attribute string from field arguments.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param array $attributes
@@ -1218,7 +1218,7 @@ class Give_Fields_API {
 		/**
 		 * Filter the field before set default values.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param array $field
 		 * @param array $form
@@ -1311,7 +1311,7 @@ class Give_Fields_API {
 				/**
 				 * Filter the field values.
 				 *
-				 * @since 1.9
+				 * @since 2.0
 				 *
 				 * @param array $field
 				 * @param array $form
@@ -1323,7 +1323,7 @@ class Give_Fields_API {
 		/**
 		 * Filter the field after set default values.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 *
 		 * @param array $field
 		 * @param array $form
@@ -1339,7 +1339,7 @@ class Give_Fields_API {
 	/**
 	 * Set responsive fields.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param $form
@@ -1410,7 +1410,7 @@ class Give_Fields_API {
 	/**
 	 * Check if current field is part of sub section or not.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param $field
@@ -1430,7 +1430,7 @@ class Give_Fields_API {
 	/**
 	 * Get field type.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access private
 	 *
 	 * @param  array $field
@@ -1462,7 +1462,7 @@ class Give_Fields_API {
 	/**
 	 * Get field name.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 *
 	 * @param  array $field
 	 * @param  array $form
@@ -1488,7 +1488,7 @@ class Give_Fields_API {
 	/**
 	 * Get repeater field id.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 *
 	 * @param array    $field
 	 * @param array    $fields
@@ -1527,7 +1527,7 @@ class Give_Fields_API {
 	/**
 	 * Get repeater field value.
 	 *
-	 * @since 1.9
+	 * @since 2.0
 	 * @access public
 	 *
 	 * @param array $field
@@ -1564,7 +1564,7 @@ class Give_Fields_API {
 	/**
 	 * Check if string or array is callback or not.
 	 *
-	 * @since  1.9
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param $callback

@@ -151,7 +151,7 @@ if ( ! class_exists( 'Give_Settings_Logs' ) ) :
 		/**
 		 * Render logs field.
 		 *
-		 * @since 1.9
+		 * @since 2.0
 		 * @access public
 		 * @param $field
 		 */

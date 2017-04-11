@@ -138,7 +138,7 @@ function give_render_field( $field ) {
  * Output a text input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -152,7 +152,7 @@ function give_text_input( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -168,7 +168,7 @@ function give_text_input( $field ) {
  * Output a hidden input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -192,7 +192,7 @@ function give_hidden_input( $field ) {
  * Output a textarea input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -206,7 +206,7 @@ function give_textarea_input( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -247,7 +247,7 @@ function give_wysiwyg( $field ) {
 	$field['wrapper_type']    = 'div';
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -260,7 +260,7 @@ function give_wysiwyg( $field ) {
  * Output a checkbox input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -275,7 +275,7 @@ function give_checkbox( $field ) {
 	$field['cbvalue'] = isset( $field['cbvalue'] ) ? $field['cbvalue'] : 'on';
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -291,7 +291,7 @@ function give_checkbox( $field ) {
  * Output a select input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -305,7 +305,7 @@ function give_select( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -321,7 +321,7 @@ function give_select( $field ) {
  * Output a radio input box.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -337,7 +337,7 @@ function give_radio( $field ) {
 	$field['wrapper_type'] = 'fieldset';
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -353,7 +353,7 @@ function give_radio( $field ) {
  * Output a colorpicker.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -369,7 +369,7 @@ function give_colorpicker( $field ) {
 	$field['type']  = 'text';
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -386,7 +386,7 @@ function give_colorpicker( $field ) {
  * Output a media upload field.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -401,7 +401,7 @@ function give_media( $field ) {
 	$field['value'] = give_get_field_value( $field, $thepostid );
 
 	// Set description.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['after_field'] = ! empty( $field['after_field'] )
 		? $field['after_field'] . give_get_field_description( $field )
 		: give_get_field_description( $field );
@@ -451,7 +451,7 @@ function give_default_gateway( $field ) {
  * Output the documentation link.
  *
  * @since  1.8
- * @since  1.9 Render field with field api
+ * @since  2.0 Render field with field api
  *
  * @param array $field Field arguments
  *                     Check includes/forms/api/class-give-field-api.php:28 for arguments.
@@ -462,7 +462,7 @@ function give_default_gateway( $field ) {
 function give_docs_link( $field ) {
 
 	// Set default class.
-	// Backward compatibility ( 1.8=<version>1.9).
+	// Backward compatibility ( 1.8=<version>2.0).
 	$field['wrapper_attributes']['class'] = ! empty( $field['wrapper_attributes']['class'] )
 		? "{$field['wrapper_attributes']['class']} give-docs-link"
 		: 'give-docs-link';

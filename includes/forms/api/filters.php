@@ -2,7 +2,7 @@
 /**
  * Render `{{form_attributes}}` tag.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $form_html
  * @param $form
@@ -28,7 +28,7 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_attributes_tag',
 /**
  * Skip `{{continue_button}}` tag fro render process.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param array $form_tags
  * @param array $form
@@ -48,7 +48,7 @@ add_filter( 'give_form_api_manually_render_form_tags', 'give_do_not_process_cont
 /**
  * Render `{{continue_button}}` tag.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $form_html
  * @param $form
@@ -75,7 +75,7 @@ add_filter( 'give_form_api_render_form_tags', 'give_render_form_continue_button_
 /**
  * Set modal related classes in form.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param array $form
  *
@@ -98,7 +98,7 @@ add_filter( 'give_form_api_post_set_default_values', 'give_set_form_display_styl
 /**
  * Set modal related classes in field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param array $field
  * @param array $form
@@ -135,7 +135,7 @@ add_filter( 'give_field_api_post_set_default_values', 'give_set_field_display_st
 /**
  * Set step buttons for stepper form.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param array $field
  * @param array $form
@@ -175,7 +175,7 @@ add_filter( 'give_field_api_pre_set_default_values', 'give_set_step_buttons_for_
 /**
  * Set field value.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param $field
  *
@@ -304,7 +304,7 @@ add_filter( 'give_field_api_set_values', 'give_field_api_set_field_value', 0 );
 /**
  * Render docs link field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param string $field_html
  * @param array  $field
@@ -338,7 +338,7 @@ add_filter( 'give_field_api_render_docs_link_field', 'give_render_docs_link_fiel
 /**
  * Render wysiwyg field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param string $field_html
  * @param array  $field
@@ -388,7 +388,7 @@ add_filter( 'give_field_api_render_wysiwyg_field', 'give_render_wysiwyg_field', 
 /**
  * Render file field.
  *
- * @since 1.9
+ * @since 2.0
  *
  * @param string $field_html
  * @param array  $field

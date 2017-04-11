@@ -745,7 +745,7 @@ if ( ! class_exists( 'Give_Admin_Settings' ) ) :
 		/**
 		 * Get field wrapper.
 		 *
-		 * @since  1.9
+		 * @since  2.0
 		 * @access private
 		 *
 		 * @param array  $field

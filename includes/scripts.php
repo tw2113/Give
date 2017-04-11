@@ -138,7 +138,7 @@ function give_load_scripts() {
 	/**
 	 * Fire the action after frontend scripts and styles load.
 	 *
-	 * @since 1.9
+	 * @since 2.0
 	 */
 	do_action( 'give_wp_enqueue_scripts' );
 }
@@ -332,7 +332,7 @@ function give_load_admin_scripts( $hook ) {
 	/**
 	 * Fire the action after admin scripts and styles load.
 	 *
-	 * @since 1.9
+	 * @since 2.0
 	 */
 	do_action( 'give_admin_enqueue_scripts' );
 }
