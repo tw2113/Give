@@ -322,7 +322,7 @@ class Give_Fields_API {
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
 				echo $section['before_field_label'];
-				echo "<legend " . self::get_attributes( $section['label_attributes'] ) . ">{$section['label']}</legend>";
+				echo '<legend ' . self::get_attributes( $section['label_attributes'] ) . ">{$section['label']}</legend>";
 				echo $section['after_field_label'];
 			};
 
@@ -624,7 +624,9 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_hidden_field( $field, $form = null, $args = array() ) {
+		// Do not set wrapper and label for hidden field.
 		$field['wrapper'] = false;
+		$field['label']   = false;
 
 		return self::$instance->render_text_field( $field );
 	}
@@ -907,8 +909,7 @@ class Give_Fields_API {
 
 		ob_start();
 		?>
-		<div class="give-repeatable-field-section" id="<?php echo "{$fields['id']}_field"; ?>"
-			 data-group-numbering="<?php echo $group_numbering; ?>" data-close-tabs="<?php echo $close_tabs; ?>">
+		<div class="give-repeatable-field-section" id="<?php echo Give_Form_API::get_unique_id( $form, $fields ); ?>" data-group-numbering="<?php echo $group_numbering; ?>" data-close-tabs="<?php echo $close_tabs; ?>">
 			<?php if ( ! empty( $fields['label'] ) ) : ?>
 				<p class="give-repeater-field-name"><?php echo $fields['label']; ?></p>
 			<?php endif; ?>
@@ -917,11 +918,11 @@ class Give_Fields_API {
 				<p class="give-repeater-field-description"><?php echo $fields['description']; ?></p>
 			<?php endif; ?>
 
-			<table class="give-repeatable-fields-section-wrapper" cellspacing="0">
+			<table class="give-repeatable-fields-section-wrapper">
 				<tbody class="container"<?php echo " data-rf-row-count=\"{$fields_count}\""; ?>>
 					<!--Repeater field group template-->
 					<tr class="give-template give-row">
-						<td class="give-repeater-field-wrap give-column" colspan="2">
+						<td class="give-repeater-field-wrap give-column">
 							<div class="give-row-head give-move">
 								<button type="button" class="give-toggle-btn">
 									<span class="give-toggle-indicator"></span>
@@ -955,14 +956,12 @@ class Give_Fields_API {
 						<!--Stored repeater field group-->
 						<?php foreach ( $repeater_field_values as $index => $field_group ) : ?>
 							<tr class="give-row">
-								<td class="give-repeater-field-wrap give-column" colspan="2">
+								<td class="give-repeater-field-wrap give-column">
 									<div class="give-row-head give-move">
 										<button type="button" class="give-toggle-btn">
 											<span class="give-toggle-indicator"></span>
 										</button>
-										<sapn class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">
-											-
-										</sapn>
+										<span class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">-</span>
 										<h2>
 											<span data-header-title="<?php echo $header_title; ?>"><?php echo $header_title; ?></span>
 										</h2>
@@ -991,13 +990,12 @@ class Give_Fields_API {
 					<?php elseif ( $add_default_donation_field ) : ?>
 						<!--Default repeater field group-->
 						<tr class="give-row">
-							<td class="give-repeater-field-wrap give-column" colspan="2">
+							<td class="give-repeater-field-wrap give-column">
 								<div class="give-row-head give-move">
 									<button type="button" class="give-toggle-btn">
 										<span class="give-toggle-indicator"></span>
 									</button>
-									<sapn class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">-
-									</sapn>
+									<span class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">-</span>
 									<h2>
 										<span data-header-title="<?php echo $header_title; ?>"><?php echo $header_title; ?></span>
 									</h2>
@@ -1030,7 +1028,7 @@ class Give_Fields_API {
 							? $add_row_btn_title = $fields['options']['add_button']
 							: esc_html__( 'Add Row', 'give' );
 						?>
-						<td colspan="2" class="give-add-repeater-field-section-row-wrap">
+						<td class="give-add-repeater-field-section-row-wrap">
 							<button class="button button-primary give-add-repeater-field-section-row"><?php echo $add_row_btn_title; ?></button>
 						</td>
 					</tr>
@@ -1173,7 +1171,9 @@ class Give_Fields_API {
 		ob_start();
 		$label_type = ( 'fieldset' === $field['wrapper_type'] ? 'legend' : 'label' );
 
-		$field['label_attributes']['for'] = $field['field_attributes']['id'];
+		if( 'label' === $label_type ) {
+			$field['label_attributes']['for'] = $field['field_attributes']['id'];
+		}
 
 		// Set before label html.
 		$field['before_field_label'] = self::is_callback( $field['before_field_label'] )
@@ -1307,6 +1307,7 @@ class Give_Fields_API {
 				$field['field_attributes']['id'] = ! isset( $field['field_attributes']['id'] )
 					? "give-{$field['id']}-field"
 					: $field['field_attributes']['id'];
+				$field['field_attributes']['id'] = Give_Form_API::get_unique_id( $form, $field );
 
 				// Set field class.
 				$field['field_attributes']['class'] = empty( $field['field_attributes']['class'] )
@@ -1668,3 +1669,4 @@ class Give_Fields_API {
 
 // @todo implement required and aria-required for all form fields. required should be custom tag because we want custom validation for form instead html5.
 // @todo develop field validation feature
+// @todo set unique id for each field inside group

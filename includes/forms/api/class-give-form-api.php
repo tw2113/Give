@@ -44,6 +44,11 @@ class Give_Form_API {
 		// If this param set to true then define priority for each field.
 		'sort_by_priority'      => false,
 
+		// This param will help to generate w3c validated form otherwise
+		// Some conflict can occur if you use same form twice or multiple times on same page for example id conflict.
+		'set_unique_id'         => true,
+
+
 		// Add custom attributes.
 		'form_attributes'       => array(),
 
@@ -445,6 +450,31 @@ class Give_Form_API {
 			wp_enqueue_script('give-repeatable-fields');
 			wp_enqueue_script('give-form-api-js');
 		}
+	}
+
+
+	/**
+	 * Get unique form/field id
+	 *
+	 * @since  2.0
+	 * @access public
+	 *
+	 * @param array $form
+	 * @param array $field
+	 *
+	 * @return string
+	 */
+	public static function get_unique_id( $form, $field = array() ) {
+		$field = empty( $field ) ? $form : $field;
+		$field_id = $field['id'];
+
+		if ( ( ! is_null( $form ) && ! empty( $form['set_unique_id'] ) ) || ! empty( $field['set_unique_id'] ) ) {
+			$field_id = empty( $field['unique_id'] )
+				? $field['id'] . '-' . uniqid()
+				: $field['unique_id'];
+		}
+
+		return $field_id;
 	}
 }
 

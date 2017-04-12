@@ -11,6 +11,7 @@
  */
 function give_render_form_attributes_tag( $form_html, $form ) {
 	$form_attributes_val = array();
+	$form['form_attributes']['id'] = Give_Form_API::get_unique_id( $form );
 
 	if ( ! empty( $form['form_attributes'] ) ) {
 		foreach ( $form['form_attributes'] as $attribute_name => $attribute_val ) {

@@ -118,7 +118,7 @@ function give_get_donation_form( $args = array() ) {
 			do_action( 'give_pre_form', $form->ID, $args );
 
 			$form_args = array(
-				'id'                      => "give-form-{$form_id}-" . uniqid(),
+				'id'                      => "give-form-{$form_id}",
 				'action'                  => esc_url_raw( $form_action ),
 				'method'                  => 'post',
 
