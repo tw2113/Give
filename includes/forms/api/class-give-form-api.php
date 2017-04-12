@@ -440,9 +440,20 @@ class Give_Form_API {
 	}
 }
 
-// Initialize field API.
+/**
+ * Initialize field API.
+ *
+ * @since 2.0
+ */
 function give_init_forms_api() {
 	Give_Form_API::get_instance()->init();
+
+	/**
+	 * Fire the action when form api loaded.
+	 *
+	 * @since 2.0
+	 */
+	do_action( 'give_forms_api_loaded' );
 }
 
-add_action( 'init', 'give_init_forms_api', 9999 );
+add_action( 'init', 'give_init_forms_api', 99 );
