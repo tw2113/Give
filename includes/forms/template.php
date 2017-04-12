@@ -118,7 +118,7 @@ function give_get_donation_form( $args = array() ) {
 			do_action( 'give_pre_form', $form->ID, $args );
 
 			$form_args = array(
-				'id'                      => "give-form-{$form_id}",
+				'id'                      => "give-form-{$form_id}-" . uniqid(),
 				'action'                  => esc_url_raw( $form_action ),
 				'method'                  => 'post',
 
@@ -258,8 +258,11 @@ function give_get_donation_form( $args = array() ) {
 			 */
 			$form_args = apply_filters( 'give_form_args', $form_args );
 
-			echo Give_Form_API::render_form(  $form_args );
+			// Register Form.
+			Give_Form_API::register_form(  $form_args, $form_args['id'] );
 
+			// Render Form.
+			echo Give_Form_API::render_form( $form_args['id'] );
 
 			/**
 			 * Fires while outputting donation form, after the form.
