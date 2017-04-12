@@ -1262,11 +1262,6 @@ class Give_Fields_API {
 				// Set default values for block.
 				$field = wp_parse_args( $field, self::$block_defaults );
 
-				// Set block id.
-				$field['field_attributes']['id'] = ! isset( $field['field_attributes']['id'] )
-					? "give-{$field['id']}-field"
-					: $field['field_attributes']['id'];
-
 				// Set wrapper class.
 				$field['block_attributes']['class'] = empty( $field['block_attributes']['class'] )
 					? "give-block-wrap js-give-block-wrap give-block-{$field['id']}"
@@ -1284,11 +1279,6 @@ class Give_Fields_API {
 			case 'section':
 				// Set default values for block.
 				$field = wp_parse_args( $field, self::$section_defaults );
-
-				// Set section id.
-				$field['field_attributes']['id'] = ! isset( $field['field_attributes']['id'] )
-					? "give-{$field['id']}-field"
-					: $field['field_attributes']['id'];
 
 				// Set wrapper class.
 				$field['section_attributes']['class'] = empty( $field['section_attributes']['class'] )
