@@ -45,6 +45,7 @@ class Give_Fields_API {
 
 		// Add label, before and after field.
 		'label'                => '',
+		// By default label position is before but in case of radio field it will change to after.
 		'label_position'       => 'before',
 		'label_tooltip'        => '',
 
@@ -1050,7 +1051,7 @@ class Give_Fields_API {
 			case 'after':
 				$field['before_field_label'] = empty( $field['before_field_label'] )
 					? $field_html
-					: $field_html . $field['before_field_label'];
+					: "{$field_html} {$field['before_field_label']}";
 				break;
 
 			case 'inside':
@@ -1063,7 +1064,8 @@ class Give_Fields_API {
 			default:
 				$field['after_field_label'] = empty( $field['after_field_label'] )
 					? $field_html
-					: $field['after_field_label'] . $field_html;
+					: "{$field['after_field_label']} {$field_html}";
+
 		}
 
 
@@ -1275,9 +1277,9 @@ class Give_Fields_API {
 				break;
 
 			default:
-				self::$field_defaults['label_position'] = empty( $field['label_position'] ) && 'radio' === $field['type']
+				self::$field_defaults['label_position'] = ( empty( $field['label_position'] ) && 'radio' === $field['type'] )
 					? 'after'
-					: self::$field_defaults['label_position'];
+					: 'before';
 
 				// Set default values for field or section.
 				$field = wp_parse_args( $field, self::$field_defaults );
