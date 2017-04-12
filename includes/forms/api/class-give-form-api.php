@@ -186,23 +186,19 @@ class Give_Form_API {
 	static function render_form( $form_slug ) {
 		$form_html = '';
 
-		if( is_array( $form_slug ) ) {
-			$form = self::set_default_values( $form_slug );
-		} else {
-			// Handle exception.
-			try {
-				if (
-					empty( $form_slug )
-					|| ! is_string( $form_slug )
-					|| ! ( $form = self::get_form( $form_slug ) )
-				) {
-					throw new Exception( __( 'Pass valid form slug to render form.', 'give' ) );
-				}
-			} catch ( Exception $e ) {
-				give_output_error( $e->getMessage(), true, 'error' );
-
-				return $form_html;
+		// Handle exception.
+		try {
+			if (
+				empty( $form_slug )
+				|| ! is_string( $form_slug )
+				|| ! ( $form = self::get_form( $form_slug ) )
+			) {
+				throw new Exception( __( 'Pass valid form slug to render form.', 'give' ) );
 			}
+		} catch ( Exception $e ) {
+			give_output_error( $e->getMessage(), true, 'error' );
+
+			return $form_html;
 		}
 
 		// Enqueue Form API js.
@@ -298,14 +294,10 @@ class Give_Form_API {
 	static function get_form( $form_slug ) {
 		$form = array();
 
-		if ( ! empty( self::$forms ) ) {
-			foreach ( self::$forms as $index => $form_args ) {
-				if ( $form_slug === $index ) {
-					$form_args['id'] = empty( $form_args['id'] ) ? $form_slug : $form_args['id'];
-					$form              = self::$instance->set_default_values( $form_args );
-					break;
-				}
-			}
+		if ( ! empty( self::$forms ) && array_key_exists( $form_slug, self::$forms ) ) {
+			$form       = self::$forms[ $form_slug ];
+			$form['id'] = empty( $form_args['id'] ) ? $form_slug : $form_args['id'];
+			$form       = self::$instance->set_default_values( $form );
 		}
 
 		/**
