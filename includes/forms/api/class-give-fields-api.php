@@ -1056,7 +1056,7 @@ class Give_Fields_API {
 			case 'inside':
 				$field['label'] = empty( $field['label'] )
 					? $field_html
-					: $field_html . $field['label'];
+					: "{$field_html}  {$field['label']}";
 				break;
 
 			//case 'before':
@@ -1275,6 +1275,10 @@ class Give_Fields_API {
 				break;
 
 			default:
+				self::$field_defaults['label_position'] = empty( $field['label_position'] ) && 'radio' === $field['type']
+					? 'after'
+					: self::$field_defaults['label_position'];
+
 				// Set default values for field or section.
 				$field = wp_parse_args( $field, self::$field_defaults );
 
