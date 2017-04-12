@@ -138,11 +138,13 @@ class Give_Form_API {
 	 * @access public
 	 *
 	 * @param array $attrs
+	 *
+	 * @return string
 	 */
 	public function render_shortcode( $attrs ) {
 		$attrs = shortcode_atts( array( 'id' => '' ), $attrs, 'give_form_api' );
 
-		echo self::$instance->render_form( $attrs['id'] );
+		return self::$instance->render_form( $attrs['id'] );
 	}
 
 
