@@ -1669,4 +1669,4 @@ class Give_Fields_API {
 
 // @todo implement required and aria-required for all form fields. required should be custom tag because we want custom validation for form instead html5.
 // @todo develop field validation feature
-// @todo set unique id for each field inside group
+// @todo set unique id for each field inside group and w3c validation
