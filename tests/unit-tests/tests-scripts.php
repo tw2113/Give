@@ -20,7 +20,8 @@ class Tests_Scripts extends Give_Unit_Test_Case {
 	public function test_file_hooks() {
 
 		$this->assertNotFalse( has_action( 'wp_enqueue_scripts', 'give_load_scripts' ) );
-		$this->assertNotFalse( has_action( 'wp_enqueue_scripts', 'give_register_styles' ) );
+		// From version 2.0, we are loading give style with give_load_scripts callback.
+		// $this->assertNotFalse( has_action( 'wp_enqueue_scripts', 'give_register_styles' ) );
 		$this->assertNotFalse( has_action( 'admin_enqueue_scripts', 'give_load_admin_scripts' ) );
 		$this->assertNotFalse( has_action( 'admin_head', 'give_admin_icon' ) );
 
