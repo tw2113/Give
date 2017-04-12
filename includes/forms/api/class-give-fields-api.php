@@ -1629,7 +1629,7 @@ class Give_Fields_API {
 	private function sort_fields( $fields, $form ) {
 		// Set if sort by priority is enable or not.
 		if( empty( $form['sort_by_priority'] ) ) {
-			return $form;
+			return $fields;
 		}
 
 		if ( ! empty( $fields ) ) {
