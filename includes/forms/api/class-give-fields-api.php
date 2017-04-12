@@ -905,8 +905,6 @@ class Give_Fields_API {
 			$add_default_donation_field = true;
 		}
 
-		$field_wrapper = self::$instance->render_field_wrapper( $fields );
-
 		ob_start();
 		?>
 		<div class="give-repeatable-field-section" id="<?php echo Give_Form_API::get_unique_id( $form, $fields ); ?>" data-group-numbering="<?php echo $group_numbering; ?>" data-close-tabs="<?php echo $close_tabs; ?>">
@@ -1037,7 +1035,7 @@ class Give_Fields_API {
 		</div>
 		<?php
 
-		return str_replace( '{{form_field}}', ob_get_clean(), $field_wrapper );
+		return ob_get_clean();
 	}
 
 
