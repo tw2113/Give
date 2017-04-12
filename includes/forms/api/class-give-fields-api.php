@@ -1183,7 +1183,7 @@ class Give_Fields_API {
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
 
-			<<?php echo $label_type; ?><?php echo self::get_attributes( $field['label_attributes'] ); ?>>
+			<<?php echo $label_type; ?><?php echo ' '. self::get_attributes( $field['label_attributes'] ); ?>>
 			<?php echo $field['label']; ?>
 
 			<?php if ( $field['required'] ) : ?>
