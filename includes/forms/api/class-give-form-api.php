@@ -466,11 +466,14 @@ class Give_Form_API {
 	 */
 	public static function get_unique_id( $form, $field = array() ) {
 		$field = empty( $field ) ? $form : $field;
-		$field_id = $field['id'];
+
+		$field_id = ! empty( $field['field_attributes']['id'] )
+			? $field['field_attributes']['id']
+			: $field['id'];
 
 		if ( ( ! is_null( $form ) && ! empty( $form['set_unique_id'] ) ) || ! empty( $field['set_unique_id'] ) ) {
 			$field_id = empty( $field['unique_id'] )
-				? $field['id'] . '-' . uniqid()
+				? $field_id . '-' . uniqid()
 				: $field['unique_id'];
 		}
 
