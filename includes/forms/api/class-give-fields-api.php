@@ -94,6 +94,7 @@ class Give_Fields_API {
 		'type'                 => 'section',
 		'label'                => '',
 		'id'                   => '',
+		'label_attributes'     => array(),
 		'section_attributes'   => array(),
 
 		// Set position of field.
@@ -120,6 +121,7 @@ class Give_Fields_API {
 		'type'             => 'block',
 		'label'            => '',
 		'id'               => '',
+		'label_attributes' => array(),
 		'block_attributes' => array(),
 
 		// Set position of field.
@@ -161,18 +163,19 @@ class Give_Fields_API {
 	/**
 	 * Render callback.
 	 *
-	 * @since 2.0
+	 * @since  2.0
 	 * @access public
+	 *
 	 * @param       $callback
 	 * @param array $field
 	 * @param null  $form
 	 *
 	 * @return string
 	 */
-	public static function render_callback( $callback, $field = array(), $form = null  ){
+	public static function render_callback( $callback, $field = array(), $form = null ) {
 		$field_html = '';
 
-		if( empty( $callback ) || ! self::is_callback( $callback ) ) {
+		if ( empty( $callback ) || ! self::is_callback( $callback ) ) {
 			return $field_html;
 		}
 
@@ -203,8 +206,8 @@ class Give_Fields_API {
 
 		if ( ! empty( $field['callback'] ) ) {
 			$field = self::$instance->set_default_values( $field, $form );
-			
-			$callback = $field['callback'];
+
+			$callback   = $field['callback'];
 			$field_html = self::render_callback( $callback, $field, $form );
 		}
 
@@ -237,7 +240,7 @@ class Give_Fields_API {
 		self::$instance->set_responsive_field( $form );
 
 		// Sort field with field priority for frontenf appearance.
-		$form = self::$instance->sort_fields( $form );
+		$form['fields'] = self::$instance->sort_fields( $form['fields'], $form );
 
 		// Render fields.
 		foreach ( $form['fields'] as $key => $field ) {
@@ -319,7 +322,7 @@ class Give_Fields_API {
 			// Legend.
 			if ( ! empty( $section['label'] ) ) {
 				echo $section['before_field_label'];
-					echo "<legend ". self::get_attributes( $section['label_attributes'] ).">{$section['label']}</legend>";
+				echo "<legend " . self::get_attributes( $section['label_attributes'] ) . ">{$section['label']}</legend>";
 				echo $section['after_field_label'];
 			};
 
@@ -350,6 +353,7 @@ class Give_Fields_API {
 			$form,
 			$args
 		);
+
 		return $section_html;
 	}
 
@@ -423,8 +427,8 @@ class Give_Fields_API {
 		// Enqueue scripts.
 		Give_Form_API::enqueue_scripts();
 
-		if( ! empty( $field['sortable'] ) ) {
-			wp_enqueue_script('jquery-ui-sortable');
+		if ( ! empty( $field['sortable'] ) ) {
+			wp_enqueue_script( 'jquery-ui-sortable' );
 		}
 
 		// Set default values if necessary.
@@ -495,12 +499,12 @@ class Give_Fields_API {
 	 * @return string
 	 */
 	public static function render_text_field( $field, $form = null, $args = array() ) {
-		$field_wrapper = self::$instance->render_field_wrapper( $field );
+		$field_wrapper                     = self::$instance->render_field_wrapper( $field );
 		$field['field_attributes']['name'] = self::get_field_name( $field );
 		$field['field_attributes']['type'] = $field['type'];
 
-		if( ! empty( $field['required'] ) ) {
-			$field['field_attributes']['required'] = 'required';
+		if ( ! empty( $field['required'] ) ) {
+			$field['field_attributes']['required']      = 'required';
 			$field['field_attributes']['aria-required'] = 'true';
 		}
 
@@ -671,7 +675,7 @@ class Give_Fields_API {
 
 		$options_html = '';
 		foreach ( $field['options'] as $key => $option ) {
-			$options_html .= '<option '. self::get_attributes( $option['field_attributes'] ). '>' . $option['label'] . '</option>';
+			$options_html .= '<option ' . self::get_attributes( $option['field_attributes'] ) . '>' . $option['label'] . '</option>';
 		}
 		?>
 
@@ -699,7 +703,7 @@ class Give_Fields_API {
 	 */
 	public static function render_multi_select_field( $field, $form = null, $args = array() ) {
 		$field['field_attributes'] = array_merge( $field['field_attributes'], array( 'multiple' => 'multiple' ) );
-		$field['id']             = "{$field['id']}[]";
+		$field['id']               = "{$field['id']}[]";
 
 		return self::$instance->render_select_field( $field );
 	}
@@ -742,11 +746,11 @@ class Give_Fields_API {
 			$option['field_attributes']['type'] = $field['type'];
 			$option['field_attributes']['name'] = self::get_field_name( $field );
 
-			$option['field_attributes']['id']   = ! empty( $option['field_attributes']['id'] )
+			$option['field_attributes']['id'] = ! empty( $option['field_attributes']['id'] )
 				? $option['field_attributes']['id']
 				: "{$id_base}-{$key}-" . uniqid();
 
-			$option['label_attributes']['for']  = ! empty( $option['label_attributes']['for'] )
+			$option['label_attributes']['for'] = ! empty( $option['label_attributes']['for'] )
 				? $option['label_attributes']['for']
 				: $option['field_attributes']['id'];
 
@@ -811,20 +815,20 @@ class Give_Fields_API {
 		unset( $field['field_attributes']['id'] );
 
 		// Set ul attributes.
-		$field['ul_attributes']['class'] = empty( $field['ul_attributes']['class'] )
+		$field['ul_attributes']['class']                      = empty( $field['ul_attributes']['class'] )
 			? 'give-checklist-fields'
 			: "give-checklist-fields {$field['ul_attributes']['class']}";
-		$field['ul_attributes']['data-give-sortable-list'] =absint( $field['sortable'] );
-		$field['ul_attributes']['data-give-sortable-icon'] =absint( $field['sortable-icon'] );
+		$field['ul_attributes']['data-give-sortable-list']    = absint( $field['sortable'] );
+		$field['ul_attributes']['data-give-sortable-icon']    = absint( $field['sortable-icon'] );
 
 		echo '<ul ' . self::get_attributes( $field['ul_attributes'] ) . '>';
 
 		foreach ( $field['options'] as $key => $option ) :
 			// Set basic values for field.
 			$option = is_array( $option ) ? $option : array( 'label' => $option );
-			$option['field_attributes']['id'] = "give-{$id_base}-{$key}";
+			$option['field_attributes']['id']                 = "give-{$id_base}-{$key}";
 			$option['field_attributes']['data-give-required'] = ( $field['required'] ? 1 : 0 );
-			$option['field_attributes']['value']         = empty( $option['field_attributes']['value'] )
+			$option['field_attributes']['value']              = empty( $option['field_attributes']['value'] )
 				? $key
 				: $option['field_attributes']['value'];
 
@@ -865,7 +869,7 @@ class Give_Fields_API {
 	/**
 	 * Render group field
 	 *
-	 * @since 2.0
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param  array $fields
@@ -928,12 +932,15 @@ class Give_Fields_API {
 							<div class="give-row-body">
 								<?php
 								foreach ( $fields['fields'] as $field_id => $field ) :
-									$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
-									$field['repeat'] = true;
+									$field['id']                = ! empty( $field['id'] ) ? $field['id'] : $field_id;
+									$field['repeat']            = true;
 									$field['repeater_template'] = true;
 
-									$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields );
-									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+									$field['repeater_field_name']    = self::get_repeater_field_name( $field, $fields );
+									$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array(
+										'_',
+										'',
+									), $field['repeater_field_name'] );
 
 									echo self::render_tag( $field, $form );
 								endforeach;
@@ -951,7 +958,8 @@ class Give_Fields_API {
 										<button type="button" class="give-toggle-btn">
 											<span class="give-toggle-indicator"></span>
 										</button>
-										<sapn class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">-
+										<sapn class="give-remove" title="<?php esc_html_e( 'Remove Group', 'give' ); ?>">
+											-
 										</sapn>
 										<h2>
 											<span data-header-title="<?php echo $header_title; ?>"><?php echo $header_title; ?></span>
@@ -963,9 +971,12 @@ class Give_Fields_API {
 											$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
 											$field['repeat'] = true;
 
-											$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, $index );
-											$field['value'] = self::get_repeater_field_value( $field, $field_group, $fields );
-											$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+											$field['repeater_field_name']    = self::get_repeater_field_name( $field, $fields, $index );
+											$field['value']                  = self::get_repeater_field_value( $field, $field_group, $fields );
+											$field['field_attributes']['id'] = str_replace( array(
+												'[',
+												']',
+											), array( '_', '', ), $field['repeater_field_name'] );
 
 											echo self::render_tag( $field, $form );
 										endforeach;
@@ -992,12 +1003,15 @@ class Give_Fields_API {
 								<div class="give-row-body">
 									<?php
 									foreach ( $fields['fields'] as $field_id => $field ) :
-										$field['id']     = ! empty( $field['id'] ) ? $field['id'] : $field_id;
-										$field['repeat'] = true;
+										$field['id']                        = ! empty( $field['id'] ) ? $field['id'] : $field_id;
+										$field['repeat']                    = true;
 										$field['repeater_default_template'] = true;
 
-										$field['repeater_field_name'] = self::get_repeater_field_name( $field, $fields, 0 );
-										$field['field_attributes']['id']  = str_replace( array( '[', ']' ), array( '_', '', ), $field['repeater_field_name'] );
+										$field['repeater_field_name']    = self::get_repeater_field_name( $field, $fields, 0 );
+										$field['field_attributes']['id'] = str_replace( array( '[', ']' ), array(
+											'_',
+											'',
+										), $field['repeater_field_name'] );
 
 										echo self::render_tag( $field, $form );
 									endforeach;
@@ -1167,16 +1181,16 @@ class Give_Fields_API {
 		?>
 		<?php if ( ! empty( $field['label'] ) ) : ?>
 
-			<<?php echo $label_type; ?> <?php echo self::get_attributes( $field['label_attributes'] ); ?>>
-				<?php echo $field['label']; ?>
+			<<?php echo $label_type; ?><?php echo self::get_attributes( $field['label_attributes'] ); ?>>
+			<?php echo $field['label']; ?>
 
-				<?php if ( $field['required'] ) : ?>
-					<span class="give-required-indicator">*</span>
-				<?php endif; ?>
+			<?php if ( $field['required'] ) : ?>
+				<span class="give-required-indicator">*</span>
+			<?php endif; ?>
 
-				<?php if ( $field['label_tooltip'] ) : ?>
-					<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
-				<?php endif; ?>
+			<?php if ( $field['label_tooltip'] ) : ?>
+				<span class="give-tooltip give-icon give-icon-question" data-tooltip="<?php echo $field['label_tooltip'] ?>"></span>
+			<?php endif; ?>
 			</<?php echo $label_type; ?>>
 
 		<?php endif; ?>
@@ -1257,7 +1271,7 @@ class Give_Fields_API {
 					: trim( "give-block-wrap js-give-block-wrap give-block-{$field['id']} {$field['block_attributes']['class']}" );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
-					$single_field['id']    = ! empty( $single_field['id'] )
+					$single_field['id']      = ! empty( $single_field['id'] )
 						? $single_field['id']
 						: $key;
 					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, array( 'fire_filter' => false ) );
@@ -1280,7 +1294,7 @@ class Give_Fields_API {
 					: trim( "give-section-wrap {$field['section_attributes']['class']}" );
 
 				foreach ( $field['fields'] as $key => $single_field ) {
-					$single_field['id']    = ! empty( $single_field['id'] )
+					$single_field['id']      = ! empty( $single_field['id'] )
 						? $single_field['id']
 						: $key;
 					$field['fields'][ $key ] = self::$instance->set_default_values( $single_field, $form, array( 'fire_filter' => false ) );
@@ -1314,7 +1328,7 @@ class Give_Fields_API {
 				// Set wrapper class.
 				$field['wrapper_attributes']['class'] = empty( $field['wrapper_attributes']['class'] )
 					? "give-field-wrap {$field['id']}_field"
-					: trim( "give-field-wrap {$field['id']}_field {$field['wrapper_attributes']['class']}"  );
+					: trim( "give-field-wrap {$field['id']}_field {$field['wrapper_attributes']['class']}" );
 
 				// if( 'group' === $field['type'] && ! empty( $field['fields'] ) ) {
 				// 	foreach ( $field['fields'] as $key => $single_field ) {
@@ -1514,7 +1528,7 @@ class Give_Fields_API {
 	 *
 	 * @return string
 	 */
-	public static function get_repeater_field_name( $field, $fields , $default = false ) {
+	public static function get_repeater_field_name( $field, $fields, $default = false ) {
 		$row_placeholder = false !== $default ? $default : '{{row-count-placeholder}}';
 
 		// Get field id.
@@ -1545,7 +1559,7 @@ class Give_Fields_API {
 	/**
 	 * Get repeater field value.
 	 *
-	 * @since 2.0
+	 * @since  2.0
 	 * @access public
 	 *
 	 * @param array $field
@@ -1609,30 +1623,32 @@ class Give_Fields_API {
 	 * @since  2.0
 	 * @access private
 	 *
+	 * @param array $fields
 	 * @param array $form
 	 *
 	 * @return array
 	 */
-	private function sort_fields( $form ) {
-		$field_list = $form['fields'];
+	private function sort_fields( $fields, $form ) {
+		// Set if sort by priority is enable or not.
+		if( empty( $form['sort_by_priority'] ) ) {
+			return $form;
+		}
 
-		if ( ! empty( $field_list ) ) {
+		if ( ! empty( $fields ) ) {
 
-			foreach ( $field_list as $index => $field ) {
-				if( ! in_array( self::$instance->get_field_type( $field ), array( 'section', 'block') ) ) {
+			foreach ( $fields as $index => $field ) {
+				if ( 'field' === self::$instance->get_field_type( $field ) && 'group' !== $field['type'] ) {
 					continue;
 				}
 
 				// Sort fields list inside section or block.
-				$field_list[$index] = self::$instance->sort_fields( $field );
+				$fields[ $index ]['fields'] = self::$instance->sort_fields( $field['fields'], $form );
 			}
 
-			uasort( $field_list, array( $this, 'sort_by_priority' ) );
+			uasort( $fields, array( $this, 'sort_by_priority' ) );
 		}
-
-		$form['fields'] = $field_list;
-
-		return $form;
+		
+		return $fields;
 	}
 
 	/**
@@ -1644,13 +1660,15 @@ class Give_Fields_API {
 	 * @return int
 	 */
 	private function sort_by_priority( $a, $b ) {
-		$a['priority'] = ! isset( $a['priority'] )
-			? ( 'submit' === $a['type'] ? 9999 : 0 )
-			: $a['priority'];
-
-		$b['priority'] = ! isset( $b['priority'] )
-			? ( 'submit' === $b['type'] ? 9999 : 0 )
-			: $b['priority'];
+		// Priority must be set for each field
+		// @see class-give-form-api.php:43
+		// $a['priority'] = ! isset( $a['priority'] )
+		// 	? ( 'submit' === $a['type'] ? 9999 : 0 )
+		// 	: $a['priority'];
+		//
+		// $b['priority'] = ! isset( $b['priority'] )
+		// 	? ( 'submit' === $b['type'] ? 9999 : 0 )
+		// 	: $b['priority'];
 
 		if ( $a['priority'] == $b['priority'] ) {
 			return 0;

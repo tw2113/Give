@@ -35,13 +35,17 @@ class Give_Form_API {
 	 * @access static
 	 */
 	static $field_defaults = array(
-		'id'                  => '',
+		'id'                    => '',
 		'method'                => 'post',
 		'action'                => '',
 		'fields'                => array(),
 
+		// Sort field by priority.
+		// If this param set to true then define priority for each field.
+		'sort_by_priority'      => false,
+
 		// Add custom attributes.
-		'form_attributes'            => array(),
+		'form_attributes'       => array(),
 
 		// Supported form layout: simple, stepper, reveal, modal, button.
 		'display_style'         => 'simple',
