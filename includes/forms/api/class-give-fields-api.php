@@ -739,7 +739,9 @@ class Give_Fields_API {
 
 		echo '<ul ' . self::get_attributes( $field['ul_attributes'] ) . '>';
 		foreach ( $field['options'] as $key => $option ) :
-			$option['label_position'] = ! empty( $option['label_position'] ) ? $option['label_position'] : $field['label_position'];
+			$option['label_position'] = ! empty( $option['label_position'] )
+				? $option['label_position']
+				: 'after';
 
 			$option = wp_parse_args( $option, self::$field_defaults );
 
@@ -1303,10 +1305,6 @@ class Give_Fields_API {
 				break;
 
 			default:
-				self::$field_defaults['label_position'] = ( empty( $field['label_position'] ) && 'radio' === $field['type'] )
-					? 'after'
-					: 'before';
-
 				// Set default values for field or section.
 				$field = wp_parse_args( $field, self::$field_defaults );
 
