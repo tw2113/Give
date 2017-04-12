@@ -57,6 +57,10 @@ class Give_Fields_API {
 		'sortable'             => false,
 		'sortable-icon'        => false,
 
+		// Set position of field.
+		// By default it will set to zero but in case of submit type field it will change to 9999.
+		'priority'             => 0,
+
 		// Add custom attributes.
 		'label_attributes'     => array(),
 		'field_attributes'     => array(),
@@ -78,7 +82,6 @@ class Give_Fields_API {
 
 		// Manually render field.
 		'callback'             => '',
-
 	);
 
 	/**
@@ -92,6 +95,9 @@ class Give_Fields_API {
 		'label'                => '',
 		'id'                   => '',
 		'section_attributes'   => array(),
+
+		// Set position of field.
+		'priority'             => 0,
 
 		// Manually render section.
 		'callback'             => '',
@@ -113,8 +119,11 @@ class Give_Fields_API {
 	static $block_defaults = array(
 		'type'             => 'block',
 		'label'            => '',
-		'id'             => '',
+		'id'               => '',
 		'block_attributes' => array(),
+
+		// Set position of field.
+		'priority'         => 0,
 
 		// Manually render section.
 		'callback'         => '',
@@ -226,6 +235,9 @@ class Give_Fields_API {
 
 		// Set responsive fields.
 		self::$instance->set_responsive_field( $form );
+
+		// Sort field with field priority for frontenf appearance.
+		$form = self::$instance->sort_fields( $form );
 
 		// Render fields.
 		foreach ( $form['fields'] as $key => $field ) {
@@ -1588,6 +1600,63 @@ class Give_Fields_API {
 		}
 
 		return $is_callback;
+	}
+
+
+	/**
+	 * Sort field list.
+	 *
+	 * @since  2.0
+	 * @access private
+	 *
+	 * @param array $form
+	 *
+	 * @return array
+	 */
+	private function sort_fields( $form ) {
+		$field_list = $form['fields'];
+
+		if ( ! empty( $field_list ) ) {
+
+			foreach ( $field_list as $index => $field ) {
+				if( ! in_array( self::$instance->get_field_type( $field ), array( 'section', 'block') ) ) {
+					continue;
+				}
+
+				// Sort fields list inside section or block.
+				$field_list[$index] = self::$instance->sort_fields( $field );
+			}
+
+			uasort( $field_list, array( $this, 'sort_by_priority' ) );
+		}
+
+		$form['fields'] = $field_list;
+
+		return $form;
+	}
+
+	/**
+	 * Sort array by priority value
+	 *
+	 * @param array $a
+	 * @param array $b
+	 *
+	 * @return int
+	 */
+	private function sort_by_priority( $a, $b ) {
+		$a['priority'] = ! isset( $a['priority'] )
+			? ( 'submit' === $a['type'] ? 9999 : 0 )
+			: $a['priority'];
+
+		$b['priority'] = ! isset( $b['priority'] )
+			? ( 'submit' === $b['type'] ? 9999 : 0 )
+			: $b['priority'];
+
+		if ( $a['priority'] == $b['priority'] ) {
+			return 0;
+		}
+
+		return ( $a['priority'] < $b['priority'] ) ? - 1 : 1;
 	}
 }
 
