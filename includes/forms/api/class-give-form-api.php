@@ -96,12 +96,9 @@ class Give_Form_API {
 	 * @access static
 	 */
 	public function init() {
-		self::$forms = apply_filters( 'give_form_api_register_form', self::$forms );
-
 		self::$field_defaults['_template']             = include GIVE_PLUGIN_DIR . self::$instance->display_styles['simple'];
 		self::$field_defaults['continue_button_title'] = __( 'Show Form', 'give' );
 		self::$field_defaults['action']                = esc_url( $_SERVER['REQUEST_URI'] );
-		self::$field_defaults                          = apply_filters( 'give_form_api_form_default_values', self::$field_defaults );
 
 		// Load fields API
 		require_once GIVE_PLUGIN_DIR . 'includes/forms/api/class-give-fields-api.php';
@@ -114,6 +111,23 @@ class Give_Form_API {
 		add_shortcode( 'give_form_api', array( $this, 'render_shortcode' ) );
 		add_action( 'give_wp_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
 		add_action( 'give_admin_enqueue_scripts', array( $this, 'register_form_api_scripts' ) );
+	}
+
+
+	/**
+	 * Register form.
+	 *
+	 * @since  2.0
+	 * @access public
+	 *
+	 * @param      $form
+	 * @param      $form_id
+	 * @param bool $force
+	 */
+	public static function register_form( $form, $form_id, $force = false ) {
+		if ( ( ! array_key_exists( $form_id, self::$forms ) || $force ) && ! empty( $form_id ) ) {
+			self::$forms[ $form_id ] = $form;
+		}
 	}
 
 
