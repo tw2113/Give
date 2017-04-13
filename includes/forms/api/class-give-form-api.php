@@ -29,6 +29,15 @@ class Give_Form_API {
 	private static $forms = array();
 
 	/**
+	 * Array of forms render count.
+	 *
+	 * @since  2.0
+	 * @access private
+	 * @var array
+	 */
+	private static $forms_render_counter = array();
+
+	/**
 	 * The defaults for all elements
 	 *
 	 * @since  2.0
@@ -207,6 +216,11 @@ class Give_Form_API {
 
 			return $form_html;
 		}
+
+		// Save form render count: This will help to generate unique id for form.
+		self::$forms_render_counter[ $form_slug ] = ! empty( self::$forms_render_counter[ $form_slug ] )
+			? ++self::$forms_render_counter[ $form_slug ]
+			: 1;
 
 		// Enqueue Form API js.
 		self::$instance->enqueue_scripts();
@@ -465,16 +479,28 @@ class Give_Form_API {
 	 * @return string
 	 */
 	public static function get_unique_id( $form, $field = array() ) {
-		$field = empty( $field ) ? $form : $field;
+		$field_id = '';
 
-		$field_id = ! empty( $field['field_attributes']['id'] )
-			? $field['field_attributes']['id']
-			: $field['id'];
+		if( ! is_null( $form )  && empty( $field ) ) {
+			// Generate unique and constant id for form.
+			$field_id = ! empty( $form['field_attributes']['id'] )
+				? $form['field_attributes']['id']
+				: $form['id'];
 
-		if ( ( ! is_null( $form ) && ! empty( $form['set_unique_id'] ) ) || ! empty( $field['set_unique_id'] ) ) {
-			$field_id = empty( $field['unique_id'] )
-				? $field_id . '-' . uniqid()
-				: $field['unique_id'];
+			$field_id = "{$field_id}-" . self::$forms_render_counter[ $form['id'] ];
+
+		} else {
+
+			// Generate unique id for form (this id will change on each page refresh).
+			$field_id = ! empty( $field['field_attributes']['id'] )
+				? $field['field_attributes']['id']
+				: $field['id'];
+
+			if ( ( ! is_null( $form ) && ! empty( $form['set_unique_id'] ) ) || ! empty( $field['set_unique_id'] ) ) {
+				$field_id = empty( $field['unique_id'] )
+					? $field_id . '-' . uniqid()
+					: $field['unique_id'];
+			}
 		}
 
 		return $field_id;
