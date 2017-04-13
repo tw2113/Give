@@ -343,7 +343,7 @@ class Give_Form_API {
 	 *
 	 * @return string
 	 */
-	private function render_form_tags( $form_tags, $form ) {
+	private static function render_form_tags( $form_tags, $form ) {
 		$form_html = $form['_template'];
 
 		/**
