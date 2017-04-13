@@ -752,7 +752,7 @@ class Give_Fields_API {
 
 			$option['field_attributes']['id'] = ! empty( $option['field_attributes']['id'] )
 				? $option['field_attributes']['id']
-				: "{$id_base}-{$key}-" . uniqid();
+				: "give-{$id_base}-{$key}";
 
 			$option['label_attributes']['for'] = ! empty( $option['label_attributes']['for'] )
 				? $option['label_attributes']['for']
