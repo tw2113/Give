@@ -175,8 +175,8 @@ function give_get_gateway_supports( $gateway ) {
  *
  * @since 1.0
  *
- * @param string $gateway      Name of the gateway
- * @param array  $payment_data All the payment data to be sent to the gateway
+ * @param string $gateway      Name of the gateway.
+ * @param array  $payment_data All the payment data to be sent to the gateway.
  *
  * @return void
  */
