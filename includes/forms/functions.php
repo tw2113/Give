@@ -23,7 +23,7 @@ function give_shortcode_button_condition() {
 
 	global $typenow;
 
-	if ( $typenow != 'give_forms' ) {
+	if ( 'give_forms' !== $typenow ) {
 		return true;
 	}
 
