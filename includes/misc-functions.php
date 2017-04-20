@@ -332,13 +332,13 @@ function give_get_ip() {
  *
  * @since 1.0
  *
- * @param $donation_data
+ * @param $payment_data
  *
  * @uses  Give()->session->set()
  */
-function give_set_donation_session( $donation_data = array() ) {
-	Give()->session->set( 'give_donation', $donation_data );
-	Give()->session->set( 'give_email', $donation_data['user_email'] );
+function give_set_donation_session( $payment_data = array() ) {
+	Give()->session->set( 'give_donation', $payment_data );
+	Give()->session->set( 'give_email', $payment_data['user_email'] );
 }
 
 /**
