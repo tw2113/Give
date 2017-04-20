@@ -103,7 +103,7 @@ function give_process_donation_form() {
 	$purchase_key = strtolower( md5( $user['user_email'] . date( 'Y-m-d H:i:s' ) . $auth_key . uniqid( 'give', true ) ) );
 
 	// Setup donation information
-	$purchase_data = array(
+	$donation_data = array(
 		'price'        => $price,
 		'purchase_key' => $purchase_key,
 		'user_email'   => $user['user_email'],
@@ -131,9 +131,9 @@ function give_process_donation_form() {
 	do_action( 'give_checkout_before_gateway', $_POST, $user_info, $valid_data );
 
 	// Sanity check for price
-	if ( ! $purchase_data['price'] ) {
+	if ( ! $donation_data['price'] ) {
 		// Revert to manual
-		$purchase_data['gateway'] = 'manual';
+		$donation_data['gateway'] = 'manual';
 		$_POST['give-gateway']    = 'manual';
 	}
 
@@ -142,24 +142,26 @@ function give_process_donation_form() {
 	 *
 	 * @since 1.7
 	 */
-	$purchase_data = apply_filters( 'give_donation_data_before_gateway', $purchase_data, $valid_data );
+	$donation_data = apply_filters( 'give_donation_data_before_gateway', $donation_data, $valid_data );
 
-	// Setup the data we're storing in the donation session
-	$session_data = $purchase_data;
+	// Setup the data we're storing in the donation session.
+	$session_data = $donation_data;
 
-	// Make sure credit card numbers are never stored in sessions
+	// Make sure credit card numbers are never stored in sessions.
 	unset( $session_data['card_info']['card_number'] );
 	unset( $session_data['post_data']['card_number'] );
+	
 
 	// Used for showing data to non logged-in users after donation, and for other plugins needing donation data.
 	give_set_donation_session( $session_data );
 
 	// Send info to the gateway for payment processing
-	give_send_to_gateway( $purchase_data['gateway'], $purchase_data );
+	give_send_to_gateway( $donation_data['gateway'], $donation_data );
 	give_die();
 
 }
 
+add_action( 'give_purchase', 'give_process_donation_form' );
 add_action( 'wp_ajax_give_process_donation', 'give_process_donation_form' );
 add_action( 'wp_ajax_nopriv_give_process_donation', 'give_process_donation_form' );
 
