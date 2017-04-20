@@ -152,7 +152,7 @@ function give_process_donation_form() {
 	unset( $session_data['post_data']['card_number'] );
 
 	// Used for showing data to non logged-in users after donation, and for other plugins needing donation data.
-	give_set_purchase_session( $session_data );
+	give_set_donation_session( $session_data );
 
 	// Send info to the gateway for payment processing
 	give_send_to_gateway( $purchase_data['gateway'], $purchase_data );
@@ -160,7 +160,6 @@ function give_process_donation_form() {
 
 }
 
-add_action( 'give_purchase', 'give_process_donation_form' );
 add_action( 'wp_ajax_give_process_donation', 'give_process_donation_form' );
 add_action( 'wp_ajax_nopriv_give_process_donation', 'give_process_donation_form' );
 

@@ -332,13 +332,13 @@ function give_get_ip() {
  *
  * @since 1.0
  *
- * @param $purchase_data
+ * @param $donation_data
  *
  * @uses  Give()->session->set()
  */
-function give_set_purchase_session( $purchase_data = array() ) {
-	Give()->session->set( 'give_purchase', $purchase_data );
-	Give()->session->set( 'give_email', $purchase_data['user_email'] );
+function give_set_donation_session( $donation_data = array() ) {
+	Give()->session->set( 'give_donation', $donation_data );
+	Give()->session->set( 'give_email', $donation_data['user_email'] );
 }
 
 /**
@@ -351,8 +351,8 @@ function give_set_purchase_session( $purchase_data = array() ) {
  * @uses  Give()->session->get()
  * @return mixed array | false
  */
-function give_get_purchase_session() {
-	return Give()->session->get( 'give_purchase' );
+function give_get_donation_session() {
+	return Give()->session->get( 'give_donation' );
 }
 
 /**
@@ -936,7 +936,7 @@ function give_can_view_receipt( $payment_key = '' ) {
 		}
 	}
 
-	$session = give_get_purchase_session();
+	$session = give_get_donation_session();
 	if ( ! empty( $session ) && ! is_user_logged_in() ) {
 		if ( $session['purchase_key'] === $payment_meta['key'] ) {
 			$return = true;

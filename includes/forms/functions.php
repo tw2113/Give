@@ -988,12 +988,12 @@ function _give_get_prefill_form_field_values( $form_id ) {
 	}
 
 	// Get purchase data.
-	$give_purchase_data = Give()->session->get( 'give_purchase' );
+	$give_donation_data = Give()->session->get( 'give_donation' );
 
 	// Get donor info from form data.
-	$give_donor_info_in_session = empty( $give_purchase_data['post_data'] )
+	$give_donor_info_in_session = empty( $give_donation_data['post_data'] )
 		? array()
-		: $give_purchase_data['post_data'];
+		: $give_donation_data['post_data'];
 
 	// Output.
 	return wp_parse_args( $give_donor_info_in_session, $logged_in_donor_info );

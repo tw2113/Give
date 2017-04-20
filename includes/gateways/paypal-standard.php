@@ -496,14 +496,14 @@ function give_get_paypal_page_style() {
  */
 function give_paypal_success_page_content( $content ) {
 
-	if ( ! isset( $_GET['payment-id'] ) && ! give_get_purchase_session() ) {
+	if ( ! isset( $_GET['payment-id'] ) && ! give_get_donation_session() ) {
 		return $content;
 	}
 
 	$payment_id = isset( $_GET['payment-id'] ) ? absint( $_GET['payment-id'] ) : false;
 
 	if ( ! $payment_id ) {
-		$session    = give_get_purchase_session();
+		$session    = give_get_donation_session();
 		$payment_id = give_get_purchase_id_by_key( $session['purchase_key'] );
 	}
 

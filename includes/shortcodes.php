@@ -229,7 +229,7 @@ function give_receipt_shortcode( $atts ) {
 	), $atts, 'give_receipt' );
 
 	//set $session var
-	$session = give_get_purchase_session();
+	$session = give_get_donation_session();
 
 	//set payment key var
 	if ( isset( $_GET['payment_key'] ) ) {
