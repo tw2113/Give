@@ -206,28 +206,7 @@ do_action( 'give_payment_receipt_before_table', $payment, $give_receipt_args );
 				<td><?php echo give_get_gateway_checkout_label( give_get_payment_gateway( $payment->ID ) ); ?></td>
 			</tr>
 		<?php endif; ?>
-
-		<?php
-		//No fees built in just yet...
-		//@TODO: Fees
-		if ( ( $fees = give_get_payment_fees( $payment->ID, 'fee' ) ) ) : ?>
-			<tr>
-				<td scope="row"><strong><?php esc_html_e( 'Fees:', 'give' ); ?></strong></td>
-				<td>
-					<ul class="give_receipt_fees">
-						<?php foreach ( $fees as $fee ) : ?>
-							<li>
-								<span class="give_fee_label"><?php echo esc_html( $fee['label'] ); ?></span>
-								<span class="give_fee_sep">&nbsp;&ndash;&nbsp;</span>
-								<span
-									class="give_fee_amount"><?php echo give_currency_filter( give_format_amount( $fee['amount'] ) ); ?></span>
-							</li>
-						<?php endforeach; ?>
-					</ul>
-				</td>
-			</tr>
-		<?php endif; ?>
-
+        
 		<?php
 		/**
 		 * Fires in the payment receipt shortcode, after the receipt last item.
