@@ -17,303 +17,383 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Give_Session Class
  *
+ * This is a wrapper class for WP_Session / PHP $_SESSION and handles the storage of Give sessions.
+ *
  * @since 1.0
  */
 class Give_Session {
 
-
-	/** @var string cookie name */
-	private $_cookie;
-
-	/** @var string session due to expire timestamp */
-	private $_session_expiring;
-
-	/** @var string session expiration timestamp */
-	private $_session_expiration;
-
-	/** $var bool Bool based on whether a cookie exists **/
-	private $_has_cookie = false;
-
-	/** @var string Custom session table name */
-	private $_table;
+	/**
+	 * Holds our session data
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @var    WP_Session/array
+	 */
+	private $session;
 
 	/**
-	 * Constructor for the session class.
+	 * Whether to use PHP $_SESSION or WP_Session
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @var    bool
+	 */
+	private $use_php_sessions = false;
+
+	/**
+	 * Expiration Time
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @var    int
+	 */
+	private $exp_option = false;
+
+	/**
+	 * Session index prefix
+	 *
+	 * @since  1.0
+	 * @access private
+	 *
+	 * @var    string
+	 */
+	private $prefix = '';
+
+	/**
+	 * Class Constructor
+	 *
+	 * Defines our session constants, includes the necessary libraries and retrieves the session instance.
+	 *
+	 * @since  1.0
+	 * @access public
 	 */
 	public function __construct() {
-		global $wpdb;
 
-		$this->_cookie = 'wp_give_session_' . COOKIEHASH;
-		$this->_table  = $wpdb->prefix . 'give_sessions';
+		$this->use_php_sessions = $this->use_php_sessions();
+		$this->exp_option       = give_get_option( 'session_lifetime' );
 
-		if ( $cookie = $this->get_session_cookie() ) {
-			$this->_customer_id        = $cookie[0];
-			$this->_session_expiration = $cookie[1];
-			$this->_session_expiring   = $cookie[2];
-			$this->_has_cookie         = true;
+		// PHP Sessions.
+		if ( $this->use_php_sessions ) {
 
-			// Update session if its close to expiring
-			if ( time() > $this->_session_expiring ) {
-				$this->set_session_expiration();
-				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
+			if ( is_multisite() ) {
+
+				$this->prefix = '_' . get_current_blog_id();
+
+			}
+
+			add_action( 'init', array( $this, 'maybe_start_session' ), - 2 );
+
+		} else {
+
+			if ( ! $this->should_start_session() ) {
+				return;
+			}
+
+			// Use WP_Session.
+			if ( ! defined( 'WP_SESSION_COOKIE' ) ) {
+				define( 'WP_SESSION_COOKIE', 'give_wp_session' );
+			}
+
+			if ( ! class_exists( 'Recursive_ArrayAccess' ) ) {
+				require_once GIVE_PLUGIN_DIR . 'includes/libraries/sessions/class-recursive-arrayaccess.php';
+			}
+
+			// Include utilities class
+			if ( ! class_exists( 'WP_Session_Utils' ) ) {
+				require_once GIVE_PLUGIN_DIR . 'includes/libraries/sessions/class-wp-session-utils.php';
+			}
+			if ( ! class_exists( 'WP_Session' ) ) {
+				require_once GIVE_PLUGIN_DIR . 'includes/libraries/sessions/class-wp-session.php';
+				require_once GIVE_PLUGIN_DIR . 'includes/libraries/sessions/wp-session.php';
+			}
+
+			add_filter( 'wp_session_expiration_variant', array( $this, 'set_expiration_variant_time' ), 99999 );
+			add_filter( 'wp_session_expiration', array( $this, 'set_expiration_time' ), 99999 );
+
+		}
+
+		// Init Session.
+		if ( empty( $this->session ) && ! $this->use_php_sessions ) {
+			add_action( 'plugins_loaded', array( $this, 'init' ), - 1 );
+		} else {
+			add_action( 'init', array( $this, 'init' ), - 1 );
+		}
+
+		// Set cookie on Donation Completion page.
+		add_action( 'give_pre_process_donation', array( $this, 'set_session_cookies' ) );
+
+	}
+
+	/**
+	 * Session Init
+	 *
+	 * Setup the Session instance.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return array Session instance
+	 */
+	public function init() {
+
+		if ( $this->use_php_sessions ) {
+			$this->session = isset( $_SESSION[ 'give' . $this->prefix ] ) && is_array( $_SESSION[ 'give' . $this->prefix ] ) ? $_SESSION[ 'give' . $this->prefix ] : array();
+		} else {
+			$this->session = WP_Session::get_instance();
+		}
+
+		return $this->session;
+
+	}
+
+	/**
+	 * Get Session ID
+	 *
+	 * Retrieve session ID.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return string Session ID.
+	 */
+	public function get_id() {
+		return $this->session->session_id;
+	}
+
+	/**
+	 * Get Session
+	 *
+	 * Retrieve session variable for a given session key.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @param  string $key Session key.
+	 *
+	 * @return string      Session variable.
+	 */
+	public function get( $key ) {
+		$key = sanitize_key( $key );
+
+		return isset( $this->session[ $key ] ) ? maybe_unserialize( $this->session[ $key ] ) : false;
+
+	}
+
+	/**
+	 * Set Session
+	 *
+	 * Create a new session.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @param  string $key   Session key.
+	 * @param  string $value Session variable.
+	 *
+	 * @return string        Session variable.
+	 */
+	public function set( $key, $value ) {
+
+		$key = sanitize_key( $key );
+
+		if ( is_array( $value ) ) {
+			$this->session[ $key ] = serialize( $value );
+		} else {
+			$this->session[ $key ] = $value;
+		}
+
+		if ( $this->use_php_sessions ) {
+			$_SESSION[ 'give' . $this->prefix ] = $this->session;
+		}
+
+		return $this->session[ $key ];
+	}
+
+	/**
+	 * Set Session Cookies
+	 *
+	 * Cookies are used to increase the session lifetime using the give setting. This is helpful for when a user closes their browser after making a donation and comes back to the site.
+	 *
+	 * @since  1.4
+	 * @access public
+	 *
+	 * @hook
+	 */
+	public function set_session_cookies() {
+		if ( ! headers_sent() ) {
+			$lifetime = current_time( 'timestamp' ) + $this->set_expiration_time();
+			@setcookie( session_name(), session_id(), $lifetime, COOKIEPATH, COOKIE_DOMAIN, false );
+			@setcookie( session_name() . '_expiration', $lifetime, $lifetime, COOKIEPATH, COOKIE_DOMAIN, false );
+		}
+	}
+
+	/**
+	 * Set Cookie Variant Time
+	 *
+	 * Force the cookie expiration variant time to custom expiration option, less and hour. defaults to 23 hours (set_expiration_variant_time used in WP_Session).
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return int
+	 */
+	public function set_expiration_variant_time() {
+
+		return ( ! empty( $this->exp_option ) ? ( intval( $this->exp_option ) - 3600 ) : 30 * 60 * 23 );
+	}
+
+	/**
+	 * Set Cookie Expiration
+	 *
+	 * Force the cookie expiration time if set, default to 24 hours.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return int
+	 */
+	public function set_expiration_time() {
+
+		return ( ! empty( $this->exp_option ) ? intval( $this->exp_option ) : 30 * 60 * 24 );
+	}
+
+	/**
+	 * Starts a new session if one has not started yet.
+	 *
+	 * Checks to see if the server supports PHP sessions or if the GIVE_USE_PHP_SESSIONS constant is defined.
+	 *
+	 * @since  1.0
+	 * @access public
+	 *
+	 * @return bool $ret True if we are using PHP sessions, false otherwise.
+	 */
+	public function use_php_sessions() {
+
+		$ret = false;
+
+		// If the database variable is already set, no need to run auto detection.
+		$give_use_php_sessions = (bool) get_option( 'give_use_php_sessions' );
+
+		if ( ! $give_use_php_sessions ) {
+
+			// Attempt to detect if the server supports PHP sessions.
+			if ( function_exists( 'session_start' ) && ! ini_get( 'safe_mode' ) ) {
+
+				$this->set( 'give_use_php_sessions', 1 );
+
+				if ( $this->get( 'give_use_php_sessions' ) ) {
+
+					$ret = true;
+
+					// Set the database option.
+					update_option( 'give_use_php_sessions', true );
+
+				}
 			}
 		} else {
-			$this->set_session_expiration();
-			$this->_customer_id = $this->generate_customer_id();
+
+			$ret = $give_use_php_sessions;
 		}
 
-		$this->_data = $this->get_session_data();
-
-		// Actions
-		add_action( 'give_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
-		add_action( 'give_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
-
-		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
-		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
-		if ( ! is_user_logged_in() ) {
-			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
+		// Enable or disable PHP Sessions based on the GIVE_USE_PHP_SESSIONS constant.
+		if ( defined( 'GIVE_USE_PHP_SESSIONS' ) && GIVE_USE_PHP_SESSIONS ) {
+			$ret = true;
+		} elseif ( defined( 'GIVE_USE_PHP_SESSIONS' ) && ! GIVE_USE_PHP_SESSIONS ) {
+			$ret = false;
 		}
+
+		return (bool) apply_filters( 'give_use_php_sessions', $ret );
 	}
 
 	/**
-	 * Sets the session cookie on-demand.
+	 * Should Start Session
 	 *
-	 * Since the cookie name (as of 2.1) is prepended with wp, cache systems like batcache will not cache pages when set.
+	 * Determines if we should start sessions.
 	 *
-	 * Warning: Cookies will only be set if this is called before the headers are sent.
-	 */
-	public function set_customer_session_cookie( $set ) {
-		if ( $set ) {
-			// Set/renew cookie.
-			$to_hash           = $this->_customer_id . '|' . $this->_session_expiration;
-			$cookie_hash       = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-			$cookie_value      = $this->_customer_id . '||' . $this->_session_expiration . '||' . $this->_session_expiring . '||' . $cookie_hash;
-			$this->_has_cookie = true;
-
-			// Set the cookie
-			wc_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration, apply_filters( 'wc_session_use_secure_cookie', false ) );
-		}
-	}
-
-	/**
-	 * Return true if the current user has an active session, i.e. a cookie to retrieve values.
+	 * @since  1.4
+	 * @access public
 	 *
 	 * @return bool
 	 */
-	public function has_session() {
-		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in();
-	}
+	public function should_start_session() {
 
-	/**
-	 * Set session expiration.
-	 */
-	public function set_session_expiration() {
-		$this->_session_expiring   = time() + intval( apply_filters( 'wc_session_expiring', 60 * 60 * 47 ) ); // 47 Hours.
-		$this->_session_expiration = time() + intval( apply_filters( 'wc_session_expiration', 60 * 60 * 48 ) ); // 48 Hours.
-	}
+		$start_session = true;
 
-	/**
-	 * Generate a unique customer ID for guests, or return user ID if logged in.
-	 *
-	 * Uses Portable PHP password hashing framework to generate a unique cryptographically strong ID.
-	 *
-	 * @return int|string
-	 */
-	public function generate_customer_id() {
-		if ( is_user_logged_in() ) {
-			return get_current_user_id();
-		} else {
-			require_once( ABSPATH . 'wp-includes/class-phpass.php' );
-			$hasher = new PasswordHash( 8, false );
-			return md5( $hasher->get_random_bytes( 32 ) );
-		}
-	}
+		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
 
-	/**
-	 * Get session cookie.
-	 *
-	 * @return bool|array
-	 */
-	public function get_session_cookie() {
-		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
-			return false;
-		}
-
-		list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
-
-		// Validate hash
-		$to_hash = $customer_id . '|' . $session_expiration;
-		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-
-		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
-			return false;
-		}
-
-		return array( $customer_id, $session_expiration, $session_expiring, $cookie_hash );
-	}
-
-	/**
-	 * Get session data.
-	 *
-	 * @return array
-	 */
-	public function get_session_data() {
-		return $this->has_session() ? (array) $this->get_session( $this->_customer_id, array() ) : array();
-	}
-
-	/**
-	 * Gets a cache prefix.
-	 *
-	 * This is used in session names so the entire cache can be invalidated with 1 function call.
-	 *
-	 * @return string
-	 */
-	private function get_cache_prefix() {
-		return WC_Cache_Helper::get_cache_prefix( WC_SESSION_CACHE_GROUP );
-	}
-
-	/**
-	 * Save data.
-	 */
-	public function save_data() {
-		// Dirty if something changed - prevents saving nothing new
-		if ( $this->_dirty && $this->has_session() ) {
-			global $wpdb;
-
-			$wpdb->replace(
-				$this->_table,
-				array(
-					'session_key' => $this->_customer_id,
-					'session_value' => maybe_serialize( $this->_data ),
-					'session_expiry' => $this->_session_expiration,
-				),
-				array(
-					'%s',
-					'%s',
-					'%d',
-				)
-			);
-
-			// Set cache
-			wp_cache_set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, WC_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
-
-			// Mark session clean after saving
-			$this->_dirty = false;
-		}
-	}
-
-	/**
-	 * Destroy all session data.
-	 */
-	public function destroy_session() {
-		// Clear cookie
-		wc_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, apply_filters( 'wc_session_use_secure_cookie', false ) );
-
-		$this->delete_session( $this->_customer_id );
-
-		// Clear cart
-		wc_empty_cart();
-
-		// Clear data
-		$this->_data        = array();
-		$this->_dirty       = false;
-		$this->_customer_id = $this->generate_customer_id();
-	}
-
-	/**
-	 * When a user is logged out, ensure they have a unique nonce by using the customer/session ID.
-	 *
-	 * @return string
-	 */
-	public function nonce_user_logged_out( $uid ) {
-		return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
-	}
-
-	/**
-	 * Cleanup sessions.
-	 */
-	public function cleanup_sessions() {
-		global $wpdb;
-
-		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-
-			// Delete expired sessions
-			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) );
-
-			// Invalidate cache
-			WC_Cache_Helper::incr_cache_prefix( WC_SESSION_CACHE_GROUP );
-		}
-	}
-
-	/**
-	 * Returns the session.
-	 *
-	 * @param string $customer_id
-	 * @param mixed $default
-	 * @return string|array
-	 */
-	public function get_session( $customer_id, $default = false ) {
-		global $wpdb;
-
-		if ( defined( 'WP_SETUP_CONFIG' ) ) {
-			return false;
-		}
-
-		// Try get it from the cache, it will return false if not present or if object cache not in use
-		$value = wp_cache_get( $this->get_cache_prefix() . $customer_id, WC_SESSION_CACHE_GROUP );
-
-		if ( false === $value ) {
-			$value = $wpdb->get_var( $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id ) );
-
-			if ( is_null( $value ) ) {
-				$value = $default;
+			$blacklist = apply_filters( 'give_session_start_uri_blacklist', array(
+				'feed',
+				'feed',
+				'feed/rss',
+				'feed/rss2',
+				'feed/rdf',
+				'feed/atom',
+				'comments/feed/',
+			) );
+			$uri       = ltrim( $_SERVER['REQUEST_URI'], '/' );
+			$uri       = untrailingslashit( $uri );
+			if ( in_array( $uri, $blacklist ) ) {
+				$start_session = false;
 			}
-
-			wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, WC_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+			if ( false !== strpos( $uri, 'feed=' ) ) {
+				$start_session = false;
+			}
+			if ( is_admin() ) {
+				$start_session = false;
+			}
 		}
 
-		return maybe_unserialize( $value );
+		return apply_filters( 'give_start_session', $start_session );
 	}
 
 	/**
-	 * Delete the session from the cache and database.
+	 * Maybe Start Session
 	 *
-	 * @param int $customer_id
+	 * Starts a new session if one hasn't started yet.
+	 *
+	 * @access public
+	 *
+	 * @see    http://php.net/manual/en/function.session-set-cookie-params.php
+	 *
+	 * @return void
 	 */
-	public function delete_session( $customer_id ) {
-		global $wpdb;
+	public function maybe_start_session() {
 
-		wp_cache_delete( $this->get_cache_prefix() . $customer_id, WC_SESSION_CACHE_GROUP );
+		if ( ! $this->should_start_session() ) {
+			return;
+		}
 
-		$wpdb->delete(
-			$this->_table,
-			array(
-				'session_key' => $customer_id,
-			)
-		);
+		if ( ! session_id() && ! headers_sent() ) {
+			session_start();
+		}
+
 	}
 
 	/**
-	 * Update the session expiry timestamp.
+	 * Get Session Expiration
 	 *
-	 * @param string $customer_id
-	 * @param int $timestamp
+	 * Looks at the session cookies and returns the expiration date for this session if applicable
+	 *
+	 * @access public
+	 *
+	 * @return string Formatted expiration date string.
 	 */
-	public function update_session_timestamp( $customer_id, $timestamp ) {
-		global $wpdb;
+	public function get_session_expiration() {
 
-		$wpdb->update(
-			$this->_table,
-			array(
-				'session_expiry' => $timestamp,
-			),
-			array(
-				'session_key' => $customer_id,
-			),
-			array(
-				'%d'
-			)
-		);
+		$expiration = false;
+
+		if ( session_id() && isset( $_COOKIE[ session_name() . '_expiration' ] ) ) {
+
+			$expiration = date( 'D, d M Y h:i:s', intval( $_COOKIE[ session_name() . '_expiration' ] ) );
+
+		}
+
+		return $expiration;
+
 	}
 
 }
