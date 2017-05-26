@@ -28,11 +28,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 function give_generate_pdf( $data ) {
 
 	if ( ! current_user_can( 'view_give_reports' ) ) {
-		wp_die( esc_html__( 'You do not have permission to generate PDF sales reports.', 'give' ), esc_html__( 'Error', 'give' ), array( 'response' => 403 ) );
+		wp_die( __( 'You do not have permission to generate PDF sales reports.', 'give' ), __( 'Error', 'give' ), array( 'response' => 403 ) );
 	}
 
 	if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'give_generate_pdf' ) ) {
-		wp_die( esc_html__( 'Nonce verification failed.', 'give' ), esc_html__( 'Error', 'give' ), array( 'response' => 403 ) );
+		wp_die( __( 'Nonce verification failed.', 'give' ), __( 'Error', 'give' ), array( 'response' => 403 ) );
 	}
 
 	require_once GIVE_PLUGIN_DIR . '/includes/libraries/fpdf/fpdf.php';
@@ -41,11 +41,14 @@ function give_generate_pdf( $data ) {
 	$daterange = utf8_decode(
 		sprintf(
 		/* translators: 1: start date 2: end date */
-			esc_html__( '%1$s to %2$s', 'give' ),
+			__( '%1$s to %2$s', 'give' ),
 			date_i18n( give_date_format(), mktime( 0, 0, 0, 1, 1, date( 'Y' ) ) ),
 			date_i18n( give_date_format() )
 		)
 	);
+
+    $categories_enabled = give_is_setting_enabled( give_get_option( 'categories', 'disabled' ) );
+    $tags_enabled = give_is_setting_enabled( give_get_option( 'tags', 'disabled' ) );
 
 	$pdf = new give_pdf();
 	$pdf->AddPage( 'L', 'A4' );
@@ -76,16 +79,25 @@ function give_generate_pdf( $data ) {
 	$pdf->SetFillColor( 238, 238, 238 );
 	$pdf->Cell( 70, 6, utf8_decode( __( 'Form Name', 'give' ) ), 1, 0, 'L', true );
 	$pdf->Cell( 30, 6, utf8_decode( __( 'Price', 'give' ) ), 1, 0, 'L', true );
-	$pdf->Cell( 50, 6, utf8_decode( __( 'Categories', 'give' ) ), 1, 0, 'L', true );
-	$pdf->Cell( 50, 6, utf8_decode( __( 'Tags', 'give' ) ), 1, 0, 'L', true );
+
+    // Display Categories Heading only, if user has opted for it.
+    if ( $categories_enabled ) {
+	   $pdf->Cell( 45, 6, utf8_decode( __( 'Categories', 'give' ) ), 1, 0, 'L', true );
+    }
+
+    // Display Tags Heading only, if user has opted for it.
+    if ( $tags_enabled ) {
+	   $pdf->Cell( 45, 6, utf8_decode( __( 'Tags', 'give' ) ), 1, 0, 'L', true );
+    }
+
 	$pdf->Cell( 45, 6, utf8_decode( __( 'Number of Donations', 'give' ) ), 1, 0, 'L', true );
-	$pdf->Cell( 35, 6, utf8_decode( __( 'Income to Date', 'give' ) ), 1, 1, 'L', true );
+	$pdf->Cell( 45, 6, utf8_decode( __( 'Income to Date', 'give' ) ), 1, 1, 'L', true );
 
 	$year       = date( 'Y' );
 	$give_forms = get_posts( array( 'post_type' => 'give_forms', 'year' => $year, 'posts_per_page' => - 1 ) );
 
 	if ( $give_forms ) {
-		$pdf->SetWidths( array( 70, 30, 50, 50, 45, 35 ) );
+		$pdf->SetWidths( array( 70, 30, 45, 45, 45, 45 ) );
 
 		foreach ( $give_forms as $form ):
 			$pdf->SetFillColor( 255, 255, 255 );
@@ -113,11 +125,17 @@ function give_generate_pdf( $data ) {
 				$price = html_entity_decode( give_currency_filter( give_get_form_price( $form->ID ) ) );
 			}
 
-			$categories = get_the_term_list( $form->ID, 'give_forms_category', '', ', ', '' );
-			$categories = ! is_wp_error( $categories ) ? strip_tags( $categories ) : '';
+            // Display Categories Data only, if user has opted for it.
+            if ( $categories_enabled ) {
+                $categories = get_the_term_list( $form->ID, 'give_forms_category', '', ', ', '' );
+                $categories = ! is_wp_error( $categories ) ? strip_tags( $categories ) : '';
+            }
 
-			$tags = get_the_term_list( $form->ID, 'give_forms_tag', '', ', ', '' );
-			$tags = ! is_wp_error( $tags ) ? strip_tags( $tags ) : '';
+            // Display Tags Data only, if user has opted for it.
+            if ( $tags_enabled ) {
+                $tags = get_the_term_list( $form->ID, 'give_forms_tag', '', ', ', '' );
+                $tags = ! is_wp_error( $tags ) ? strip_tags( $tags ) : '';
+            }
 
 			$sales    = give_get_form_sales_stats( $form->ID );
 			$link     = get_permalink( $form->ID );
@@ -129,11 +147,38 @@ function give_generate_pdf( $data ) {
 				$earnings = iconv( 'UTF-8', 'windows-1252', utf8_encode( $earnings ) );
 			}
 
-			$pdf->Row( array( $title, $price, $categories, $tags, $sales, $earnings ) );
+            // This will help filter data before appending it to PDF Receipt.
+            $prepare_pdf_data = array();
+            $prepare_pdf_data[] = $title;
+            $prepare_pdf_data[] = $price;
+
+            // Append Categories Data only, if user has opted for it.
+            if ( $categories_enabled ) {
+                $prepare_pdf_data[] = $categories;
+            }
+
+            // Append Tags Data only, if user has opted for it.
+            if ( $tags_enabled ) {
+                $prepare_pdf_data[] = $tags;
+            }
+
+            $prepare_pdf_data[] = $sales;
+            $prepare_pdf_data[] = $earnings;
+
+			$pdf->Row( $prepare_pdf_data );
 		endforeach;
 	} else {
-		$pdf->SetWidths( array( 280 ) );
-		$title = utf8_decode( esc_html__( 'No forms found.', 'give' ) );
+
+        // Fix: Minor Styling Alignment Issue for PDF
+        if( $categories_enabled && $tags_enabled ) {
+            $pdf->SetWidths( array( 280 ) );
+        } elseif( $categories_enabled || $tags_enabled ) {
+            $pdf->SetWidths( array( 235 ) );
+        } else {
+            $pdf->SetWidths( array( 190 ) );
+        }
+
+        $title = utf8_decode( __( 'No forms found.', 'give' ) );
 		$pdf->Row( array( $title ) );
 	}
 
@@ -215,7 +260,7 @@ function give_draw_chart_image() {
 		$earnings_array[11]
 	) );
 
-	$data->setLegend( esc_html__( 'Income', 'give' ) );
+	$data->setLegend( __( 'Income', 'give' ) );
 	$data->setColor( '1b58a3' );
 	$chart->addData( $data );
 
@@ -245,11 +290,11 @@ function give_draw_chart_image() {
 		$sales_array[10],
 		$sales_array[11]
 	) );
-	$data->setLegend( esc_html__( 'Donations', 'give' ) );
+	$data->setLegend( __( 'Donations', 'give' ) );
 	$data->setColor( 'ff6c1c' );
 	$chart->addData( $data );
 
-	$chart->setTitle( esc_html__( 'Donations by Month for all Give Forms', 'give' ), '336699', 18 );
+	$chart->setTitle( __( 'Donations by Month for all Give Forms', 'give' ), '336699', 18 );
 
 	$chart->setScale( 0, $max_earnings );
 
@@ -260,18 +305,18 @@ function give_draw_chart_image() {
 	$x_axis = new GoogleChartAxis( 'x' );
 	$x_axis->setTickMarks( 5 );
 	$x_axis->setLabels( array(
-		esc_html__( 'Jan', 'give' ),
-		esc_html__( 'Feb', 'give' ),
-		esc_html__( 'Mar', 'give' ),
-		esc_html__( 'Apr', 'give' ),
-		esc_html__( 'May', 'give' ),
-		esc_html__( 'June', 'give' ),
-		esc_html__( 'July', 'give' ),
-		esc_html__( 'Aug', 'give' ),
-		esc_html__( 'Sept', 'give' ),
-		esc_html__( 'Oct', 'give' ),
-		esc_html__( 'Nov', 'give' ),
-		esc_html__( 'Dec', 'give' )
+		__( 'Jan', 'give' ),
+		__( 'Feb', 'give' ),
+		__( 'Mar', 'give' ),
+		__( 'Apr', 'give' ),
+		__( 'May', 'give' ),
+		__( 'June', 'give' ),
+		__( 'July', 'give' ),
+		__( 'Aug', 'give' ),
+		__( 'Sept', 'give' ),
+		__( 'Oct', 'give' ),
+		__( 'Nov', 'give' ),
+		__( 'Dec', 'give' )
 	) );
 	$chart->addAxis( $x_axis );
 

@@ -54,18 +54,17 @@ jQuery.noConflict();
 	 * @returns {string}
 	 */
 	function give_unformat_currency(price, dp) {
-		price                = accounting.unformat(price, give_vars.decimal_separator).toString();
+		price = accounting.unformat(price, give_vars.decimal_separator).toString();
+		dp    = ( 'undefined' == dp ? false : dp );
+
 		var decimal_position = price.indexOf('.');
 
 		// Set default value for number of decimals.
-		if (false != dp) {
+		if ( false !== dp ) {
 			price = parseFloat(price).toFixed(dp);
 
-			// If price do not have decimal value then set default number of decimals.
-		} else if (
-			( -1 === decimal_position )
-			|| ( give_vars.currency_decimals > price.substr(decimal_position + 1).length )
-		) {
+		// If price do not have decimal value then set default number of decimals.
+		} else {
 			price = parseFloat(price).toFixed(give_vars.currency_decimals);
 		}
 
@@ -714,7 +713,14 @@ jQuery.noConflict();
 		remove_user   : function () {
 			$('body').on('click', '#disconnect-customer', function (e) {
 				e.preventDefault();
-				var customer_id = $('input[name="customerinfo[id]"]').val();
+
+				if (!confirm(give_vars.disconnect_user)) {
+					return false;
+				}
+				var customer_id     = $('input[name="customerinfo[id]"]').val();
+
+				// Remove connected user id.
+				$('input[name="customerinfo[user_id]"]').val('');
 
 				var postData = {
 					give_action: 'disconnect-userid',
@@ -724,7 +730,7 @@ jQuery.noConflict();
 
 				$.post(ajaxurl, postData, function (response) {
 
-					window.location.href = window.location.href;
+                    window.location.href = window.location.href;
 
 				}, 'json');
 
@@ -1010,8 +1016,6 @@ jQuery.noConflict();
 					var attachment = give_media_uploader.state().get('selection').first().toJSON(),
 						$input_field = window.give_media_uploader_input_field.prev(),
 						fvalue= ( 'id' === $input_field.data('fvalue') ? attachment.id : attachment.url );
-					
-					console.log($input_field);
 
 					$input_field.val(fvalue);
 				});
@@ -1485,7 +1489,7 @@ jQuery.noConflict();
 
 				// Total payment count.
 				$payments = $payments.length.toString();
-				
+
 				switch ( current_action ) {
 					case 'delete':
 						// Check if admin did not select any payment.
@@ -1669,10 +1673,10 @@ jQuery.noConflict();
 
 		// Format price sting of input field on focusout.
 		$('#poststuff').on('focusout', 'input.give-money-field, input.give-price-field', function () {
-			price_string = give_unformat_currency($(this).val(), false);
+			price_string = give_unformat_currency( $(this).val(), false );
 
 			// Back out.
-			if (!parseInt(price_string)) {
+			if ( give_unformat_currency( '0', false ) === give_unformat_currency( $(this).val(), false ) ) {
 				$(this).val('');
 				return false;
 			}
