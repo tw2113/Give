@@ -370,6 +370,7 @@ class Give_Logging {
 			// Backward compatibility.
 			$logs = get_posts( $query_args );
 			$this->bc_200_add_new_properties( $logs );
+			var_dump('here');
 		} else {
 			$logs = $this->log_db->get_logs( $query_args );
 		}
