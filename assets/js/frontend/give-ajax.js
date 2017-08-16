@@ -10,9 +10,6 @@
 var give_scripts, give_global_vars;
 jQuery(document).ready(function ($) {
 
-	//Run tooltips setup
-	setup_give_tooltips();
-
 	//Hide loading elements
 	$('.give-loading-text').hide();
 
@@ -40,8 +37,6 @@ jQuery(document).ready(function ($) {
 			loading_animation.hide();
 			// Trigger float-labels
 			give_fl_trigger();
-			//Setup tooltips again
-			setup_give_tooltips();
 		});
 		return false;
 	});
@@ -64,8 +59,6 @@ jQuery(document).ready(function ($) {
 		}).done(function () {
 			// Trigger float-labels
 			give_fl_trigger();
-			//Setup tooltips again
-			setup_give_tooltips();
 		});
 	});
 
@@ -88,20 +81,25 @@ jQuery(document).ready(function ($) {
             give_user_pass: this_form.find('[name=give_user_pass]').val()
         };
 
-		$.post(give_global_vars.ajaxurl, data, function (data) {
-
+		$.post(give_global_vars.ajaxurl, data, function (response) {
 			//user is logged in
-			if ($.trim(data) == 'success') {
+			if ( $.trim( typeof ( response.success ) ) != undefined && response.success == true && typeof ( response.data ) != undefined ) {
+
 				//remove errors
 				this_form.find('.give_errors').remove();
-				//reload the selected gateway so it contains their logged in information
+
+                // Login successfully message.
+                this_form.find( '#give-payment-mode-select' ).after( response.data );
+                this_form.find( '.give_notices.give_errors' ).delay(5000).slideUp();
+
+                //reload the selected gateway so it contains their logged in information
 				give_load_gateway(this_form, this_form.find('.give-gateway-option-selected input').val());
 			} else {
 				//Login failed, show errors
 				this_form.find('[id^=give-login-fields] input[type=submit]').val(complete_purchase_val);
 				this_form.find('.give-loading-animation').fadeOut();
 				this_form.find('.give_errors').remove();
-				this_form.find('[id^=give-user-login-submit]').before(data);
+				this_form.find('[id^=give-user-login-submit]').before( response.data );
 			}
 		});
 
@@ -232,32 +230,10 @@ function give_load_gateway(form_object, payment_mode) {
 			jQuery(form_object).find('#give_purchase_form_wrap').html(response);
 			jQuery('.give-no-js').hide();
 			jQuery(form_object).find('#give-payment-mode-select .give-loading-text').fadeOut();
-			setup_give_tooltips();
 
 			// trigger an event on success for hooks
 			jQuery(document).trigger('give_gateway_loaded', [response, jQuery(form_object).attr('id')]);
 		}
 	);
-
-}
-
-/**
- * Load Tooltips
- *
- * @description Give tooltips use qTip2
- * @since 1.0
- */
-function setup_give_tooltips() {
-	jQuery('[data-tooltip!=""]').qtip({ // Grab all elements with a non-blank data-tooltip attr.
-		content : {
-			attr: 'data-tooltip' // Tell qTip2 to look inside this attr for its content
-		},
-		style   : {classes: 'qtip-rounded qtip-tipsy'},
-		position: {
-			my: 'bottom center',  // Position my top left...
-			at: 'top center' // at the bottom right of...
-		}
-	});
-	jQuery.fn.qtip.zindex = 2147483641; // Higher z-index than Give's magnific modal
 
 }

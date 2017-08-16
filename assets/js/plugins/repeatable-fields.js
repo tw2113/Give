@@ -25,7 +25,7 @@
 			after_remove                  : null,
 			sortable_options              : null,
 			row_count_placeholder         : '{{row-count-placeholder}}',
-		}
+		};
 
 		var settings = $.extend({}, default_settings, custom_settings);
 

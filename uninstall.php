@@ -23,8 +23,8 @@ global $wpdb, $wp_roles;
 if ( give_is_setting_enabled( give_get_option( 'uninstall_on_delete' ) ) ) {
 
 	// Delete All the Custom Post Types.
-	$give_taxonomies = array( 'form_category', 'form_tag', 'give_log_type' );
-	$give_post_types = array( 'give_forms', 'give_payment', 'give_log' );
+	$give_taxonomies = array( 'form_category', 'form_tag' );
+	$give_post_types = array( 'give_forms', 'give_payment' );
 	foreach ( $give_post_types as $post_type ) {
 
 		$give_taxonomies = array_merge( $give_taxonomies, get_object_taxonomies( $post_type ) );
@@ -69,6 +69,7 @@ if ( give_is_setting_enabled( give_get_option( 'uninstall_on_delete' ) ) ) {
 	}
 
 	// Delete Capabilities.
+	Give()->roles = new Give_Roles();
 	Give()->roles->remove_caps();
 
 	// Delete the Roles.
@@ -79,8 +80,11 @@ if ( give_is_setting_enabled( give_get_option( 'uninstall_on_delete' ) ) ) {
 
 	// Remove all database tables.
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_donors' );
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_donormeta' );
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_customers' );
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_customermeta' );
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_logs' );
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'give_logmeta' );
 
 	// Cleanup Cron Events.
 	wp_clear_scheduled_hook( 'give_daily_scheduled_events' );
@@ -88,30 +92,21 @@ if ( give_is_setting_enabled( give_get_option( 'uninstall_on_delete' ) ) ) {
 	wp_clear_scheduled_hook( 'give_weekly_cron' );
 
 	// Get all options.
-	$give_option_names = $wpdb->get_results(
+	$give_option_names = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT option_name FROM {$wpdb->options} where option_name LIKE '%%%s%%'",
 			'give'
-		),
-		ARRAY_A
+		)
 	);
 
 	if ( ! empty( $give_option_names ) ) {
 		// Convert option name to transient or option name.
 		$new_give_option_names = array();
 
-		foreach ( $give_option_names as $option ) {
-			$new_give_option_names[] = ( false !== strpos( $option['option_name'], '_transient_' ) )
-				? str_replace( '_transient_', '', $option['option_name'] )
-				: $option['option_name'];
-		}
-
-		$give_option_names = $new_give_option_names;
-
 		// Delete all the Plugin Options.
 		foreach ( $give_option_names as $option ) {
-			if ( false !== strpos( $option, '_transient_' ) ) {
-				delete_transient( $option );
+			if ( false !== strpos( $option, 'give_cache' ) ) {
+				Give_Cache::delete( $option );
 			} else {
 				delete_option( $option );
 			}
