@@ -83,8 +83,7 @@ function give_get_donation_form( $args = array() ) {
 	?>
 	<div id="give-form-<?php echo $form->ID; ?>-wrap" class="<?php echo $form_wrap_classes; ?>">
 
-		<?php
-		if ( $form->is_close_donation_form() ) {
+		<?php if ( $form->is_close_donation_form() ) {
 
 			// Get Goal thank you message.
 			$goal_achieved_message = get_post_meta( $form->ID, '_give_form_goal_achieved_message', true );
@@ -119,154 +118,77 @@ function give_get_donation_form( $args = array() ) {
 			 * @param array $args    An array of form arguments.
 			 */
 			do_action( 'give_pre_form', $form->ID, $args );
+			?>
 
-			$form_args = array(
-				'id'                      => "give-form-{$form_id}",
-				'action'                  => esc_url_raw( $form_action ),
-				'method'                  => 'post',
+			<form id="give-form-<?php echo $form_id; ?>" class="<?php echo $form_classes; ?>"
+				  action="<?php echo esc_url_raw( $form_action ); ?>" method="post">
+				<input type="hidden" name="give-form-id" value="<?php echo $form->ID; ?>"/>
+				<input type="hidden" name="give-form-title" value="<?php echo htmlentities( $form->post_title ); ?>"/>
+				<input type="hidden" name="give-current-url"
+					   value="<?php echo htmlspecialchars( give_get_current_page_url() ); ?>"/>
+				<input type="hidden" name="give-form-url"
+					   value="<?php echo htmlspecialchars( give_get_current_page_url() ); ?>"/>
+				<input type="hidden" name="give-form-minimum"
+					   value="<?php echo give_format_amount( give_get_form_minimum_price( $form->ID ), array( 'sanitize' => false ) ); ?>"/>
 
-				// Custom arguments.
-				'donation_form_object'    => $form,
-				'donation_form_arguments' => $args,
+				<!-- The following field is for robots only, invisible to humans: -->
+				<span class="give-hidden" style="display: none !important;">
+					<label for="give-form-honeypot-<?php echo $form_id; ?>"></label>
+					<input id="give-form-honeypot-<?php echo $form_id; ?>" type="text" name="give-honeypot"
+						   class="give-honeypot give-hidden"/>
+				</span>
 
-				'form_attributes' => array(
-					'class' => trim( $form_classes ),
-				),
-				'fields'          => array(
-					// Form id.
-					'give-form-id'         => array(
-						'type'             => 'hidden',
-						'value'            => $form->ID,
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Form title.
-					'give-form-title'      => array(
-						'type'             => 'hidden',
-						'value'            => htmlentities( $form->post_title ),
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Form current url.
-					'give-current-url'     => array(
-						'type'             => 'hidden',
-						'value'            => htmlspecialchars( give_get_current_page_url() ),
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Form url.
-					'give-form-url'        => array(
-						'type'             => 'hidden',
-						'value'            => htmlspecialchars( give_get_current_page_url() ),
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Donation minimum amount.
-					'give-form-minimum'    => array(
-						'type'             => 'hidden',
-						'value'            => give_format_amount( give_get_form_minimum_price( $form->ID ) ),
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Security field.
-					'give-honeypot'        => array(
-						'type'               => 'text',
-						'label'              => '',
-						'wrapper_type'       => 'span',
-						'field_attributes'   => array(
-							'id'    => "give-form-honeypot-{$form_id}",
-							'class' => 'give-honeypot give-hidden',
-						),
-						'wrapper_attributes' => array(
-							'class' => 'give-hidden',
-							'style' => 'display: none !important;',
-						),
-					),
-					// Price id.
-					// This field will conditionally appear or disappear with help of filter.
-					// @see includes/forms/filters.php:54
-					'give-price-id'        => array(
-						'type'             => 'hidden',
-						'field_attributes' => array(
-							'id'    => '',
-							'class' => '',
-						),
-					),
-					// Amount.
-					// This field will conditionally appear or disappear with help of filter.
-					// @see includes/forms/filters.php:54
-					'give-amount'          => array(
-						'type'             => 'hidden',
-						'label'            => esc_html__( 'Donation Amount:', 'give' ),
-						'wrapper'          => false,
-						'required'         => true,
-						'label_attributes' => array(
-							'class' => 'give-hidden',
-						),
-						'field_attributes' => array(
-							'id'    => 'give-amount',
-							'class' => 'give-amount-hidden',
-						),
-					),
-					// Donation levels.
-					// This field will conditionally appear or disappear with help of filter.
-					// @see includes/forms/filters.php:273
-					'give-donation-levels' => array(
-						'type'     => 'give_donation_levels',
-						'wrapper'  => false,
-						'required' => true,
-					),
-					// Donation payment modes.
-					// This field will conditionally appear or disappear with help of filter.
-					// @see includes/forms/filters.php:340
-					'give-payment-modes'   => array(
-						'type'                  => 'section',
-						'label'                 => apply_filters(
-														'give_checkout_payment_method_text',
-														esc_html__( 'Select Payment Method', 'give' )
-						 							) . '<span class="give-loading-text"><span class="give-loading-animation"></span></span>',
-						'label_attributes'      => array( 'class' => 'give-payment-mode-label', ),
-						'section_attributes'    => array( 'id' => 'give-payment-mode-select', ),
-						'fields'                => array(
-							'payment-mode' => array(
-								'type'          => 'radio',
-								'label_position' => 'after',
-								'value'         => give_get_chosen_gateway( $form_id ),
-								'options'       => give_get_enabled_payment_gateways( $form_id ),
-								'wrapper'       => false,
-								'ul_attributes' => array( 'id' => 'give-gateway-radio-list', ),
-							),
-						),
-					),
-				),
-			);
+				<?php
 
-			/**
-			 * Fire the filter when defining form arguments to render donation form.
-			 * Note: you can use this hook to edit form arguments like reordering form fields.
-			 *
-			 * @since 2.0
-			 *
-			 * @param array $form_args
-			 */
-			$form_args = apply_filters( 'give_form_args', $form_args );
+				// Price ID hidden field for variable (multi-level) donation forms.
+				if ( give_has_variable_prices( $form_id ) ) {
+					// Get default selected price ID.
+					$prices   = apply_filters( 'give_form_variable_prices', give_get_variable_prices( $form_id ), $form_id );
+					$price_id = 0;
+					//loop through prices.
+					foreach ( $prices as $price ) {
+						if ( isset( $price['_give_default'] ) && $price['_give_default'] === 'default' ) {
+							$price_id = $price['_give_id']['level_id'];
+						};
+					}
+					?>
+					<input type="hidden" name="give-price-id" value="<?php echo $price_id; ?>"/>
+				<?php }
 
-			// Register Form.
-			Give_Form_API::register_form(  $form_args, $form_args['id'] );
+				/**
+				 * Fires while outputting donation form, before all other fields.
+				 *
+				 * @since 1.0
+				 *
+				 * @param int   $form_id The form ID.
+				 * @param array $args    An array of form arguments.
+				 */
+				do_action( 'give_donation_form_top', $form->ID, $args );
 
-			// Render Form.
-			echo Give_Form_API::render_form( $form_args['id'] );
+				/**
+				 * Fires while outputting donation form, for payment gateway fields.
+				 *
+				 * @since 1.7
+				 *
+				 * @param int   $form_id The form ID.
+				 * @param array $args    An array of form arguments.
+				 */
+				do_action( 'give_payment_mode_select', $form->ID, $args );
 
+				/**
+				 * Fires while outputting donation form, after all other fields.
+				 *
+				 * @since 1.0
+				 *
+				 * @param int   $form_id The form ID.
+				 * @param array $args    An array of form arguments.
+				 */
+				do_action( 'give_donation_form_bottom', $form->ID, $args );
+
+				?>
+			</form>
+
+			<?php
 			/**
 			 * Fires while outputting donation form, after the form.
 			 *
@@ -457,9 +379,7 @@ add_action( 'give_donation_form_register_login_fields', 'give_show_register_logi
  * Outputs the donation amount field that appears at the top of the donation forms. If the user has custom amount
  * enabled the field will output as a customizable input.
  *
- * @since      1.0
- *
- * @deprecated 2.0 donation amount field will be render with form api.
+ * @since  1.0
  *
  * @param  int   $form_id The form ID.
  * @param  array $args    An array of form arguments.
@@ -489,65 +409,40 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 
 	//Set Price, No Custom Amount Allowed means hidden price field
 	if ( ! give_is_setting_enabled( $allow_custom_amount ) ) {
-		echo Give_Fields_API::render_tag(
-			array(
-				'type'  => 'hidden',
-				'id'    => 'give-amount',
-				'value' => $default_amount,
-				'label' => esc_html__( 'Donation Amount:', 'give' ),
-				'wrapper'          => false,
-				'required'         => true,
-				'label_attributes' => array(
-					'class' => 'give-hidden',
-				),
-				'field_attributes' => array(
-					'id'    => 'give-amount',
-					'class' => 'give-amount-hidden',
-				),
-			)
-		);
 		?>
+		<label class="give-hidden" for="give-amount-hidden"><?php esc_html_e( 'Donation Amount:', 'give' ); ?></label>
+		<input id="give-amount" class="give-amount-hidden" type="hidden" name="give-amount"
+			   value="<?php echo $default_amount; ?>" required aria-required="true"/>
 		<div class="set-price give-donation-amount form-row-wide">
-			<?php
-			echo sprintf(
-				'%1$s<span id="give-amount-text" class="give-text-input give-amount-top">%2$s</span>%3$s',
-				( $currency_position == 'before' ? $currency_output : '' ),
-				$default_amount,
-				( $currency_position == 'after' ? $currency_output : '' )
-			);
-			?>
+			<?php if ( $currency_position == 'before' ) {
+				echo $currency_output;
+			} ?>
+			<span id="give-amount-text" class="give-text-input give-amount-top"><?php echo $default_amount; ?></span>
+			<?php if ( $currency_position == 'after' ) {
+				echo $currency_output;
+			} ?>
 		</div>
 		<?php
 	} else {
 		//Custom Amount Allowed.
-		echo Give_Fields_API::render_tag(
-			array(
-				'type'                 => 'text',
-				'id'                   => 'give-amount',
-				'value'                => $default_amount,
-				'label'                => esc_html__( 'Donation Amount:', 'give' ),
-				'required'             => true,
-				'wrapper_type'         => 'div',
-				'before_field_label'   => ( $currency_position == 'before' ? $currency_output : '' ),
-				'after_field'          => ( $currency_position == 'after' ? $currency_output : '' ),
-				'before_field_wrapper' => '<div class="give-total-wrap">',
-				'after_field_wrapper'  => '</div>',
-				'label_attributes'     => array(
-					'class' => 'give-hidden',
-				),
-				'field_attributes'     => array(
-					'id'    => 'give-amount',
-					'class' => 'give-text-input give-amount-top',
-				),
-				'wrapper_attributes'   => array(
-					'class' => 'give-donation-amount form-row-wide',
-				),
-			)
-		);
-	}
+		?>
+		<div class="give-total-wrap">
+			<div class="give-donation-amount form-row-wide">
+				<?php if ( $currency_position == 'before' ) {
+					echo $currency_output;
+				} ?>
+				<label class="give-hidden" for="give-amount"><?php esc_html_e( 'Donation Amount:', 'give' ); ?></label>
+				<input class="give-text-input give-amount-top" id="give-amount" name="give-amount" type="tel"
+					   placeholder="" value="<?php echo $default_amount; ?>" autocomplete="off">
+				<?php if ( $currency_position == 'after' ) {
+					echo $currency_output;
+				} ?>
+			</div>
+		</div>
+	<?php }
 
 	/**
-	 * Fires while displaying donation form, after donation amount field(s).
+	 * Fires while displaying donation form, after donation amounf field(s).
 	 *
 	 * @since 1.0
 	 *
@@ -577,9 +472,7 @@ function give_output_donation_amount_top( $form_id = 0, $args = array() ) {
 	do_action( 'give_after_donation_levels', $form_id, $args );
 }
 
-// This hook has been removed, because after version 2.0 field will be render with form api.
-// @see includes/forms/filters.php:12
-add_action( 'give_checkout_form_top', 'give_output_donation_amount_top', 10, 2 );
+add_action( 'give_donation_form_top', 'give_output_donation_amount_top', 10, 2 );
 
 /**
  * Outputs the Donation Levels in various formats such as dropdown, radios, and buttons.
@@ -634,7 +527,6 @@ function give_output_levels( $form_id ) {
 			break;
 
 		case 'radios':
-			// @todo: render this with field api.
 
 			$output .= '<ul id="give-donation-level-radio-list" class="give-donation-levels-wrap">';
 
@@ -662,7 +554,6 @@ function give_output_levels( $form_id ) {
 			break;
 
 		case 'dropdown':
-			// @todo: render this with field api.
 
 			$output .= '<label for="give-donation-level-select-' . $form_id . '" class="give-hidden">' . esc_html__( 'Choose Your Donation Amount', 'give' ) . ':</label>';
 			$output .= '<select id="give-donation-level-select-' . $form_id . '" class="give-select give-select-level give-donation-levels-wrap">';
@@ -745,95 +636,76 @@ function give_user_info_fields( $form_id ) {
 	 */
 	do_action( 'give_donation_form_before_personal_info', $form_id );
 	?>
-    <fieldset id="give_checkout_user_info">
-        <legend><?php echo apply_filters( 'give_checkout_personal_info_text', esc_html__( 'Personal Info', 'give' ) ); ?></legend>
+	<fieldset id="give_checkout_user_info">
+		<legend><?php echo apply_filters( 'give_checkout_personal_info_text', esc_html__( 'Personal Info', 'give' ) ); ?></legend>
+		<p id="give-first-name-wrap" class="form-row form-row-first form-row-responsive">
+			<label class="give-label" for="give-first">
+				<?php esc_html_e( 'First Name', 'give' ); ?>
+				<?php if ( give_field_is_required( 'give_first', $form_id ) ) : ?>
+					<span class="give-required-indicator">*</span>
+				<?php endif ?>
+				<?php echo Give()->tooltips->render_help( __( 'We will use this to personalize your account experience.', 'give' ) ); ?>
+			</label>
+			<input
+					class="give-input required"
+					type="text"
+					name="give_first"
+					placeholder="<?php esc_attr_e( 'First Name', 'give' ); ?>"
+					id="give-first"
+					value="<?php echo isset( $give_user_info['give_first'] ) ? $give_user_info['give_first'] : ''; ?>"
+				<?php echo( give_field_is_required( 'give_first', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
+			/>
+		</p>
+
+		<p id="give-last-name-wrap" class="form-row form-row-last form-row-responsive">
+			<label class="give-label" for="give-last">
+				<?php esc_html_e( 'Last Name', 'give' ); ?>
+				<?php if ( give_field_is_required( 'give_last', $form_id ) ) : ?>
+					<span class="give-required-indicator">*</span>
+				<?php endif ?>
+				<?php echo Give()->tooltips->render_help( __( 'We will use this as well to personalize your account experience.', 'give' ) ); ?>
+			</label>
+
+			<input
+					class="give-input<?php echo( give_field_is_required( 'give_last', $form_id ) ? ' required' : '' ); ?>"
+					type="text"
+					name="give_last"
+					id="give-last"
+					placeholder="<?php esc_attr_e( 'Last Name', 'give' ); ?>"
+					value="<?php echo isset( $give_user_info['give_last'] ) ? $give_user_info['give_last'] : ''; ?>"
+				<?php echo( give_field_is_required( 'give_last', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
+			/>
+		</p>
+
 		<?php
-		// First name.
-		$is_first_name_required = give_field_is_required( 'give_first', $form_id );
-		echo Give_Fields_API::render_tag(
-			array(
-				'type'               => 'text',
-				'id'                 => 'give_first',
-				'value'              => isset( $give_user_info['give_first'] )
-					? $give_user_info['give_first']
-					: '',
-				'label'              => esc_html__( 'First Name', 'give' ),
-				'label_tooltip'      => esc_attr__( 'We will use this to personalize your account experience.', 'give' ),
-				'required'           => $is_first_name_required,
-				'field_attributes'   => array(
-					'id'          => 'give-first',
-					'class'       => $is_first_name_required
-						? 'give-input required'
-						: 'give-input',
-					'placeholder' => esc_attr__( 'First Name', 'give' ),
-				),
-				'wrapper_attributes' => array(
-					'id'    => 'give-first-name-wrap',
-					'class' => 'form-row form-row-first form-row-responsive',
-				),
-			)
-		);
-
-		// Last name.
-		$is_last_name_required = give_field_is_required( 'give_last', $form_id );
-		echo Give_Fields_API::render_tag(
-			array(
-				'type'               => 'text',
-				'id'                 => 'give_last',
-				'value'              => isset( $give_user_info['give_last'] )
-					? $give_user_info['give_last']
-					: '',
-				'label'              => esc_html__( 'Last Name', 'give' ),
-				'label_tooltip'      => esc_attr__( 'We will use this to personalize your account experience.', 'give' ),
-				'required'           => $is_last_name_required,
-				'field_attributes'   => array(
-					'id'          => 'give-last',
-					'class'       => $is_last_name_required
-						? 'give-input required'
-						: 'give-input',
-					'placeholder' => esc_attr__( 'Last Name', 'give' ),
-				),
-				'wrapper_attributes' => array(
-					'id'    => 'give-last-name-wrap',
-					'class' => 'form-row form-row-last form-row-responsive',
-				),
-			)
-		);
-
 		/**
 		 * Fire before user email field
 		 *
 		 * @since 1.7
 		 */
 		do_action( 'give_donation_form_before_email', $form_id );
+		?>
+		<p id="give-email-wrap" class="form-row form-row-wide">
+			<label class="give-label" for="give-email">
+				<?php esc_html_e( 'Email Address', 'give' ); ?>
+				<?php if ( give_field_is_required( 'give_email', $form_id ) ) { ?>
+					<span class="give-required-indicator">*</span>
+				<?php } ?>
+				<?php echo Give()->tooltips->render_help( __( 'We will send the donation receipt to this address.', 'give' ) ); ?>
+			</label>
 
-		// Email address.
-		$is_email_name_required = give_field_is_required( 'give_email', $form_id );
-		echo Give_Fields_API::render_tag(
-			array(
-				'type'               => 'text',
-				'id'                 => 'give_email',
-				'value'              => isset( $give_user_info['give_email'] )
-					? $give_user_info['give_email']
-					: '',
-				'label'              => esc_html__( 'Email address', 'give' ),
-				'label_tooltip'      => esc_attr__( 'We will send the donation receipt to this address.', 'give' ),
-				'required'           => $is_email_name_required,
-				'field_attributes'   => array(
-					'id'          => 'give-email',
-					'class'       => $is_email_name_required
-						? 'give-input required'
-						: 'give-input',
-					'placeholder' => esc_attr__( 'Email Address', 'give' ),
-				),
-				'wrapper_attributes' => array(
-					'id'    => 'give-email-wrap',
-					'class' => 'form-row form-row-wide',
-				),
-			)
-		);
+			<input
+					class="give-input required"
+					type="email"
+					name="give_email"
+					placeholder="<?php esc_attr_e( 'Email Address', 'give' ); ?>"
+					id="give-email"
+					value="<?php echo isset( $give_user_info['give_email'] ) ? $give_user_info['give_email'] : ''; ?>"
+				<?php echo( give_field_is_required( 'give_email', $form_id ) ? ' required aria-required="true" ' : '' ); ?>
+			/>
 
-
+		</p>
+		<?php
 		/**
 		 * Fire after user email field
 		 *
@@ -1460,7 +1332,6 @@ add_action( 'give_donation_form_login_fields', 'give_get_login_fields', 10, 1 );
  * automatically selected.
  *
  * @since  1.0
- * @deprecated 2.0 donation payment mode field will be render with form api.
  *
  * @param  int $form_id The form ID.
  *
@@ -1586,9 +1457,7 @@ function give_payment_mode_select( $form_id ) {
 	do_action( 'give_donation_form_wrap_bottom', $form_id );
 }
 
-// This hook has been removed, because after version 2.0 field will be render with form api.
-// @see includes/forms/filters.php:340
-// add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
+add_action( 'give_payment_mode_select', 'give_payment_mode_select' );
 
 /**
  * Renders the Checkout Agree to Terms, this displays a checkbox for users to
