@@ -15,6 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Load scripts conditionally.
+ */
+function give_conditionally_load_scripts() {
+
+	wp_enqueue_script( 'give-float-labels' );
+	wp_enqueue_script( 'give-blockui' );
+	wp_enqueue_script( 'give-qtip' );
+	wp_enqueue_script( 'give-accounting' );
+	wp_enqueue_script( 'give-magnific' );
+	wp_enqueue_script( 'give-checkout-global' );
+	wp_enqueue_script( 'give-scripts' );
+	wp_enqueue_script( 'give-ajax' );
+	wp_enqueue_style( 'give-styles' );
+
+}
+
+add_action( 'give_post_form_output', 'give_conditionally_load_scripts' );
+
+/**
  * Load Scripts
  *
  * Enqueues the required scripts.
@@ -89,30 +108,29 @@ function give_load_scripts() {
 		}
 
 		wp_register_script( 'give-float-labels', $js_plugins . 'float-labels' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-float-labels' );
 
 		wp_register_script( 'give-blockui', $js_plugins . 'jquery.blockUI' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-blockui' );
+
 
 		wp_register_script( 'give-qtip', $js_plugins . 'jquery.qtip' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-qtip' );
+
 
 		wp_register_script( 'give-accounting', $js_plugins . 'accounting' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-accounting' );
+
 
 		wp_register_script( 'give-magnific', $js_plugins . 'jquery.magnific-popup' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-magnific' );
+
 
 		wp_register_script( 'give-checkout-global', $js_dir . 'give-checkout-global' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-checkout-global' );
+
 
 		// General scripts.
 		wp_register_script( 'give-scripts', $js_dir . 'give' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-scripts' );
+
 
 		// Load AJAX scripts, if enabled.
 		wp_register_script( 'give-ajax', $js_dir . 'give-ajax' . $suffix . '.js', array( 'jquery' ), GIVE_VERSION, $scripts_footer );
-		wp_enqueue_script( 'give-ajax' );
+
 
 		// Localize / Pass AJAX vars from PHP,
 		wp_localize_script( 'give-checkout-global', 'give_global_vars', $localize_give_vars );
@@ -132,7 +150,7 @@ function give_load_scripts() {
 
 }
 
-add_action( 'wp_enqueue_scripts', 'give_load_scripts' );
+add_action( 'wp_enqueue_scripts', 'give_register_styles' );
 
 /**
  * Register styles.
@@ -150,12 +168,11 @@ function give_register_styles() {
 	}
 
 	wp_register_style( 'give-styles', give_get_stylesheet_uri(), array(), GIVE_VERSION, 'all' );
-	wp_enqueue_style( 'give-styles' );
+
 
 }
 
-add_action( 'wp_enqueue_scripts', 'give_register_styles' );
-
+add_action( 'wp_enqueue_scripts', 'give_load_scripts' );
 
 /**
  * Get the stylesheet URI.
@@ -273,7 +290,12 @@ function give_load_admin_scripts( $hook ) {
 	wp_enqueue_script( 'jquery-ui-datepicker' );
 	wp_enqueue_script( 'thickbox' );
 
-	wp_register_script( 'give-admin-scripts', $js_dir . 'admin-scripts' . $suffix . '.js', array( 'jquery', 'jquery-ui-datepicker', 'wp-color-picker', 'jquery-query' ), GIVE_VERSION, false );
+	wp_register_script( 'give-admin-scripts', $js_dir . 'admin-scripts' . $suffix . '.js', array(
+		'jquery',
+		'jquery-ui-datepicker',
+		'wp-color-picker',
+		'jquery-query',
+	), GIVE_VERSION, false );
 	wp_enqueue_script( 'give-admin-scripts' );
 
 	wp_register_script( 'jquery-flot', $js_plugins . 'jquery.flot' . $suffix . '.js' );
@@ -322,7 +344,7 @@ function give_load_admin_scripts( $hook ) {
 		'batch_export_no_class'          => __( 'You must choose a method.', 'give' ),
 		'batch_export_no_reqs'           => __( 'Required fields not completed.', 'give' ),
 		'reset_stats_warn'               => __( 'Are you sure you want to reset Give? This process is <strong><em>not reversible</em></strong> and will delete all data regardless of test or live mode. Please be sure you have a recent backup before proceeding.', 'give' ),
-		'delete_test_donor'               => __( 'Are you sure you want to delete all the test donors? This process will also delete test donations as well.', 'give' ),
+		'delete_test_donor'              => __( 'Are you sure you want to delete all the test donors? This process will also delete test donations as well.', 'give' ),
 		'price_format_guide'             => sprintf( __( 'Please enter amount in monetary decimal ( %1$s ) format without thousand separator ( %2$s ) .', 'give' ), $decimal_separator, $thousand_separator ),
 		/* translators : %s: Donation form options metabox */
 		'confirm_before_remove_row_text' => __( 'Do you want to delete this level?', 'give' ),
@@ -332,8 +354,8 @@ function give_load_admin_scripts( $hook ) {
 		'search_placeholder_donor'       => __( 'Type to search all donors', 'give' ),
 		'search_placeholder_country'     => __( 'Type to search all countries', 'give' ),
 		'search_placeholder_state'       => __( 'Type to search all states/provinces', 'give' ),
-		'bulk_action' => array(
-			'delete'    => array(
+		'bulk_action'                    => array(
+			'delete'         => array(
 				'zero'     => __( 'You must choose at least one or more payments to delete.', 'give' ),
 				'single'   => __( 'Are you sure you want to permanently delete this donation?', 'give' ),
 				'multiple' => __( 'Are you sure you want to permanently delete the selected {payment_count} donations?', 'give' ),
@@ -343,25 +365,25 @@ function give_load_admin_scripts( $hook ) {
 				'single'   => __( 'Are you sure you want to resend the email receipt to this recipient?', 'give' ),
 				'multiple' => __( 'Are you sure you want to resend the emails receipt to {payment_count} recipients?', 'give' ),
 			),
-			'set-to-status' => array(
-				'zero'      => __( 'You must choose at least one or more donations to set status to {status}.', 'give' ),
-				'single'    => __( 'Are you sure you want to set status of this donation to {status}?', 'give' ),
-				'multiple'  => __( 'Are you sure you want to set status of {payment_count} donations to {status}?', 'give' ),
+			'set-to-status'  => array(
+				'zero'     => __( 'You must choose at least one or more donations to set status to {status}.', 'give' ),
+				'single'   => __( 'Are you sure you want to set status of this donation to {status}?', 'give' ),
+				'multiple' => __( 'Are you sure you want to set status of {payment_count} donations to {status}?', 'give' ),
 			),
 		),
-		'metabox_fields' => array(
+		'metabox_fields'                 => array(
 			'media' => array(
 				'button_title' => __( 'Choose Image', 'give' ),
 			),
-			'file' => array(
+			'file'  => array(
 				'button_title' => __( 'Choose File', 'give' ),
-			)
+			),
 		),
-		'chosen' => array(
+		'chosen'                         => array(
 			'no_results_msg'  => __( 'No results match {search_term}', 'give' ),
 			'ajax_search_msg' => __( 'Searching results for match {search_term}', 'give' ),
 		),
-		'db_update_confirmation_msg' => __( 'The following process will make updates to your site\'s database. Please create a database backup before proceeding with updates.', 'give' )
+		'db_update_confirmation_msg'     => __( 'The following process will make updates to your site\'s database. Please create a database backup before proceeding with updates.', 'give' ),
 	) );
 
 	if ( function_exists( 'wp_enqueue_media' ) && version_compare( get_bloginfo( 'version' ), '3.5', '>=' ) ) {
