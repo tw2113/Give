@@ -47,7 +47,7 @@ function give_donation_history() {
 		|| ( give_is_setting_enabled( $email_access ) && Give()->email_access->token_exists )
 	) {
 		ob_start();
-		give_get_template_part( 'history', 'donations' );
+		give_get_template( 'history-donations' );
 
 		return ob_get_clean();
 
@@ -249,7 +249,7 @@ function give_receipt_shortcode( $atts ) {
 
 		ob_start();
 
-		give_get_template_part( 'email-login-form' );
+		give_get_template( 'email-login-form' );
 
 		return ob_get_clean();
 
@@ -267,7 +267,7 @@ function give_receipt_shortcode( $atts ) {
 
 		ob_start();
 
-		give_get_template_part( 'email-login-form' );
+		give_get_template( 'email-login-form' );
 
 		return ob_get_clean();
 
@@ -281,7 +281,7 @@ function give_receipt_shortcode( $atts ) {
 
 		Give()->notices->print_frontend_notice( apply_filters( 'give_must_be_logged_in_error_message', __( 'You must be logged in to view this donation receipt.', 'give' ) ) );
 
-		give_get_template_part( 'shortcode', 'login' );
+		give_get_template( 'shortcode-login' );
 
 		$login_form = ob_get_clean();
 
@@ -302,7 +302,7 @@ function give_receipt_shortcode( $atts ) {
 
 	ob_start();
 
-	give_get_template_part( 'shortcode', 'receipt' );
+	give_get_template( 'shortcode-receipt' );
 
 	$display = ob_get_clean();
 

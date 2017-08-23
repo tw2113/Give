@@ -27,11 +27,11 @@ function give_conditionally_load_scripts() {
 	wp_enqueue_script( 'give-checkout-global' );
 	wp_enqueue_script( 'give-scripts' );
 	wp_enqueue_script( 'give-ajax' );
-	wp_enqueue_style( 'give-styles' );
 
 }
 
 add_action( 'give_post_form_output', 'give_conditionally_load_scripts' );
+add_action( 'give_after_template_part', 'give_conditionally_load_scripts' );
 
 /**
  * Load Scripts
@@ -168,7 +168,7 @@ function give_register_styles() {
 	}
 
 	wp_register_style( 'give-styles', give_get_stylesheet_uri(), array(), GIVE_VERSION, 'all' );
-
+	wp_enqueue_style( 'give-styles' );
 
 }
 

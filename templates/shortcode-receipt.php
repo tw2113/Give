@@ -155,7 +155,7 @@ if ( filter_var( $give_receipt_args['status_notice'], FILTER_VALIDATE_BOOLEAN ) 
 		 * @param string $status Payment status.
 		 * @param array  $meta   Array of meta data related to the payment.
 		 */
-		echo apply_filters( 'give_receipt_status_notice', Give()->notices->print_frontend_notice( $notice_message, false, $notice_type ), $id, $status, $meta );
+		echo apply_filters( 'give_receipt_status_notice', Give()->notices->print_frontend_notice( $notice_message, false, $notice_type ), get_the_ID(), $status, $meta );
 	}
 }// End if().
 
