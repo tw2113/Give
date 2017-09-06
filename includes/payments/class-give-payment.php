@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @property bool $new
  * @property string $number
  * @property string $mode
+ * @property string $import
  * @property string $key
  * @property string $form_title
  * @property string|int $form_id
@@ -97,6 +98,16 @@ final class Give_Payment {
 	 * @var    string
 	 */
 	protected $mode = 'live';
+
+	/**
+	 * Is donations is Import or not.
+	 *
+	 * @since  1.8.13
+	 * @access protected
+	 *
+	 * @var    bool
+	 */
+	protected $import = false;
 
 	/**
 	 * The unique donation payment key.
@@ -229,6 +240,16 @@ final class Give_Payment {
 	 * @var    integer
 	 */
 	protected $customer_id = null;
+
+	/**
+	 * The Donor ID (if logged in) that made the payment
+	 *
+	 * @since  1.8.13
+	 * @access protected
+	 *
+	 * @var    integer
+	 */
+	protected $donor_id = 0;
 
 	/**
 	 * The User ID (if logged in) that made the payment
@@ -414,12 +435,12 @@ final class Give_Payment {
 	 * @access public
 	 *
 	 * @param  string $key The property name
-	 * @param  mixed  $value The value of the property
+	 * @param  mixed $value The value of the property
 	 */
 	public function __set( $key, $value ) {
 		$ignore = array( '_ID' );
 
-		if ( $key === 'status' ) {
+		if ( 'status' === $key ) {
 			$this->old_status = $this->status;
 		}
 
@@ -440,7 +461,7 @@ final class Give_Payment {
 	 *
 	 * @param  string $name The attribute to get
 	 *
-	 * @return boolean       If the item is set or not
+	 * @return boolean|null       If the item is set or not
 	 */
 	public function __isset( $name ) {
 		if ( property_exists( $this, $name ) ) {
@@ -505,15 +526,16 @@ final class Give_Payment {
 		$this->status         = $payment->post_status;
 		$this->post_status    = $this->status;
 		$this->mode           = $this->setup_mode();
+		$this->import         = $this->setup_import();
 		$this->parent_payment = $payment->post_parent;
 
 		$all_payment_statuses  = give_get_payment_statuses();
 		$this->status_nicename = array_key_exists( $this->status, $all_payment_statuses ) ? $all_payment_statuses[ $this->status ] : ucfirst( $this->status );
 
 		// Currency Based.
-		$this->total      = $this->setup_total();
-		$this->subtotal   = $this->setup_subtotal();
-		$this->currency   = $this->setup_currency();
+		$this->total    = $this->setup_total();
+		$this->subtotal = $this->setup_subtotal();
+		$this->currency = $this->setup_currency();
 
 		// Gateway based.
 		$this->gateway        = $this->setup_gateway();
@@ -611,6 +633,7 @@ final class Give_Payment {
 			'purchase_key' => $this->key,
 			'form_title'   => $this->form_title,
 			'form_id'      => $this->form_id,
+			'donor_id'     => $this->donor_id,
 			'price_id'     => $this->price_id,
 			'currency'     => $this->currency,
 			'user_info'    => array(
@@ -642,11 +665,18 @@ final class Give_Payment {
 
 			$donor = new stdClass;
 
+			/**
+			 * Filter donor class after the donation is completed and before customer table is updated.
+			 *
+			 * @since 1.8.13
+			 */
+			$donor = apply_filters( 'give_update_donor_information', $donor, $payment_id, $payment_data, $args );
+
 			if ( did_action( 'give_pre_process_donation' ) && is_user_logged_in() ) {
 				$donor = new Give_Donor( get_current_user_id(), true );
 
 				// Donor is logged in but used a different email to purchase with so assign to their donor record.
-				if ( ! empty( $donor->id ) && $this->email != $donor->email ) {
+				if ( ! empty( $donor->id ) && $this->email !== $donor->email ) {
 					$donor->add_email( $this->email );
 				}
 			}
@@ -950,7 +980,7 @@ final class Give_Payment {
 	 * @since  1.5
 	 * @access public
 	 *
-	 * @param  int   $form_id The donation form to add
+	 * @param  int $form_id The donation form to add
 	 * @param  array $args Other arguments to pass to the function
 	 * @param  array $options List of donation options
 	 *
@@ -1043,7 +1073,7 @@ final class Give_Payment {
 	 * @since  1.5
 	 * @access public
 	 *
-	 * @param  int   $form_id The form ID to remove
+	 * @param  int $form_id The form ID to remove
 	 * @param  array $args Arguments to pass to identify (quantity, amount, price_id)
 	 *
 	 * @return bool           If the item was removed or not
@@ -1088,7 +1118,7 @@ final class Give_Payment {
 	 *
 	 * @param  string $note The note to add
 	 *
-	 * @return void
+	 * @return bool           If the note was specified or not
 	 */
 	public function add_note( $note = false ) {
 		// Bail if no note specified.
@@ -1258,7 +1288,7 @@ final class Give_Payment {
 	 * @since  1.5
 	 * @access public
 	 *
-	 * @param  string  $meta_key The Meta Key
+	 * @param  string $meta_key The Meta Key
 	 * @param  boolean $single Return single item or array
 	 *
 	 * @return mixed             The value from the post meta
@@ -1608,6 +1638,18 @@ final class Give_Payment {
 	 */
 	private function setup_mode() {
 		return $this->get_meta( '_give_payment_mode' );
+	}
+
+	/**
+	 * Setup the payment import data
+	 *
+	 * @since  1.8.13
+	 * @access private
+	 *
+	 * @return bool The payment import
+	 */
+	private function setup_import() {
+		return (bool) $this->get_meta( '_give_payment_import' );
 	}
 
 	/**
